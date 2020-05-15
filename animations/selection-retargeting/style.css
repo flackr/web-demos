@@ -33,5 +33,4 @@ html, body, .grid {
   width: 33%;
   height: 33%;
   position: absolute;
-  transition: transform 1s;
 }
