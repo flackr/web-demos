@@ -1,0 +1,44 @@
+html, body {
+  overflow: hidden;
+  height: 100%;
+  margin: 0;
+}
+
+.refresh-track {
+  overflow: auto;
+  overscroll-behavior: none;
+  position: relative;
+  scroll-snap-type: y mandatory;
+  height: 100%;
+}
+.refresh-track > .content-start {
+  scroll-snap-align: start;
+  height: 0;
+}
+
+.refresh-track > .content {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  position: sticky;
+  bottom: 0;
+}
+
+.refresh-track > .refresh-decoration {
+  height: 50%;
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(blue, rgba(255, 255, 255, 0));
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.refresh-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.refresh-track {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+

@@ -1,0 +1,23 @@
+.items > div {
+  border: 3px solid gray;
+  box-sizing: border-box;
+  height: 4em;
+  line-height: 4em;
+  width: 100%;
+  font-size: 28px;
+  display: flex;
+}
+
+author {
+  font-weight: bold;
+  flex: 0;
+  white-space: pre;
+  padding: 0px 5px;
+}
+
+subject {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  white-space: pre;
+}
