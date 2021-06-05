@@ -48,6 +48,11 @@ function init() {
   }
   updateEntries();
   entries.addEventListener('change', updateEntries);
+  entries.addEventListener('focusin', (evt) => {
+    let children = entries.children;
+    if (evt.target == children[children.length - 1])
+      entries.appendChild(document.createElement('input'));
+  });
   document.querySelector('#save').addEventListener('click', () => {
     let query = '?items=';
     let values = [];
