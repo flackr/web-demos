@@ -4,7 +4,7 @@ function decode(str) {
   if (!str)
     return [];
   if (str.startsWith('items=')) {
-    return decodeURIComponent(str.substring(6)).split(',');
+    return str.substring(6).split(',').map(v => { return decodeURIComponent(v); });
   }
   return [];
 }
@@ -57,7 +57,7 @@ function init() {
     let query = '?items=';
     let values = [];
     for (let i = 0; i < entries.children.length - 1; ++i) {
-      values.push(entries.children[i].value);
+      values.push(encodeURIComponent(entries.children[i].value));
     }
     query += values.join(',');
     window.location = query;
