@@ -56,7 +56,9 @@ function init() {
   document.querySelector('#save').addEventListener('click', () => {
     let query = '?items=';
     let values = [];
-    for (let i = 0; i < entries.children.length - 1; ++i) {
+    for (let i = 0; i < entries.children.length; ++i) {
+      if (entries.children[i].value == '')
+        continue;
       values.push(encodeURIComponent(entries.children[i].value));
     }
     query += values.join(',');
