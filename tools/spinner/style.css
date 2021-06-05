@@ -24,6 +24,7 @@ html, body {
   border: min(2vh, 2vw) solid #542020;
   background: white;
   box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.7);
+  font-size: min(4vh, 4vw);
 }
 
 .spinner {
@@ -45,17 +46,16 @@ html, body {
   box-sizing: border-box;
   color: black;
   text-align: center;
-  font-size: min(4vh, 4vw);
-  font-family: "Verdana", sans-serif;
+  font-family: 'Vidaloka', serif;
   filter: drop-shadow(0px 0px 6px white);
 }
 .item.right {
-  padding: 0 0 0 5%;
+  padding: 0 0 0 10%;
   transform-origin: center left;
 }
 .item.left {
   left: 0%;
-  padding: 0 5% 0 0;
+  padding: 0 10% 0 0;
   transform-origin: center right;
 }
 .buttons {

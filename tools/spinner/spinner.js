@@ -26,6 +26,9 @@ function init() {
     for (let i = 0; i < items.length; i++) {
       let item = document.createElement('div');
       item.textContent = items[i];
+      const lengthLimit = Math.max(1, Math.round(arc / 15)) * 15;
+      let scale = Math.min(1, lengthLimit / items[i].length) * 100;
+      item.style.fontSize = `${scale}%`;
       let midArc = Math.round(currentArc + arc / 2);
       if (arc >= 90) {
         item.className = 'item';
