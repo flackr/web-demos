@@ -13,6 +13,7 @@ const items = decode(location.search.substring(1));
 function init() {
   let edit = document.querySelector('#edit');
   edit.addEventListener('click', showEditDialog);
+  document.querySelector('#spin').addEventListener('click', spin);
   let gradient = [];
   let wheel = document.querySelector('.wheel');
   wheel.addEventListener('click', spin);
@@ -50,8 +51,11 @@ function init() {
   entries.addEventListener('change', updateEntries);
   entries.addEventListener('focusin', (evt) => {
     let children = entries.children;
-    if (evt.target == children[children.length - 1])
-      entries.appendChild(document.createElement('input'));
+    if (evt.target != children[children.length - 1])
+      return;
+    if (children.length > 1 && children[children.length - 2].value == '')
+      return;
+    entries.appendChild(document.createElement('input'));
   });
   document.querySelector('#save').addEventListener('click', () => {
     let query = '?items=';
@@ -90,5 +94,8 @@ function showEditDialog(evt) {
   evt.preventDefault();
   let dialog = document.querySelector('#edit-dialog');
   dialog.classList.add('visible');
+  let entries = document.querySelector('#edit-dialog .entries');
+  if (entries.lastElementChild)
+    entries.lastElementChild.focus();
 }
 

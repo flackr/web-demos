@@ -1,6 +1,5 @@
 html, body {
   background: rgb(60, 60, 60);
-  color: white;
 }
 
 .circle {
@@ -58,12 +57,17 @@ html, body {
   padding: 0 5% 0 0;
   transform-origin: center right;
 }
-#edit {
+.buttons {
   position: absolute;
   bottom: 15px;
   left: 15px;
-  font-size: min(6vh, 6vw);
+}
+.buttons > button {
+  appearance: none;
+  background: none;
+  border: none;
   cursor: pointer;
+  font-size: min(6vh, 6vw);
 }
 #edit-dialog {
   position: absolute;
