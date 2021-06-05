@@ -1,0 +1,85 @@
+html, body {
+  background: rgb(60, 60, 60);
+  color: white;
+}
+
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  width: min(90vh, 90vw);
+  height: min(90vh, 90vw);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+.lights {
+  border: min(1.5vh, 1.5vw) dotted rgb(171 171 104);
+  padding: 2px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.wheel {
+  border: min(2vh, 2vw) solid #542020;
+  background: white;
+  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.7);
+}
+
+.spinner {
+  height: 50%;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) rotateZ(0deg) translate(0, 7.14%);
+  transition: transform 5s;
+  transition-timing-function: ease-out;
+  transform-origin: bottom center;
+  filter: drop-shadow(0px 0px 6px yellow);
+  z-index: 1;
+  will-change: transform;
+}
+.item {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 50%;
+  padding: 0 0 0 5%;
+  box-sizing: border-box;
+  color: black;
+  transform-origin: center left;
+  text-align: center;
+  font-size: min(4vh, 4vw);
+  font-family: "Verdana", sans-serif;
+  filter: drop-shadow(0px 0px 6px white);
+}
+.item.left {
+  left: 0%;
+  padding: 0 5% 0 0;
+  transform-origin: center right;
+}
+#edit {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  font-size: min(6vh, 6vw);
+  cursor: pointer;
+}
+#edit-dialog {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 60vw;
+  height: 40vh;
+  display: none;
+  background: lightgray;
+  z-index: 2;
+  border-radius: 20px;
+  border: 5px solid darkgray;
+  padding: 20px;
+}
+#edit-dialog.visible {
+  display: block;
+}
+
