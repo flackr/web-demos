@@ -27,8 +27,11 @@ function init() {
       let item = document.createElement('div');
       item.textContent = items[i];
       let midArc = Math.round(currentArc + arc / 2);
-      if (midArc < 180) {
+      if (arc >= 90) {
         item.className = 'item';
+        item.style.transform = `translateX(-50%) translateY(-50%) rotateZ(${-90 + midArc}deg) translateX(55%) rotateZ(${90 - midArc}deg)`;
+      } else if (midArc < 180) {
+        item.className = 'item right';
         item.style.transform = `translateY(-50%) rotateZ(${-90 + midArc}deg)`;
       } else {
         item.className = 'item left';
