@@ -89,6 +89,23 @@ function spin(evt) {
   let spinner = document.querySelector('.spinner');
   spinner.rotation = spinner.rotation || 0;
   let amt = (Math.random() * 2 + 3) * 360;
+  spinner.animate([
+    {
+      transform: `translateX(-50%) rotateZ(${spinner.rotation}deg) translate(0, 7.14%)`,
+      opacity: 0.5,
+    }, {
+      opacity: 1,
+      offset: 0.1,
+    }, {
+      opacity: 1,
+      offset: 0.9,
+    }, {
+      transform: `translateX(-50%) rotateZ(${spinner.rotation + amt}deg) translate(0, 7.14%)`,
+      opacity: 0.5,
+    }], {
+      easing: 'ease-out',
+      duration: 5000,
+    });
   spinner.rotation += amt;
   spinner.style.transform = `translateX(-50%) rotateZ(${spinner.rotation}deg) translate(0, 7.14%)`;
 }

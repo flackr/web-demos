@@ -31,8 +31,7 @@ html, body {
   position: absolute;
   left: 50%;
   transform: translateX(-50%) rotateZ(0deg) translate(0, 7.14%);
-  transition: transform 5s;
-  transition-timing-function: ease-out;
+  opacity: 0.5;
   transform-origin: bottom center;
   filter: drop-shadow(0px 0px 6px yellow);
   z-index: 1;
