@@ -27,8 +27,11 @@ function init() {
       let item = document.createElement('div');
       item.textContent = items[i];
       const lengthLimit = Math.max(1, Math.round(arc / 15)) * 15;
-      let scale = Math.min(1, lengthLimit / items[i].length) * 100;
-      item.style.fontSize = `${scale}%`;
+      // Scale represents an approximate size reduction to scale the number of
+      // lines to fit. However, as you make the font smaller there are also
+      // fewer lines, so we back the scale off a bit.
+      let scale = Math.pow(Math.min(1, lengthLimit / items[i].length), 0.75);
+      item.style.fontSize = `${scale * 100}%`;
       let midArc = Math.round(currentArc + arc / 2);
       if (arc >= 90) {
         item.className = 'item';
@@ -90,9 +93,12 @@ function updateEntries() {
 function spin(evt) {
   evt.preventDefault();
   let spinner = document.querySelector('.spinner');
+  if (spinner.disabled)
+    return;
+  spinner.disabled = true;
   spinner.rotation = spinner.rotation || 0;
   let amt = (Math.random() * 2 + 3) * 360;
-  spinner.animate([
+  let anim = spinner.animate([
     {
       transform: `translateX(-50%) rotateZ(${spinner.rotation}deg) translate(0, 7.14%)`,
       opacity: 0.5,
@@ -111,6 +117,9 @@ function spin(evt) {
     });
   spinner.rotation += amt;
   spinner.style.transform = `translateX(-50%) rotateZ(${spinner.rotation}deg) translate(0, 7.14%)`;
+  anim.finished.then(() => {
+    spinner.disabled = false;
+  });
 }
 
 function showEditDialog(evt) {
