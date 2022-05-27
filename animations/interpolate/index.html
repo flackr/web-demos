@@ -37,6 +37,15 @@
       window.location.hash = result.join('&');
     }
 
+    function cssToJsPropertyName(str) {
+      let parts = str.split('-');
+      let result = parts[0];
+      for (let i = 1; i < parts.length; i++) {
+        result += parts[i][0].toUpperCase() + parts[i].substring(1);
+      }
+      return result;
+    }
+
     function update() {
       let from = $('from').value;
       let to = $('to').value;
@@ -50,7 +59,7 @@
       let computedTo = getComputedStyle(testElem)[property];
       testElem.style[property] = '';
       let keyframes = {};
-      keyframes[property] = [from, to];
+      keyframes[cssToJsPropertyName(property)] = [from, to];
       let anim = testElem.animate(keyframes, 1000);
       anim.currentTime = percent * 10;
       let result = getComputedStyle(testElem)[property];
