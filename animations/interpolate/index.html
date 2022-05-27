@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Interpolation demo</title>
+  </head>
+  <body>
+    <h1>Interpolation demo</h1>
+    <p>Interpolate property: <input id="property"></p>
+    <p>Interpolate from: <input id="from"></p>
+    <p>Interpolate to: <input id="to"></p>
+    <p>At percentage: <input id="percent" value="50"></p>
+    <div id="log"></div>
+  </body>
+  <script>
+    let fields = ['property', 'from', 'to', 'percent'];
+    function $(id) {
+      return document.getElementById(id);
+    }
+
+    function parse() {
+      let params = {};
+      let split = window.location.hash.substring(1).split('&');
+      for (let piece of split) {
+        let parts = piece.split('=');
+        if (parts.length != 2)
+          continue;
+        $(parts[0]).value = decodeURIComponent(parts[1]);
+      }
+      update();
+    }
+
+    function encode(params) {
+      let result = [];
+      for (let field of fields) {
+        result.push(field + '=' + encodeURIComponent($(field).value));
+      }
+      window.location.hash = result.join('&');
+    }
+
+    function update() {
+      let from = $('from').value;
+      let to = $('to').value;
+      let property = $('property').value;
+      let testElem = document.createElement('div');
+      let percent = parseFloat($('percent').value);
+      document.body.appendChild(testElem);
+      testElem.style[property] = from;
+      let computedFrom = getComputedStyle(testElem)[property];
+      testElem.style[property] = to;
+      let computedTo = getComputedStyle(testElem)[property];
+      testElem.style[property] = '';
+      let keyframes = {};
+      keyframes[property] = [from, to];
+      let anim = testElem.animate(keyframes, 1000);
+      anim.currentTime = percent * 10;
+      let result = getComputedStyle(testElem)[property];
+      testElem.remove();
+      $('log').innerHTML = `
+      Interpolating ${property} from "${computedFrom}" to "${computedTo}" is "${result}" at ${percent}%
+      `;
+      encode();
+    }
+    parse();
+    document.addEventListener('hashchange', parse);
+    for (let field of fields) {
+      $(field).addEventListener('change', update);
+    }
+  </script>
+</html>
