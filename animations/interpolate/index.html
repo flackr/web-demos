@@ -6,13 +6,14 @@
   <body>
     <h1>Interpolation demo</h1>
     <p>Interpolate property: <input id="property"></p>
+    <p>Underlying value: <input id="underlying"></p>
     <p>Interpolate from: <input id="from"></p>
     <p>Interpolate to: <input id="to"></p>
     <p>At percentage: <input id="percent" value="50"></p>
     <div id="log"></div>
   </body>
   <script>
-    let fields = ['property', 'from', 'to', 'percent'];
+    let fields = ['property', 'from', 'to', 'percent', 'underlying'];
     function $(id) {
       return document.getElementById(id);
     }
@@ -47,6 +48,7 @@
     }
 
     function update() {
+      let underlying = $('underlying').value;
       let from = $('from').value;
       let to = $('to').value;
       let property = $('property').value;
@@ -57,9 +59,17 @@
       let computedFrom = getComputedStyle(testElem)[property];
       testElem.style[property] = to;
       let computedTo = getComputedStyle(testElem)[property];
-      testElem.style[property] = '';
-      let keyframes = {};
-      keyframes[cssToJsPropertyName(property)] = [from, to];
+      testElem.style[property] = underlying;
+      let keyframes = [];
+      let keyframe = {};
+      if (from)
+        keyframe[cssToJsPropertyName(property)] = from;
+      keyframes.push(keyframe);
+      keyframe = {};
+      if (to)
+        keyframe[cssToJsPropertyName(property)] = to;
+      keyframes.push(keyframe);
+
       let anim = testElem.animate(keyframes, 1000);
       anim.currentTime = percent * 10;
       let result = getComputedStyle(testElem)[property];
