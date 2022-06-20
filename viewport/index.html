@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <script src="viewport.js"></script>
+    <link rel="stylesheet" href="viewport.css">
+  </head>
+  <body>
+    <h1>Viewport demo</h1>
+    <p>Below is an interactive phone screen, and the corresponding <span class="layout">layout viewport</span>, <span class="visual">visual viewport</span> and <span class="unzoomed">unzoomed visual viewport</span> illustrated to the right. You can zoom with the mouse wheel and click and drag to simulate scrolling.</p>
+    <div class="flex">
+      <div class="phone">
+        <div class="screen">
+          <div class="content">
+            <div class="fixed top header">
+              <h1>📰 Header</h1>
+            </div>
+            <div class="fixed bottom footer">
+              <p>Fixed position footer.
+            </div>
+            <p>This is a demo of a fixed position header and footer on a phone screen. On the right you can see the what the browser sees.</p>
+            <p>One thing to try is focusing this textfield which will show a keyboard.</p>
+            <input>
+            <h3>The viewports</h3>
+            <p>There are two current viewports, and one proposed new viewport which are updated as the keyboard shows and scrolling takes place. On a desktop user agent, these viewports all have the same dimensions.</p>
+            <h4>Layout viewport</h4>
+            <p>The layout viewport is the size to which layout takes place. Fixed position objects are fixed to the edges of this viewport. This viewport scrolls (moves down) when you scroll the page.</p>
+            <h4>Visual viewport</h4>
+            <p>The visual viewport is the content which is currently being viewed by the user. As the user pinch zooms this viewport becomes smaller and pans around within the layout viewport. When the visual viewport reaches the layout viewport edge then the layout viewport can be scrolled to view more content.</p>
+            <h4>Unzoomed visual viewport</h4>
+            <p>This is a hypothetical new viewport which could be used for positioning fixed position elements. In most cases it is equal to the layout viewport except when an overlay keyboard is shown which shrinks the visual viewport but not the layout viewport.</p>
+            <h3>Scrollable content</h3>
+            <p>It's important to ensure that the content is scrollable so that you can see the difference between the visual viewport and the layout viewport.</p>
+            <p>For that reason we're putting a bunch of scrollable content. If the content doesn't scroll try making your browser narrower.
+          </div>
+          <div class="keyboard"></div>
+        </div>
+      </div>
+      <div class="browser">
+        <div class="content"></div>
+        <div id="layout" class="layout"></div>
+        <div id="visual" class="visual"></div>
+        <div id="visual-nozoom" class="unzoomed"></div>
+      </div>
+    </div>
+    <h1>Options</h1>
+    <p><input type="checkbox" id="unzoomed" checked> Use unzoomed visual viewport.</p>
+  </body>
+</html>

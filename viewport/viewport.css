@@ -1,0 +1,113 @@
+html {
+  --header-height: 80px;
+  --footer-height: 60px;
+}
+
+.phone {
+  aspect-ratio: 9/16;
+  height: 60vh;
+  border-radius: 8px;
+  background: black;
+  padding: 15px 8px;
+  position: relative;
+  contain: layout;
+}
+
+.browser {
+  margin: 8px;
+  position: relative;
+  pointer-events: none;
+}
+
+.browser > .content {
+  border: 1px solid black;
+}
+
+.screen {
+  overflow: clip;
+  background: white;
+  height: 100%;
+  position: relative;
+}
+
+.content {
+  contain: layout;
+  padding-top: var(--header-height);
+  padding-bottom: var(--footer-height);
+  transform-origin: top left;
+  touch-action: none;
+  user-select: none;
+}
+
+.flex {
+  display: flex;
+}
+
+.fixed {
+  /* Fixed is approximated with absolute position. */
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  background: #aaf;
+}
+
+input:focus {
+  border: 5px solid #77f;
+}
+
+#layout, #visual, #visual-nozoom {
+  position: absolute;
+  border: 3px solid currentColor;
+  margin-top: -3px;
+  margin-left: -3px;
+  opacity: 0.5;
+}
+.layout {
+  color: blue;
+}
+.visual {
+  color: red;
+}
+.unzoomed {
+  color: green;
+}
+
+.keyboard {
+  background: #333;
+  height: 20vh;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transition: transform 150ms;
+  transform: translateY(100%);
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-areas:
+      'q q w w e e r r t t y y u u i i o o p p'
+      '. a a s s d d f f g g h h j j k k l l .'
+      'R R R z z x x c c v v b b n n m m B B B';
+}
+
+.key {
+  line-height: 250%;
+  text-align: center;
+  margin: 0.5ch;
+  border-radius: 3px;
+  background: #aaa;
+  cursor: pointer;
+  overflow: clip;
+  /* Ensure that all letter keys are given the same contribution to the grid size. */
+  min-width: 1em;
+}
+
+/* Decrease the text size on Enter and Erase keys to allow for uniform size keys. */
+.key.small {
+  font-size: small;
+  line-height: 380%;
+}
+
+.keyboard.visible {
+  transform: none;
+}
