@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Viewport units</title>
+    <style>
+      body {
+        margin-left: 30px;
+      }
+      .ruler > div {
+        margin: 2px;
+        border: 3px solid currentColor;
+        width: 5px;
+        border-right: none;
+        box-sizing: border-box;
+        height: calc(100% - 4px);
+      }
+      .ruler {
+        top: 0;
+      }
+      .ruler.lvh {
+        position: fixed;
+        left: 0;
+        /* 100vh is equivalent to 100lvh */
+        height: 100vh;
+      }
+      .lvh {
+        color: blue;
+      }
+      .ruler.dvh {
+        position: fixed;
+        left: 10px;
+        /* fixed 100% is equivalent to 100dvh */
+        height: 100%;
+      }
+      .dvh {
+        color: red;
+      }
+      .ruler.svh {
+        position: absolute;
+        left: 20px;
+        /* absolute / ICB 100% is equivalent to 100svh */
+        height: 100%;
+      }
+      .svh {
+        color: green;
+      }
+    </style>
+    <script>
+      window.addEventListener('scroll', () => {
+        document.querySelector('.ruler.svh').style.top = document.scrollingElement.scrollTop + 'px';
+      });
+      function update() {
+        for (let unit of ['svh', 'dvh', 'lvh']) {
+          document.querySelector(`span.${unit}`).textContent = document.querySelector(`.ruler.${unit}`).clientHeight + 'px';
+        }
+      }
+      document.addEventListener('DOMContentLoaded', update);
+      window.addEventListener('resize', update);
+    </script>
+  </head>
+  <body>
+    <div class="ruler lvh"><div></div></div>
+    <div class="ruler dvh"><div></div></div>
+    <div class="ruler svh"><div></div></div>
+    <h1>Viewport units</h1>
+    <p>[css-values-4 introduces several new viewport-percentage units](https://www.w3.org/TR/css-values-4/#viewport-relative-units). This site attempts to demonstrate how those units relate to existing concepts.</p>
+    <p>100 lvh = <span class="lvh"></span></p>
+    <p>100 dvh = <span class="dvh"></span></p>
+    <p>100 svh = <span class="svh"></span></p>
+    <h2>The units</h2>
+    <h3>lvh</h3>
+    <p>The large viewport size is equivalent to the UA-default viewport size. It represents the largest size the viewport may be when UA interfaces have retracted.</p>
+    <h3>dvh</h3>
+    <p>The dynamic viewport size is equivalent to the fixed position layout viewport. It represents the current viewport size and is also equivalent to the window size.</p>
+    <h3>svh</h3>
+    <p>The small viewport size is equivalent to the initial containin block. It represents the smallest viewport size when UA interfaces are shown.</p>
+    <h2>Compatibility</h2>
+    <p>These equivalent existing measurements behave the same on Safari, Chrome and Firefox when showing / hiding top controls.</p>
+    <p>Where they vary is their behavior when you bring up a virtual keyboard - e.g. on the input below. On Safari (and ChromeOS) the virtual keyboard does not affect any of these units, as it only reduces the size of the virtual viewport. On Android Chrome and Firefox, the size of the viewport is reduced by the size of the keyboard. It's likely that the new units would have the same issue and we will need to resolve this.</p>
+    <input>
+  </body>
+</html>
