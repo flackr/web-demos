@@ -1,6 +1,6 @@
 html {
   --header-height: 80px;
-  --footer-height: 60px;
+  --footer-height: 50px;
 }
 
 .phone {
@@ -28,6 +28,14 @@ html {
   background: white;
   height: 100%;
   position: relative;
+}
+
+.header {
+  height: var(--header-height);
+}
+
+.footer {
+  height: var(--footer-height);
 }
 
 .content {

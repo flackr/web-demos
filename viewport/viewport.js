@@ -15,6 +15,19 @@ let unzoomedTop = 0;
 let moveHandler = null;
 let endHandler = null;
 
+function scrollIntoView(elem) {
+  let content = document.querySelector('.content');
+  let pos = elem.offsetTop - content.offsetTop;
+  let screen = document.querySelector('.screen');
+  let layoutHeight = screen.clientHeight;
+  let keyboard = document.querySelector('.keyboard');
+  let keyboardHeight = keyboard.classList.contains('visible') ? keyboard.clientHeight : 0;
+  let visualHeight = (layoutHeight - keyboardHeight) / zoom;
+  visualTop = Math.min(pos, Math.max(visualTop, pos + elem.clientHeight - visualHeight));
+  scrollTop = Math.min(Math.max(scrollTop, visualTop + visualHeight - layoutHeight), visualTop);
+  updateViewports();
+}
+
 window.addEventListener('load', () => {
   let screen = document.querySelector('.screen');
   let contents = document.querySelectorAll('.content');
@@ -126,7 +139,7 @@ window.addEventListener('resize', updateSizes);
 
 function onfocus() {
   document.querySelector('.keyboard').classList.add('visible');
-  updateViewports();
+  scrollIntoView(document.activeElement);
 }
 
 function onblur() {
