@@ -17,13 +17,19 @@ let endHandler = null;
 
 function scrollIntoView(elem) {
   let content = document.querySelector('.content');
+  let cs = getComputedStyle(content);
+  // Note: assumes pixels.
+  let paddingTop = (cs.scrollPaddingTop == 'auto') ? 0 : parseFloat(cs.scrollPaddingTop);
+  let paddingBottom = (cs.scrollPaddingBottom == 'auto') ? 0 : parseFloat(cs.scrollPaddingBottom);
+
   let pos = elem.offsetTop - content.offsetTop;
   let screen = document.querySelector('.screen');
   let layoutHeight = screen.clientHeight;
   let keyboard = document.querySelector('.keyboard');
   let keyboardHeight = keyboard.classList.contains('visible') ? keyboard.clientHeight : 0;
   let visualHeight = (layoutHeight - keyboardHeight) / zoom;
-  visualTop = Math.min(pos, Math.max(visualTop, pos + elem.clientHeight - visualHeight));
+  visualTop = Math.min(pos - paddingTop, Math.max(visualTop, pos + elem.clientHeight + paddingBottom - visualHeight));
+  visualTop = Math.max(0, Math.min(content.clientHeight - visualHeight, visualTop));
   scrollTop = Math.min(Math.max(scrollTop, visualTop + visualHeight - layoutHeight), visualTop);
   updateViewports();
 }

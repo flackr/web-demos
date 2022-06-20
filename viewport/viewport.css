@@ -42,6 +42,8 @@ html {
   contain: layout;
   padding-top: var(--header-height);
   padding-bottom: var(--footer-height);
+  scroll-padding-top:  var(--header-height);
+  scroll-padding-bottom:  var(--header-height);
   transform-origin: top left;
   touch-action: none;
   user-select: none;
