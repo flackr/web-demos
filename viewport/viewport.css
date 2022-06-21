@@ -1,6 +1,7 @@
 html {
   --header-height: 80px;
   --footer-height: 50px;
+  --sidebar-width: 50px;
 }
 
 .phone {
@@ -30,16 +31,9 @@ html {
   position: relative;
 }
 
-.header {
-  height: var(--header-height);
-}
-
-.footer {
-  height: var(--footer-height);
-}
-
 .content {
   contain: layout;
+  padding-left: var(--sidebar-width);
   padding-top: var(--header-height);
   padding-bottom: var(--footer-height);
   scroll-padding-top:  var(--header-height);
@@ -59,7 +53,23 @@ html {
   left: 0;
   right: 0;
   top: 0;
-  background: #aaf;
+}
+
+.header {
+  height: var(--header-height);
+  background: rgba(127, 127, 127, 0.5);
+}
+
+.sidebar {
+  top: var(--header-height);
+  height: calc(var(--vh) - var(--header-height) - var(--footer-height));
+  width: var(--sidebar-width);
+  background: rgba(127, 127, 180, 0.5);
+}
+
+.footer {
+  height: var(--footer-height);
+  background: rgba(80, 80, 80, 0.5);
 }
 
 input:focus {

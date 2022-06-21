@@ -155,6 +155,7 @@ function onblur() {
 
 function updateSizes() {
   let contents = document.querySelectorAll('.content');
+  document.documentElement.style.setProperty('--vh', document.querySelector('.screen').clientHeight + 'px');
   contents[1].style.width = contents[0].offsetWidth + 'px';
   document.querySelector('#layout').style.height = document.querySelector('.screen').clientHeight + 'px';
   document.querySelector('#layout').style.width = document.querySelector('.screen').clientWidth + 'px';
