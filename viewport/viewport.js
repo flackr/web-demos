@@ -191,7 +191,7 @@ function updateViewports() {
   for (let fixed of allFixed) {
     let offset = useUnzoomed ? unzoomedTop : scrollTop;
     if (fixed.classList.contains('bottom')) {
-      offset += (layoutHeight - (useUnzoomed ? keyboardHeight : 0) - fixed.clientHeight + 1);
+      offset += (layoutHeight - (useUnzoomed ? keyboardHeight : 0) - fixed.clientHeight);
     }
     fixed.style.transform = `translateY(${offset}px)`;
   }
