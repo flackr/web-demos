@@ -55,6 +55,7 @@
         for (let unit of ['svh', 'dvh', 'lvh']) {
           document.querySelector(`span.${unit}`).textContent = document.querySelector(`.ruler.${unit}`).clientHeight + 'px';
         }
+        document.querySelector('.inner-height').textContent = window.innerHeight + 'px';
       }
       document.addEventListener('DOMContentLoaded', update);
       window.addEventListener('resize', update);
@@ -69,6 +70,7 @@
     <p>100 lvh = <span class="lvh"></span></p>
     <p>100 dvh = <span class="dvh"></span></p>
     <p>100 svh = <span class="svh"></span></p>
+    <p>window.innerHeight = <span class="inner-height"></span></p>
     <h2>The units</h2>
     <h3>lvh</h3>
     <p>The large viewport size is equivalent to the UA-default viewport size. It represents the largest size the viewport may be when UA interfaces have retracted.</p>
