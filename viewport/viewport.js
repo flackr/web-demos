@@ -34,10 +34,15 @@ function scrollIntoView(elem) {
   updateViewports();
 }
 
-window.addEventListener('load', () => {
+function onhashchange() {
   if (window.location.hash.startsWith('#behavior=')) {
     document.querySelector('#behavior').value = window.location.hash.substring(10);
   }
+  updateViewports();
+}
+window.addEventListener('hashchange', onhashchange);
+
+window.addEventListener('load', () => {
   let screen = document.querySelector('.screen');
   let contents = document.querySelectorAll('.content');
   let inputs = document.querySelectorAll('.content input');
@@ -140,7 +145,7 @@ window.addEventListener('load', () => {
   addKey('B', 'Backspace', 'Backspace');
 
   document.querySelector('#behavior').addEventListener('change', updateSettings);
-  updateSettings();
+  onhashchange();
 });
 
 window.addEventListener('resize', updateSizes);
