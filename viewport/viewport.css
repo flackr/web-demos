@@ -49,27 +49,29 @@ html {
 }
 
 .fixed {
-  /* Fixed is approximated with absolute position. */
-  position: absolute;
+  position: fixed;
   left: 0;
   right: 0;
   top: 0;
+  transform-origin: top left;
 }
 
 .header {
   height: var(--header-height);
+  width: calc(var(--fixed-vw) * var(--fixed-scale));
   background: rgba(127, 127, 127, 0.8);
 }
 
 .sidebar {
   top: var(--header-height);
-  height: calc(var(--fixed-100pct) - var(--header-height) - var(--footer-height));
+  height: calc((var(--fixed-vh) * var(--fixed-scale) - var(--header-height) - var(--footer-height)));
   width: var(--sidebar-width);
   background: rgba(127, 127, 180, 0.8);
 }
 
 .footer {
   height: var(--footer-height);
+  width: calc(var(--fixed-vw) * var(--fixed-scale));
   color: white;
   background: rgba(80, 80, 80, 0.8);
 }

@@ -8,6 +8,13 @@
   <body>
     <h1>Viewport demo</h1>
     <p>Below is an interactive phone screen, and the corresponding <span class="layout">layout viewport</span>, <span class="visual">visual viewport</span> and <span class="fixed-viewport">fixed viewport</span> illustrated to the right. You can zoom with the mouse wheel and click and drag to simulate scrolling.</p>
+    <p>Behavior: <select id="behavior">
+      <option value="ios">iOS / ChromeOS</option>
+      <option value="android">Android</option>
+      <option value="device-fixed">device-fixed</option>
+      <option value="device-fixed-scaled">Scaled device-fixed</option>
+      <option value="fixed-viewport">Fixed viewport adjusts for keyboard</option>
+    </select></p>
     <div class="flex">
       <div class="phone">
         <div class="screen">
@@ -46,11 +53,5 @@
         <div id="fixed-viewport" class="fixed-viewport"></div>
       </div>
     </div>
-    <h1>Options</h1>
-    <p>Behavior: <select id="behavior">
-      <option value="ios">iOS / ChromeOS</option>
-      <option value="android">Android</option>
-      <option value="fixed-viewport">Fixed viewport adjusts for keyboard</option>
-    </select></p>
   </body>
 </html>

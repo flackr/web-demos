@@ -183,10 +183,15 @@ function getVisualHeight() {
   return (height - keyboardHeight) / zoom
 }
 
-function fixedHeight() {
+function getFixedWidth() {
+  let width = document.querySelector('.screen').clientWidth;
+  return width;
+}
+
+function getFixedHeight() {
   let height =  document.querySelector('.screen').clientHeight;
   let behavior = document.querySelector('#behavior').value;
-  if (behavior == 'android' || behavior == 'fixed-viewport') {
+  if (behavior != 'ios') {
     let keyboard = document.querySelector('.keyboard');
     let keyboardHeight = keyboard.classList.contains('visible') ? keyboard.clientHeight : 0;
     height -= keyboardHeight;
@@ -204,10 +209,15 @@ function updateViewports() {
   let content = document.querySelector('.content');
   let visualHeight = getVisualHeight();
 
-  let useUnzoomed = behavior == 'fixed-viewport';
-  document.querySelector('#fixed-viewport').style.display = (useUnzoomed ? '' : 'none');
+  let useFixedViewport = behavior == 'fixed-viewport';
+  document.querySelector('#fixed-viewport').style.display = (useFixedViewport ? '' : 'none');
+  if (behavior == 'device-fixed' || behavior == 'device-fixed-scaled')
+    useFixedViewport = true;
 
-  document.documentElement.style.setProperty('--fixed-100pct', fixedHeight() + 'px');
+  document.documentElement.style.setProperty('--fixed-vw', getFixedWidth() + 'px');
+  document.documentElement.style.setProperty('--fixed-vh', getFixedHeight() + 'px');
+  let fixedScale = behavior == 'device-fixed-scaled' ? 1 / zoom : 1;
+  document.documentElement.style.setProperty('--fixed-scale', fixedScale);
   fixedViewportTop = Math.min(fixedViewportTop, scrollTop + keyboardHeight);
   fixedViewportTop = Math.min(Math.max(fixedViewportTop, visualTop + visualHeight - layoutHeight + keyboardHeight), visualTop);
 
@@ -219,6 +229,10 @@ function updateViewports() {
   visual.style.height = visualHeight + 'px';
   visual.style.width = layoutWidth / zoom + 'px';
   content.style.transform = `scale(${zoom}, ${zoom}) translate(-${visualLeft}px, -${visualTop}px)`;
+  let invTransform = `translate(${visualLeft}px, ${visualTop}px)`;
+  if (behavior == 'device-fixed') {
+    invTransform += ` scale(${1 / zoom}, ${1 / zoom})`;
+  }
 
   let fixedViewport = document.querySelector('#fixed-viewport');
   fixedViewport.style.top = fixedViewportTop + 'px';
@@ -226,10 +240,17 @@ function updateViewports() {
 
   let allFixed = document.querySelectorAll('.fixed');
   for (let fixed of allFixed) {
-    let offset = useUnzoomed ? fixedViewportTop : scrollTop;
-    if (fixed.classList.contains('bottom')) {
-      offset += (layoutHeight - (useUnzoomed ? keyboardHeight : 0) - fixed.clientHeight);
+    let transform = '';
+    let offset = useFixedViewport ? fixedViewportTop : scrollTop;
+    fixed.style.transformOrigin = `0px ${-fixed.offsetTop}px`;
+    if (behavior == 'device-fixed' || behavior == 'device-fixed-scaled') {
+      transform += invTransform;
+      offset = 0;
     }
-    fixed.style.transform = `translateY(${offset}px)`;
+    if (fixed.classList.contains('bottom')) {
+      offset += (layoutHeight * fixedScale - (useFixedViewport ? keyboardHeight : 0) * fixedScale - fixed.clientHeight);
+    }
+    transform += ` translateY(${offset}px)`;
+    fixed.style.transform = transform;
   }
 }
