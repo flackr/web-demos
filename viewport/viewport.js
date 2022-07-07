@@ -35,6 +35,9 @@ function scrollIntoView(elem) {
 }
 
 window.addEventListener('load', () => {
+  if (window.location.hash.startsWith('#behavior=')) {
+    document.querySelector('#behavior').value = window.location.hash.substring(10);
+  }
   let screen = document.querySelector('.screen');
   let contents = document.querySelectorAll('.content');
   let inputs = document.querySelectorAll('.content input');
@@ -63,6 +66,8 @@ window.addEventListener('load', () => {
   });
 
   function updateSettings() {
+    let behavior = document.querySelector('#behavior').value;
+    window.location.hash = `behavior=${behavior}`;
     updateViewports();
   }
 
