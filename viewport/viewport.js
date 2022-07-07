@@ -10,7 +10,7 @@ let zoom = 1;
 let scrollTop = 0;
 let visualTop = 0;
 let visualLeft = 0;
-let unzoomedTop = 0;
+let fixedViewportTop = 0;
 
 let moveHandler = null;
 let endHandler = null;
@@ -24,10 +24,10 @@ function scrollIntoView(elem) {
 
   let pos = elem.offsetTop - content.offsetTop;
   let screen = document.querySelector('.screen');
-  let layoutHeight = screen.clientHeight;
+  let layoutHeight = getLayoutHeight();
   let keyboard = document.querySelector('.keyboard');
   let keyboardHeight = keyboard.classList.contains('visible') ? keyboard.clientHeight : 0;
-  let visualHeight = (layoutHeight - keyboardHeight) / zoom;
+  let visualHeight = getVisualHeight();
   visualTop = Math.min(pos - paddingTop, Math.max(visualTop, pos + elem.clientHeight + paddingBottom - visualHeight));
   visualTop = Math.max(0, Math.min(content.clientHeight - visualHeight, visualTop));
   scrollTop = Math.min(Math.max(scrollTop, visualTop + visualHeight - layoutHeight), visualTop);
@@ -46,9 +46,7 @@ window.addEventListener('load', () => {
   }
   screen.addEventListener('wheel', (evt) => {
     let layoutWidth = screen.clientWidth;
-    let layoutHeight = screen.clientHeight;
-    let keyboard = document.querySelector('.keyboard');
-    let keyboardHeight = keyboard.classList.contains('visible') ? keyboard.clientHeight : 0;
+    let layoutHeight = getLayoutHeight();
 
     evt.preventDefault();
     let zoomAdjust = Math.min(1, Math.max(-1, evt.deltaY / ZOOM_ADJUST_MAX_DELTA)) * ZOOM_ADJUST_MAX;
@@ -56,8 +54,8 @@ window.addEventListener('load', () => {
     let screenX = evt.clientX - screen.offsetLeft;
     let screenY = evt.clientY - screen.offsetTop;
     console.log(screenX, screenY);
-    visualLeft += screenX / screen.clientWidth * (layoutWidth / zoom - layoutWidth / newZoom);
-    visualTop += screenY / screen.clientHeight * (layoutHeight / zoom - layoutHeight / newZoom);
+    visualLeft += screenX / layoutWidth * (layoutWidth / zoom - layoutWidth / newZoom);
+    visualTop += screenY / layoutHeight * (layoutHeight / zoom - layoutHeight / newZoom);
     zoom = newZoom;
     visualLeft = Math.max(0, Math.min(layoutWidth - layoutWidth / zoom, visualLeft));
     visualTop = Math.max(scrollTop, Math.min(scrollTop + layoutHeight - layoutHeight / zoom, visualTop));
@@ -65,7 +63,6 @@ window.addEventListener('load', () => {
   });
 
   function updateSettings() {
-    document.querySelector('#visual-nozoom').style.display = (document.querySelector('#unzoomed').checked ? '' : 'none');
     updateViewports();
   }
 
@@ -75,10 +72,10 @@ window.addEventListener('load', () => {
     if (moveHandler)
       return;
     let layoutWidth = screen.clientWidth;
-    let layoutHeight = screen.clientHeight;
+    let layoutHeight = getLayoutHeight();
     let keyboard = document.querySelector('.keyboard');
     let keyboardHeight = keyboard.classList.contains('visible') ? keyboard.clientHeight : 0;
-    let visualHeight = (layoutHeight - keyboardHeight) / zoom;
+    let visualHeight = getVisualHeight();
 
     let scrollMax = document.querySelector('.browser .content').clientHeight - layoutHeight;
     let last = [startEvent.clientX, startEvent.clientY];
@@ -137,7 +134,7 @@ window.addEventListener('load', () => {
   addKey('R', 'Enter', 'Enter');
   addKey('B', 'Backspace', 'Backspace');
 
-  document.querySelector('#unzoomed').addEventListener('change', updateSettings);
+  document.querySelector('#behavior').addEventListener('change', updateSettings);
   updateSettings();
 });
 
@@ -157,39 +154,74 @@ function updateSizes() {
   let contents = document.querySelectorAll('.content');
   document.documentElement.style.setProperty('--vh', document.querySelector('.screen').clientHeight + 'px');
   contents[1].style.width = contents[0].offsetWidth + 'px';
-  document.querySelector('#layout').style.height = document.querySelector('.screen').clientHeight + 'px';
   document.querySelector('#layout').style.width = document.querySelector('.screen').clientWidth + 'px';
-  document.querySelector('#visual-nozoom').style.width = document.querySelector('.screen').clientWidth + 'px';
+  document.querySelector('#fixed-viewport').style.width = document.querySelector('.screen').clientWidth + 'px';
   updateViewports();
 }
 
+function getLayoutHeight() {
+  let height =  document.querySelector('.screen').clientHeight;
+  let behavior = document.querySelector('#behavior').value;
+  if (behavior == 'android') {
+    let keyboard = document.querySelector('.keyboard');
+    let keyboardHeight = keyboard.classList.contains('visible') ? keyboard.clientHeight : 0;
+    height -= keyboardHeight;
+  }
+  return height;
+}
+
+function getVisualHeight() {
+  let height =  document.querySelector('.screen').clientHeight;
+  let keyboard = document.querySelector('.keyboard');
+  let keyboardHeight = keyboard.classList.contains('visible') ? keyboard.clientHeight : 0;
+
+  return (height - keyboardHeight) / zoom
+}
+
+function fixedHeight() {
+  let height =  document.querySelector('.screen').clientHeight;
+  let behavior = document.querySelector('#behavior').value;
+  if (behavior == 'android' || behavior == 'fixed-viewport') {
+    let keyboard = document.querySelector('.keyboard');
+    let keyboardHeight = keyboard.classList.contains('visible') ? keyboard.clientHeight : 0;
+    height -= keyboardHeight;
+  }
+  return height;
+}
+
 function updateViewports() {
+  let behavior = document.querySelector('#behavior').value;
   let layoutWidth = document.querySelector('.screen').clientWidth;
-  let layoutHeight = document.querySelector('.screen').clientHeight;
+  let layoutHeight = getLayoutHeight();
+  document.querySelector('#layout').style.height = layoutHeight + 'px';
   let keyboard = document.querySelector('.keyboard');
   let keyboardHeight = keyboard.classList.contains('visible') ? keyboard.clientHeight : 0;
   let content = document.querySelector('.content');
-  let visualHeight = (layoutHeight - keyboardHeight) / zoom;
-  let useUnzoomed = document.querySelector('#unzoomed').checked;
-  unzoomedTop = Math.min(unzoomedTop, scrollTop + keyboardHeight);
-  unzoomedTop = Math.min(Math.max(unzoomedTop, visualTop + visualHeight - layoutHeight + keyboardHeight), visualTop);
+  let visualHeight = getVisualHeight();
+
+  let useUnzoomed = behavior == 'fixed-viewport';
+  document.querySelector('#fixed-viewport').style.display = (useUnzoomed ? '' : 'none');
+
+  document.documentElement.style.setProperty('--fixed-100pct', fixedHeight() + 'px');
+  fixedViewportTop = Math.min(fixedViewportTop, scrollTop + keyboardHeight);
+  fixedViewportTop = Math.min(Math.max(fixedViewportTop, visualTop + visualHeight - layoutHeight + keyboardHeight), visualTop);
 
   document.querySelector('#layout').style.top = scrollTop + 'px';
 
   let visual = document.querySelector('#visual');
   visual.style.left = visualLeft + 'px';
   visual.style.top = visualTop + 'px';
-  visual.style.height = (layoutHeight - keyboardHeight) / zoom + 'px';
+  visual.style.height = visualHeight + 'px';
   visual.style.width = layoutWidth / zoom + 'px';
   content.style.transform = `scale(${zoom}, ${zoom}) translate(-${visualLeft}px, -${visualTop}px)`;
 
-  let nozoom = document.querySelector('#visual-nozoom');
-  nozoom.style.top = unzoomedTop + 'px';
-  nozoom.style.height = (layoutHeight - keyboardHeight) + 'px';
+  let fixedViewport = document.querySelector('#fixed-viewport');
+  fixedViewport.style.top = fixedViewportTop + 'px';
+  fixedViewport.style.height = (layoutHeight - keyboardHeight) + 'px';
 
   let allFixed = document.querySelectorAll('.fixed');
   for (let fixed of allFixed) {
-    let offset = useUnzoomed ? unzoomedTop : scrollTop;
+    let offset = useUnzoomed ? fixedViewportTop : scrollTop;
     if (fixed.classList.contains('bottom')) {
       offset += (layoutHeight - (useUnzoomed ? keyboardHeight : 0) - fixed.clientHeight);
     }

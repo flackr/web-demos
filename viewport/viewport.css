@@ -63,7 +63,7 @@ html {
 
 .sidebar {
   top: var(--header-height);
-  height: calc(var(--vh) - var(--header-height) - var(--footer-height));
+  height: calc(var(--fixed-100pct) - var(--header-height) - var(--footer-height));
   width: var(--sidebar-width);
   background: rgba(127, 127, 180, 0.8);
 }
@@ -82,7 +82,7 @@ input:focus {
   border: 5px solid #77f;
 }
 
-#layout, #visual, #visual-nozoom {
+#layout, #visual, #fixed-viewport {
   position: absolute;
   border: 3px solid currentColor;
   margin-top: -3px;
@@ -95,7 +95,7 @@ input:focus {
 .visual {
   color: red;
 }
-.unzoomed {
+.fixed-viewport {
   color: green;
 }
 

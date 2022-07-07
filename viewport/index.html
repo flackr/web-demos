@@ -7,7 +7,7 @@
   </head>
   <body>
     <h1>Viewport demo</h1>
-    <p>Below is an interactive phone screen, and the corresponding <span class="layout">layout viewport</span>, <span class="visual">visual viewport</span> and <span class="unzoomed">unzoomed visual viewport</span> illustrated to the right. You can zoom with the mouse wheel and click and drag to simulate scrolling.</p>
+    <p>Below is an interactive phone screen, and the corresponding <span class="layout">layout viewport</span>, <span class="visual">visual viewport</span> and <span class="fixed-viewport">fixed viewport</span> illustrated to the right. You can zoom with the mouse wheel and click and drag to simulate scrolling.</p>
     <div class="flex">
       <div class="phone">
         <div class="screen">
@@ -30,7 +30,7 @@
             <p>The layout viewport is the size to which layout takes place. Fixed position objects are fixed to the edges of this viewport. This viewport scrolls (moves down) when you scroll the page.</p>
             <h4>Visual viewport</h4>
             <p>The visual viewport is the content which is currently being viewed by the user. As the user pinch zooms this viewport becomes smaller and pans around within the layout viewport. When the visual viewport reaches the layout viewport edge then the layout viewport can be scrolled to view more content.</p>
-            <h4>Unzoomed visual viewport</h4>
+            <h4>Fixed visual viewport</h4>
             <p>This is a hypothetical new viewport which could be used for positioning fixed position elements. In most cases it is equal to the layout viewport except when an overlay keyboard is shown which shrinks the visual viewport but not the layout viewport.</p>
             <h3>Scrollable content</h3>
             <p>It's important to ensure that the content is scrollable so that you can see the difference between the visual viewport and the layout viewport.</p>
@@ -43,10 +43,14 @@
         <div class="content"></div>
         <div id="layout" class="layout"></div>
         <div id="visual" class="visual"></div>
-        <div id="visual-nozoom" class="unzoomed"></div>
+        <div id="fixed-viewport" class="fixed-viewport"></div>
       </div>
     </div>
     <h1>Options</h1>
-    <p><input type="checkbox" id="unzoomed" checked> Use unzoomed visual viewport.</p>
+    <p>Behavior: <select id="behavior">
+      <option value="safari">Safari / ChromeOS</option>
+      <option value="android">Android</option>
+      <option value="fixed-viewport">Fixed viewport adjusts for keyboard</option>
+    </select></p>
   </body>
 </html>
