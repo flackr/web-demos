@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sticky header with input</title>
+    <style>
+      html {
+        margin: 0;
+        scroll-padding-top: 51px;
+      }
+      body {
+        background: gray;
+      }
+      .main {
+        width: 700px;
+        margin: 0 auto;
+        padding: 8px;
+        background: white;
+      }
+      .header {
+        position: sticky;
+        top: 0;
+        background: #ddd;
+        height: 30px;
+        padding: 10px;
+        margin: 0 -8px;
+        border-top: 1px solid gray;
+        box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.5);
+      }
+      .comment {
+        border-bottom: 1px solid gray;
+      }
+    </style>
+    <script>
+      function init() {
+        let comments = document.querySelector('#comments');
+        for (let i = 0; i < 50; i++) {
+          let comment = document.createElement('div');
+          comment.className = 'comment';
+          comment.innerHTML = `<p><a id="c${i}" href="#c${i}">Comment #${i}</a></p><p>This is comment #${i}. Click on the link to get an anchor link to this comment.</p>`;
+          comments.appendChild(comment);
+        }
+      }
+      document.addEventListener('DOMContentLoaded', init);
+    </script>
+  </head>
+  <body>
+    <div class="main">
+      <h1>Sticky header with input</h1>
+      <p>This page shows an example of a sticky header with an input - a common pattern for lists of items with an option to search or filter.</p>
+      <div>
+        <div class="header"><input placeholder="Search text"><button>Search</button></div>
+        <div id="comments"></div>
+      </div>
+    </div>
+  </body>
+</html>
