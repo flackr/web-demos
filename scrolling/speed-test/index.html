@@ -7,7 +7,7 @@
         position: fixed;
         top: 50px;
         left: 50px;
-        height: 50px;
+        height: 100px;
         width: 250px;
         background: rgba(255, 255, 255, 0.8);
         border: 1px solid black;
@@ -20,13 +20,27 @@
       let rafTimer = null;
       let scrollTop = document.scrollingElement.scrollTop;
       function init() {
-        let p = [].slice.call(document.querySelectorAll('p'));
-        for (let i = 0; i < 25; i++) {
+        let p = [].slice.call(document.querySelectorAll('body > p'));
+        for (let i = 0; i < 50; i++) {
           for (let src of p) {
             let clone = src.cloneNode(true);
             document.body.appendChild(clone);
           }
         }
+        document.querySelector('#scroll-top').addEventListener('click', () => {
+          window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+          });
+        });
+        document.querySelector('#scroll-bottom').addEventListener('click', () => {
+          window.scrollTo({
+            top: 9999999999,
+            left: 0,
+            behavior: 'smooth'
+          });
+        });
       }
       document.addEventListener('DOMContentLoaded', init);
 
@@ -45,20 +59,26 @@
 
       function countRafs() {
         idleRafs += 1;
-        if (idleRafs < 5) {
+        if (idleRafs < 10) {
           rafTimer = requestAnimationFrame(countRafs);
           return;
         }
         rafTimer = null;
         let scrollTime = scrollEnd.time - scrollStart.time;
-        document.querySelector('#info').textContent = `Scrolled ${Math.abs(scrollEnd.pos - scrollStart.pos)} px in ${Math.round(scrollTime)} ms`;
+        document.querySelector('#details').textContent = `Scrolled ${Math.abs(scrollEnd.pos - scrollStart.pos)} px in ${Math.round(scrollTime)} ms`;
         scrollStart = {};
       }
 
     </script>
   </head>
   <body>
-    <div id="info"></div>
+    <div id="info">
+      <p id="details"></p>
+      <p>
+        <button id="scroll-top">Scroll to top</button>
+        <button id="scroll-bottom">Scroll to bottom</button>
+      </p>
+    </div>
     <h1>Scrolling speed test</h1>
     <h3>About</h3>
     <p>This is a scrolling speed test. Every scroll will measure the total time between the first and the last scroll event and the total distance scrolled and display a summary.</p>
