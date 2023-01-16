@@ -24,6 +24,20 @@
         border-radius: 4px;
         user-select: none;
       }
+
+      #log {
+        background: #444;
+        position: fixed;
+        width: 150px;
+        height: 150px;
+        bottom: 5px;
+        right: 5px;
+        margin: 8px;
+        border: 2px solid black;
+        border-radius: 4px;
+        overflow: auto;
+        white-space: pre;
+      }
     </style>
   </head>
   <body>
@@ -32,6 +46,7 @@
     <p>Spoiler: Neither of these work, but should they?</p>
     <div class="target contextmenudrag">Drags on contextmenu (i.e. longpress)</div>
     <div draggable="true" class="target dragstartdrag">Drags on dragstart</div>
+    <div id="log">Events logged here ^</div>
   </body>
   <script>
   function init() {
@@ -47,15 +62,18 @@
     let pos = [0, 0];
     let lastEvent = null;
     target.addEventListener('contextmenu', (evt) => {
+      log(evt);
       evt.preventDefault();
       lastEvent = [evt.clientX, evt.clientY];
     });
     target.addEventListener('pointerdown', (evt) => {
+      log(evt);
       lastEvent = null;
     });
     target.addEventListener('pointermove', (evt) => {
       if (!lastEvent)
         return;
+      log(evt);
       let cur = [evt.clientX, evt.clientY];
       pos[0] += cur[0] - lastEvent[0];
       pos[1] += cur[1] - lastEvent[1];
@@ -67,6 +85,7 @@
     target.addEventListener('pointerup', (evt) => {
       if (!lastEvent)
         return;
+      log(evt);
       lastEvent = null;
       evt.preventDefault();
     });
@@ -78,11 +97,12 @@
       // Pass an empty drag image.
       var img = document.createElement('img');
       img.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+      log(evt);
       evt.dataTransfer.setDragImage(img, 0, 0);
       lastEvent = [evt.clientX, evt.clientY];
-      console.log(evt);
     });
     target.addEventListener('drag', (evt) => {
+      log(evt);
       if (!lastEvent)
         return;
       // Why do we get this?
@@ -95,19 +115,26 @@
       target.style.transform = `translate(${pos[0]}px, ${pos[1]}px)`;
 
       evt.preventDefault();
-      console.log(evt);
-
     });
     target.addEventListener('dragend', (evt) => {
       if (!lastEvent)
         return;
+      log(evt);
       lastEvent = null;
       evt.preventDefault();
-      console.log(evt);
-
     });
   }
 
+  const MAX_EVENTS=5;
+  let events = [];
+  function log(evt) {
+    console.log(evt);
+    let logEl = document.getElementById('log');
+    if (events.length >= MAX_EVENTS)
+      events.splice(MAX_EVENTS, events.length);
+    events.splice(0,0,`${evt.type} at ${Math.round(evt.clientX)}, ${Math.round(evt.clientY)}`);
+    logEl.textContent = events.join('\n');
+  }
   init();
   </script>
 </html>
