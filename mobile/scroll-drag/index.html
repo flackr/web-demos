@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        color: white;
+        background: repeating-linear-gradient(
+            45deg,
+            #606d7c,
+            #606d7c 10px,
+            #465298 10px,
+            #465298 20px
+          );
+        height: 300vh;
+      }
+      .target {
+        background: #444;
+        position: relative;
+        width: 150px;
+        height: 150px;
+        margin: 8px;
+        border: 2px solid black;
+        border-radius: 4px;
+        user-select: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Drag and scroll disambiguation</h1>
+    <p>On mobile dragging is an overloaded operation. This demo explores two ways it should be possible to drag on long press and not interfere with scrolling on an immediate drag.</p>
+    <p>Spoiler: Neither of these work, but should they?</p>
+    <div class="target contextmenudrag">Drags on contextmenu (i.e. longpress)</div>
+    <div draggable="true" class="target dragstartdrag">Drags on dragstart</div>
+  </body>
+  <script>
+  function init() {
+    let targets = document.querySelectorAll('.contextmenudrag');
+    for (let i = 0; i < targets.length; i++)
+      setupContextMenuDragListeners(targets[i]);
+    targets = document.querySelectorAll('.dragstartdrag');
+    for (let i = 0; i < targets.length; i++)
+      setupDragStartDragListeners(targets[i]);
+  }
+
+  function setupContextMenuDragListeners(target) {
+    let pos = [0, 0];
+    let lastEvent = null;
+    target.addEventListener('contextmenu', (evt) => {
+      evt.preventDefault();
+      lastEvent = [evt.clientX, evt.clientY];
+    });
+    target.addEventListener('pointerdown', (evt) => {
+      lastEvent = null;
+    });
+    target.addEventListener('pointermove', (evt) => {
+      if (!lastEvent)
+        return;
+      let cur = [evt.clientX, evt.clientY];
+      pos[0] += cur[0] - lastEvent[0];
+      pos[1] += cur[1] - lastEvent[1];
+      lastEvent = cur;
+      target.style.transform = `translate(${pos[0]}px, ${pos[1]}px)`;
+
+      evt.preventDefault();
+    });
+    target.addEventListener('pointerup', (evt) => {
+      if (!lastEvent)
+        return;
+      lastEvent = null;
+      evt.preventDefault();
+    });
+  }
+  function setupDragStartDragListeners(target) {
+    let pos = [0, 0];
+    let lastEvent = null;
+    target.addEventListener('dragstart', (evt) => {
+      // Pass an empty drag image.
+      var img = document.createElement('img');
+      img.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+      evt.dataTransfer.setDragImage(img, 0, 0);
+      lastEvent = [evt.clientX, evt.clientY];
+      console.log(evt);
+    });
+    target.addEventListener('drag', (evt) => {
+      if (!lastEvent)
+        return;
+      // Why do we get this?
+      if (evt.clientX == 0 && evt.clientY == 0)
+        return;
+      let cur = [evt.clientX, evt.clientY];
+      pos[0] += cur[0] - lastEvent[0];
+      pos[1] += cur[1] - lastEvent[1];
+      lastEvent = cur;
+      target.style.transform = `translate(${pos[0]}px, ${pos[1]}px)`;
+
+      evt.preventDefault();
+      console.log(evt);
+
+    });
+    target.addEventListener('dragend', (evt) => {
+      if (!lastEvent)
+        return;
+      lastEvent = null;
+      evt.preventDefault();
+      console.log(evt);
+
+    });
+  }
+
+  init();
+  </script>
+</html>
