@@ -16,6 +16,10 @@
       body.disable-scroll {
         overflow: hidden;
       }
+      .dragging {
+        box-shadow: 5px 5px 10px black;
+        translate: -5px -5px;
+      }
       .spacer {
         height: 300vh;
       }
@@ -29,6 +33,7 @@
         border-radius: 4px;
         -webkit-user-select: none;
         user-select: none;
+        transition: box-shadow 200ms, translate 200ms;
       }
 
       #log {
@@ -106,6 +111,13 @@
     let lastEvent = null;
     let downTime = null;
     const LONGPRESS_TIMEOUT = 500;
+    let longpressTimer = 0;
+    let cancelTimer = function() {
+      if (!longpressTimer)
+        return;
+      clearTimeout(longpressTimer);
+      longpressTimer = 0;
+    }
     target.addEventListener('contextmenu', (evt) => {
       log(evt);
       evt.preventDefault();
@@ -114,9 +126,14 @@
       log(evt);
       lastEvent = [evt.touches[0].clientX, evt.touches[0].clientY];
       downTime = evt.timeStamp;
+      longpressTimer = setTimeout(() => {
+        target.classList.add('dragging');
+        longpressTimer = 0;
+      }, LONGPRESS_TIMEOUT);
     });
     window.addEventListener('scroll', () => {
       // Scrolling cancels dragging.
+      cancelTimer();
       lastEvent = null;
     });
     target.addEventListener('touchmove', (evt) => {
@@ -133,10 +150,12 @@
       evt.preventDefault();
     });
     target.addEventListener('touchend', (evt) => {
+      log(evt);
+      cancelTimer();
       if (!lastEvent)
         return;
-      log(evt);
       lastEvent = null;
+      target.classList.remove('dragging');
       evt.preventDefault();
     });
   }
@@ -183,7 +202,7 @@
     if (events.length >= MAX_EVENTS)
       events.splice(MAX_EVENTS, events.length);
     let coords = [evt.clientX, evt.clientY];
-    if (evt.type.startsWith('touch'))
+    if (evt.type.startsWith('touch') && evt.touches.length > 0)
       coords = [evt.touches[0].clientX, evt.touches[0].clientY];
     events.splice(0,0,`${evt.type} at ${Math.round(coords[0])}, ${Math.round(coords[1])}`);
     logEl.textContent = events.join('\n');
