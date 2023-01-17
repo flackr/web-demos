@@ -19,6 +19,7 @@
       .dragging {
         box-shadow: 5px 5px 10px black;
         translate: -5px -5px;
+        z-index: 1;
       }
       .spacer {
         height: 300vh;
@@ -33,7 +34,7 @@
         border-radius: 4px;
         -webkit-user-select: none;
         user-select: none;
-        transition: box-shadow 200ms, translate 200ms;
+        transition: box-shadow 100ms, translate 100ms, z-index 100ms;
       }
 
       #log {
@@ -81,6 +82,7 @@
       log(evt);
       evt.preventDefault();
       lastEvent = [evt.clientX, evt.clientY];
+      target.classList.add('dragging');
     });
     target.addEventListener('touchstart', (evt) => {
       log(evt);
@@ -103,6 +105,7 @@
         return;
       log(evt);
       lastEvent = null;
+      target.classList.remove('dragging');
       evt.preventDefault();
     });
   }
@@ -169,6 +172,7 @@
       log(evt);
       evt.dataTransfer.setDragImage(img, 0, 0);
       lastEvent = [evt.clientX, evt.clientY];
+      target.classList.add('dragging');
     });
     target.addEventListener('drag', (evt) => {
       log(evt);
@@ -191,6 +195,7 @@
       log(evt);
       lastEvent = null;
       evt.preventDefault();
+      target.classList.remove('dragging');
     });
   }
 
