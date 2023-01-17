@@ -12,6 +12,11 @@
             #465298 10px,
             #465298 20px
           );
+      }
+      body.disable-scroll {
+        overflow: hidden;
+      }
+      .spacer {
         height: 300vh;
       }
       .target {
@@ -45,15 +50,20 @@
     <h1>Drag and scroll disambiguation</h1>
     <p>On mobile dragging is an overloaded operation. This demo explores two ways it should be possible to drag on long press and not interfere with scrolling on an immediate drag.</p>
     <p>Spoiler: Neither of these work, but should they?</p>
+    <div class="target timeoutmenudrag">Drags after timeout</div>
     <div class="target contextmenudrag">Drags on contextmenu (i.e. longpress)</div>
     <div draggable="true" class="target dragstartdrag">Drags on dragstart</div>
     <div id="log">Events logged here ^</div>
+    <div class="spacer"></div>
   </body>
   <script>
   function init() {
     let targets = document.querySelectorAll('.contextmenudrag');
     for (let i = 0; i < targets.length; i++)
       setupContextMenuDragListeners(targets[i]);
+    targets = document.querySelectorAll('.timeoutmenudrag');
+    for (let i = 0; i < targets.length; i++)
+      setupTouchMenuDragListeners(targets[i]);
     targets = document.querySelectorAll('.dragstartdrag');
     for (let i = 0; i < targets.length; i++)
       setupDragStartDragListeners(targets[i]);
@@ -67,15 +77,15 @@
       evt.preventDefault();
       lastEvent = [evt.clientX, evt.clientY];
     });
-    target.addEventListener('pointerdown', (evt) => {
+    target.addEventListener('touchstart', (evt) => {
       log(evt);
-      lastEvent = null;
     });
-    target.addEventListener('pointermove', (evt) => {
-      if (!lastEvent)
-        return;
+    target.addEventListener('touchmove', (evt) => {
       log(evt);
-      let cur = [evt.clientX, evt.clientY];
+      if (!lastEvent) {
+        return;
+      }
+      let cur = [evt.touches[0].clientX, evt.touches[0].clientY];
       pos[0] += cur[0] - lastEvent[0];
       pos[1] += cur[1] - lastEvent[1];
       lastEvent = cur;
@@ -83,7 +93,46 @@
 
       evt.preventDefault();
     });
-    target.addEventListener('pointerup', (evt) => {
+    target.addEventListener('touchend', (evt) => {
+      if (!lastEvent)
+        return;
+      log(evt);
+      lastEvent = null;
+      evt.preventDefault();
+    });
+  }
+  function setupTouchMenuDragListeners(target) {
+    let pos = [0, 0];
+    let lastEvent = null;
+    let downTime = null;
+    const LONGPRESS_TIMEOUT = 500;
+    target.addEventListener('contextmenu', (evt) => {
+      log(evt);
+      evt.preventDefault();
+    });
+    target.addEventListener('touchstart', (evt) => {
+      log(evt);
+      lastEvent = [evt.touches[0].clientX, evt.touches[0].clientY];
+      downTime = evt.timeStamp;
+    });
+    window.addEventListener('scroll', () => {
+      // Scrolling cancels dragging.
+      lastEvent = null;
+    });
+    target.addEventListener('touchmove', (evt) => {
+      log(evt);
+      if (!lastEvent || evt.timeStamp - downTime < LONGPRESS_TIMEOUT) {
+        return;
+      }
+      let cur = [evt.touches[0].clientX, evt.touches[0].clientY];
+      pos[0] += cur[0] - lastEvent[0];
+      pos[1] += cur[1] - lastEvent[1];
+      lastEvent = cur;
+      target.style.transform = `translate(${pos[0]}px, ${pos[1]}px)`;
+
+      evt.preventDefault();
+    });
+    target.addEventListener('touchend', (evt) => {
       if (!lastEvent)
         return;
       log(evt);
@@ -133,7 +182,10 @@
     let logEl = document.getElementById('log');
     if (events.length >= MAX_EVENTS)
       events.splice(MAX_EVENTS, events.length);
-    events.splice(0,0,`${evt.type} at ${Math.round(evt.clientX)}, ${Math.round(evt.clientY)}`);
+    let coords = [evt.clientX, evt.clientY];
+    if (evt.type.startsWith('touch'))
+      coords = [evt.touches[0].clientX, evt.touches[0].clientY];
+    events.splice(0,0,`${Math.round(evt.timeStamp)} ${evt.type} at ${Math.round(coords[0])}, ${Math.round(coords[1])}`);
     logEl.textContent = events.join('\n');
   }
   init();
