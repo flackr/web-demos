@@ -34,7 +34,7 @@
       #log {
         background: #444;
         position: fixed;
-        width: 150px;
+        width: 170px;
         height: 150px;
         bottom: 5px;
         right: 5px;
@@ -185,7 +185,7 @@
     let coords = [evt.clientX, evt.clientY];
     if (evt.type.startsWith('touch'))
       coords = [evt.touches[0].clientX, evt.touches[0].clientY];
-    events.splice(0,0,`${Math.round(evt.timeStamp)} ${evt.type} at ${Math.round(coords[0])}, ${Math.round(coords[1])}`);
+    events.splice(0,0,`${evt.type} at ${Math.round(coords[0])}, ${Math.round(coords[1])}`);
     logEl.textContent = events.join('\n');
   }
   init();
