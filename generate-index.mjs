@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import {readdir} from 'node:fs/promises'
 import {join} from 'node:path';
+import {execSync} from 'node:child_process'
 
 // thx https://stackoverflow.com/a/71166133/89484
 const deepReadDir = async (dirPath) => await Promise.all(
@@ -37,7 +38,7 @@ console.log('Wrote:', `${process.cwd()}/index.html`);
 if(process.argv.includes('--validate')) {
   const status = execSync('git status --porcelain', {encoding:'utf8'})
   if(status.trim().length > 0) {
-    console.error('ERROR: Unexpected git diff after validating index')
+    console.error('ERROR: Unexpected git diff after validating index:', status)
     console.error('Make sure you have run `node generate-index.mjs` to update the index page.')
     process.exit(1)
   }
