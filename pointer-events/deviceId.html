@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      #log { white-space: pre; }
+      html, body { height: 100%; }
+    </style>
+  </head>
+  <body>
+    <div id="log"></div>
+  </body>
+  <script>
+    function logEvent(evt) {
+      let el = document.getElementById('log');
+      el.textContent = `${evt.type} pointerId=${evt.pointerId} deviceId=${evt.deviceId}\n` + el.textContent;
+      evt.preventDefault();
+    }
+    for (let type of ['pointerdown', 'pointermove', 'pointerup', 'pointercancel']) {
+      document.body.addEventListener(type, logEvent);
+    }
+  </script>
+</html>
