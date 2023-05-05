@@ -1,0 +1,94 @@
+html {
+  scroll-snap-type: y mandatory;
+}
+
+#top {
+  scroll-snap-align: start;
+}
+
+#search {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  height: 32px;
+  border-radius: 5px;
+  z-index: 1;
+}
+
+#map {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('images/map.jpg');
+  background-size: cover;
+  touch-action: none; /* May have map panning behavior. */
+}
+
+@keyframes expand-container {
+  from {
+    padding: 0 20px;
+  }
+  to {
+    padding: 0 0;
+  }
+}
+
+#details {
+  scroll-snap-align: start;
+  position: absolute;
+  top: 80vh;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 20px;
+  z-index: 1;
+  animation: expand-container auto both linear;
+  animation-timeline: details;
+  animation-range: entry 20% entry 80%;
+  view-timeline-name: details;
+}
+
+@keyframes expand-inner {
+  from {
+    padding: 8px 8px;
+    border-radius: 15px;
+  }
+  to {
+    padding: 8px 30px;
+    border-radius: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+  }
+}
+
+#details > div {
+  background: white;
+  box-sizing: border-box;
+  width: 100%;
+  border: 2px solid gray;
+  border-radius: 15px;
+  box-shadow: 1px 1px 5px black;
+  padding: 8px 8px;
+  animation: expand-inner auto both linear;
+  animation-timeline: details;
+  animation-range: entry 20% entry 80%;
+
+}
+
+#details > div > div {
+  padding-left: 100px;
+  position: relative;
+  min-height: 100px;
+}
+
+.icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 80px;
+  height: 80px;
+  background-size: cover;
+}
