@@ -22,9 +22,15 @@ html {
   left: 0;
   width: 100%;
   height: 100%;
+  overflow: auto;
+  overscroll-behavior: none;
+}
+
+.big {
+  width: 300vw;
+  height: 300vh;
   background: url('images/map.jpg');
   background-size: cover;
-  touch-action: none; /* May have map panning behavior. */
 }
 
 @keyframes expand-container {
