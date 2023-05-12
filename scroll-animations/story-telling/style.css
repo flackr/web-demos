@@ -49,8 +49,6 @@ select {
 
 .feature > div {
   position: absolute;
-  will-change: transform;
-  will-change: opacity;
 }
 
 .perspective {
@@ -118,7 +116,6 @@ select {
 
 .screen {
   background: url('https://doodleipsum.com/394x700/hand-drawn?bg=63C8D9&i=9b12378de637a8663721fab14cdb9dbe');
-  will-change: transform;
 }
 
 .phone .face,
