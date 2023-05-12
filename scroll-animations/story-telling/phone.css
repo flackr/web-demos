@@ -1,0 +1,25 @@
+body {
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  gap: var(--size-8);
+  padding-block: var(--size-12);
+}
+
+body > section {
+  display: grid;
+  gap: var(--size-3);
+}
+
+.phone-view {
+  width: 360px;
+  height: 640px;
+  border-radius: var(--radius-3);
+  box-shadow: var(--shadow-5);
+  background: var(--surface-2);
+  overflow: auto;
+  position: relative;
+  padding: var(--size-3);
+  display: grid;
+  gap: var(--size-3);
+}

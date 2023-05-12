@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/open-props">
+    <link rel="stylesheet" href="https://unpkg.com/open-props/normalize.min.css">
+    <link rel="stylesheet" href="phone.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="animations.css">
+  </head>
+  <body>
+    <section>
+      <div>
+        <p>This is an example of scroll-driven story telling implemented using the <a href="https://drafts.csswg.org/scroll-animations-1/">scroll-animations-1</a> specification.</p>
+      </div>
+    </section>
+    <div class="phone-view">
+      <h3>The CSS phone</h3>
+      <p>The CSS phone is built of high quality &lt;div&gt; elements.</p>
+      <h3>Features</h3>
+      <div class="product-view">
+        <div class="sticky-view">
+          <div class="feature">
+            <!-- Overlapping features -->
+            <div class="feature-text feature1">
+              <h3>Display</h3>
+              <p>With a 4px border-radius and sRGB color space the CSS phone's display can show rich content.</p>
+            </div>
+            <div class="line line1"></div>
+            <div class="feature-text feature2">
+              <h3>Camera</h3>
+              <p>With getUserMedia(), you could even be showing your face on screen!</p>
+            </div>
+            <div class="line line2"></div>
+            <div class="feature-text feature3">
+              <h3>Speakers</h3>
+              <p>Enjoy your favourite music using the latest Web Audio API features!</p>
+            </div>
+            <div class="line line3"></div>
+          </div>
+          <div class="perspective">
+            <div class="phone">
+              <div class="face">
+                <div class="bar"><div class="camera"></div></div>
+                <div class="screen"></div>
+                <div class="bar"><div class="speaker"></div><div class="flex"></div><div class="speaker"></div></div>
+              </div>
+            <div class="side"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h1>Demo</h1>
+      <p>
+        This demo is based on the typical scroll linked animations present on many
+        product pages such as the <a href="https://www.apple.com/ca/iphone-13-pro/">iPhone 13 Pro</a>
+        or <a href="https://store.google.com/product/pixel_6_pro">Pixel 6 Pro</a> product pages.
+      </p>
+    </div>
+  </body>
+</html>

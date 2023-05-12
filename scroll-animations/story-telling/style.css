@@ -1,0 +1,135 @@
+select {
+  position: relative;
+  z-index: 50;
+  margin-block-start: var(--size-3);
+}
+
+.product-view {
+  height: 2000px;
+}
+
+.feature {
+  height: 150px;
+  position: relative;
+}
+
+.feature3 {
+  display: grid;
+  gap: var(--size-2);
+}
+
+.line {
+  background: currentColor;
+  width: 1px;
+  z-index: 1;
+}
+
+.line1 {
+  left: 150px;
+  top: 120px;
+  height: 80px;
+}
+
+.line2 {
+  height: 80px;
+  left: 181px;
+  top: 91px;
+}
+
+.line3 {
+  height: 418px;
+  left: 232px;
+  top: 100px;
+}
+
+.sticky-view {
+  position: sticky;
+  top: 0;
+}
+
+.feature > div {
+  position: absolute;
+  will-change: transform;
+  will-change: opacity;
+}
+
+.perspective {
+  perspective: 300px;
+  height: 400px;
+  perspective-origin: 0% 50%;
+}
+
+.phone {
+  position: absolute;
+  left: 30%;
+  transform-style: preserve-3d;
+  transform: rotateY(15deg);
+  transform-origin: center left;
+}
+
+.phone > div {
+  position: absolute;
+}
+
+.phone .face {
+  width: 180px;
+  border: 1px solid #777;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+}
+
+.face .bar {
+  display: flex;
+  height: 10px;
+  padding: 2px;
+  justify-content: stretch;
+}
+
+.face .bar:nth-child(1) {
+  justify-content: center;
+}
+
+.flex {
+  flex: 1;
+}
+
+.camera {
+  width: 8px;
+  height: 8px;
+  border-radius: 100%;
+  border: 1px solid #ccc;
+}
+
+.speaker {
+  width: 28px;
+  height: 8px;
+  border-radius: 5px;
+  border: 1px solid #888;
+}
+
+.face .screen {
+  flex: 1;
+  margin: 0px 5px;
+  border-radius: 4px;
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.screen {
+  background: url('https://doodleipsum.com/394x700/hand-drawn?bg=63C8D9&i=9b12378de637a8663721fab14cdb9dbe');
+  will-change: transform;
+}
+
+.phone .face,
+.phone .side {
+  height: 400px;
+}
+
+.phone .side {
+  transform-origin: top right;
+  transform: rotateY(-90deg);
+  left: -10px;
+  width: 10px;
+  background: #666;
+}

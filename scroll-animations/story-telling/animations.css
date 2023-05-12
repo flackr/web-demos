@@ -1,0 +1,69 @@
+.product-view {
+  view-timeline-name: product-view;
+}
+
+@keyframes bg {
+  0% { background-image: url(https://doodleipsum.com/394x700/hand-drawn?bg=63C8D9&i=9b12378de637a8663721fab14cdb9dbe); }
+  23% { background-image: url(https://doodleipsum.com/394x700/hand-drawn?bg=63C8D9&i=9b12378de637a8663721fab14cdb9dbe); }
+  43% { background-image: url(https://doodleipsum.com/394x700?bg=EB765D&i=166fbaec307d0c16778aa5f001d8787c); }
+  57% { background-image: url(https://doodleipsum.com/394x700?bg=EB765D&i=166fbaec307d0c16778aa5f001d8787c); }
+  77% { background-image: url(https://doodleipsum.com/394x700?bg=EB765D&i=34b1669d12f4f37be2f8fda91b87b784); }
+  100% { background-image: url(https://doodleipsum.com/394x700?bg=EB765D&i=34b1669d12f4f37be2f8fda91b87b784); }
+}
+
+.screen {
+  animation: bg auto both;
+  animation-timeline: product-view;
+  animation-range: contain 0% contain 100%;
+}
+
+@keyframes grow-and-shrink {
+  0% {
+    transform-origin: bottom center;
+    transform: scale(1, 0);
+    opacity: 0;
+  }
+  60% {
+    transform-origin: bottom center;
+    transform: scale(1, 1);
+    opacity: 1;
+  }
+  80% {
+    transform-origin: top center;
+    transform: scale(1, 1);
+    opacity: 1;
+  }
+  100% {
+    transform-origin: top center;
+    transform: scale(1, 0);
+    opacity: 0;
+  }
+}
+
+.line {
+  animation: grow-and-shrink auto both;
+  animation-timeline: product-view;
+}
+
+@keyframes show-and-hide {
+  /* --foo is animated to force the animation onto main due to a bug. */
+  0%   { opacity: 0; transform: translateY(40px); --foo: ''}
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.feature-text {
+  animation: show-and-hide auto both;
+  animation-timeline: product-view;
+}
+
+.line1,.feature1 {
+  animation-range: contain 0% contain 33%;
+}
+.line2,.feature2 {
+  animation-range: contain 33% contain 67%;
+}
+.line3,.feature3 {
+  animation-range: contain 67% contain 100%;
+}
