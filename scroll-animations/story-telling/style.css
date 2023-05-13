@@ -1,3 +1,17 @@
+.unsupported {
+  background: rgba(255,255,127,0.7);
+  color: black;
+  border: 3px solid rgb(160,160,80);
+  border-radius: 10px;
+  padding: 5px;
+}
+
+@supports(view-timeline-name: named-timeline) {
+  .unsupported {
+    display: none;
+  }
+}
+
 select {
   position: relative;
   z-index: 50;
