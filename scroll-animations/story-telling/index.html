@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="phone.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="animations.css">
+    <script>
+      if (location.search == '?composited') {
+        let compositedStylesheet = document.createElement('link');
+        compositedStylesheet.setAttribute('rel', 'stylesheet');
+        compositedStylesheet.setAttribute('href', 'composited.css');
+        document.head.appendChild(compositedStylesheet);
+      }
+    </script>
   </head>
   <body>
     <section>
@@ -47,7 +55,11 @@
             <div class="phone">
               <div class="face">
                 <div class="bar"><div class="camera"></div></div>
-                <div class="screen"></div>
+                <div class="screen">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
                 <div class="bar"><div class="speaker"></div><div class="flex"></div><div class="speaker"></div></div>
               </div>
             <div class="side"></div>

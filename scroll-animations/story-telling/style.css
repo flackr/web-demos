@@ -124,12 +124,32 @@ select {
   flex: 1;
   margin: 0px 5px;
   border-radius: 4px;
+}
+
+.screen {
+  position: relative;
+}
+
+.screen > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
   background-size: cover;
   background-position: 50% 50%;
 }
 
-.screen {
-  background: url('https://doodleipsum.com/394x700/hand-drawn?bg=63C8D9&i=9b12378de637a8663721fab14cdb9dbe');
+.screen > div:nth-child(1) {
+  background-image: url(https://doodleipsum.com/394x700/hand-drawn?bg=63C8D9&i=9b12378de637a8663721fab14cdb9dbe);
+  opacity: 1;
+}
+.screen > div:nth-child(2) {
+  background-image: url(https://doodleipsum.com/394x700?bg=EB765D&i=166fbaec307d0c16778aa5f001d8787c);
+}
+.screen > div:nth-child(3) {
+  background-image: url(https://doodleipsum.com/394x700?bg=EB765D&i=34b1669d12f4f37be2f8fda91b87b784);
 }
 
 .phone .face,

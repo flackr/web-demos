@@ -1,41 +1,80 @@
+/* --foo is animated to force the animation onto main due to a bug. */
+
 .product-view {
   view-timeline-name: product-view;
 }
 
-@keyframes bg {
-  0% { background-image: url(https://doodleipsum.com/394x700/hand-drawn?bg=63C8D9&i=9b12378de637a8663721fab14cdb9dbe); }
-  23% { background-image: url(https://doodleipsum.com/394x700/hand-drawn?bg=63C8D9&i=9b12378de637a8663721fab14cdb9dbe); }
-  43% { background-image: url(https://doodleipsum.com/394x700?bg=EB765D&i=166fbaec307d0c16778aa5f001d8787c); }
-  57% { background-image: url(https://doodleipsum.com/394x700?bg=EB765D&i=166fbaec307d0c16778aa5f001d8787c); }
-  77% { background-image: url(https://doodleipsum.com/394x700?bg=EB765D&i=34b1669d12f4f37be2f8fda91b87b784); }
-  100% { background-image: url(https://doodleipsum.com/394x700?bg=EB765D&i=34b1669d12f4f37be2f8fda91b87b784); }
+@keyframes bg2 {
+  0% { opacity: 0; --foo: '';}
+  23% { opacity: 0; }
+  43% { opacity: 1; }
+  100% { opacity: 1; }
+}
+@keyframes bg3 {
+  0% { opacity: 0; --foo: '';}
+  57% { opacity: 0; }
+  77% { opacity: 1; }
+  100% { opacity: 1; }
+}
+@keyframes composited-bg2 {
+  0% { opacity: 0; }
+  23% { opacity: 0; }
+  43% { opacity: 1; }
+  100% { opacity: 1; }
+}
+@keyframes composited-bg3 {
+  0% { opacity: 0; }
+  57% { opacity: 0; }
+  77% { opacity: 1; }
+  100% { opacity: 1; }
 }
 
-.screen {
-  animation: bg auto both;
+.screen > div {
+  animation: auto both;
   animation-timeline: product-view;
   animation-range: contain 0% contain 100%;
+}
+.screen > div:nth-child(2) {
+  animation-name: bg2;
+}
+.screen > div:nth-child(3) {
+  animation-name: bg3;
 }
 
 @keyframes grow-and-shrink {
   0% {
-    transform-origin: bottom center;
-    transform: scale(1, 0);
+    --foo: '';
+    transform: translateY(50%) scale(1, 0) translateY(-50%);
     opacity: 0;
   }
   60% {
-    transform-origin: bottom center;
-    transform: scale(1, 1);
+    transform: translateY(50%) scale(1, 1) translateY(-50%);
     opacity: 1;
   }
   80% {
-    transform-origin: top center;
-    transform: scale(1, 1);
+    transform: translateY(-50%) scale(1, 1) translateY(50%);
     opacity: 1;
   }
   100% {
-    transform-origin: top center;
-    transform: scale(1, 0);
+    transform: translateY(-50%) scale(1, 0) translateY(50%);
+    opacity: 0;
+  }
+}
+@keyframes composited-grow-and-shrink {
+  0% {
+    transform: translateY(50%) scale(1, 0) translateY(-50%);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(50%) scale(1, 1) translateY(-50%);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(-50%) scale(1, 1) translateY(50%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-50%) scale(1, 0) translateY(50%);
     opacity: 0;
   }
 }
@@ -45,9 +84,14 @@
   animation-timeline: product-view;
 }
 
-/* --foo is animated to force the animation onto main due to a bug. */
 @keyframes show-and-hide {
   0%   { opacity: 0; transform: translateY(40px); --foo: ''}
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes composited-show-and-hide {
+  0%   { opacity: 0; transform: translateY(40px); }
   20%  { opacity: 1; }
   80%  { opacity: 1; }
   100% { opacity: 0; }
