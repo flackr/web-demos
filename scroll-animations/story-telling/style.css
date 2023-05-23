@@ -6,7 +6,7 @@
   padding: 5px;
 }
 
-@supports(view-timeline-name: named-timeline) {
+@supports(view-timeline-name: --named-timeline) {
   .unsupported {
     display: none;
   }

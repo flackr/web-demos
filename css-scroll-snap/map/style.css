@@ -52,9 +52,9 @@ html {
   padding: 0 20px;
   z-index: 1;
   animation: expand-container auto both linear;
-  animation-timeline: details;
+  animation-timeline: --details;
   animation-range: entry 20% entry 80%;
-  view-timeline-name: details;
+  view-timeline-name: --details;
 }
 
 @keyframes expand-inner {
@@ -79,7 +79,7 @@ html {
   box-shadow: 1px 1px 5px black;
   padding: 8px 8px;
   animation: expand-inner auto both linear;
-  animation-timeline: details;
+  animation-timeline: --details;
   animation-range: entry 20% entry 80%;
 
 }

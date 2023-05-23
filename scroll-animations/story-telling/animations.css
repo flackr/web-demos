@@ -1,28 +1,16 @@
 /* --foo is animated to force the animation onto main due to a bug. */
 
 .product-view {
-  view-timeline-name: product-view;
+  view-timeline-name: --product-view;
 }
 
 @keyframes bg2 {
-  0% { opacity: 0; --foo: '';}
-  23% { opacity: 0; }
-  43% { opacity: 1; }
-  100% { opacity: 1; }
-}
-@keyframes bg3 {
-  0% { opacity: 0; --foo: '';}
-  57% { opacity: 0; }
-  77% { opacity: 1; }
-  100% { opacity: 1; }
-}
-@keyframes composited-bg2 {
   0% { opacity: 0; }
   23% { opacity: 0; }
   43% { opacity: 1; }
   100% { opacity: 1; }
 }
-@keyframes composited-bg3 {
+@keyframes bg3 {
   0% { opacity: 0; }
   57% { opacity: 0; }
   77% { opacity: 1; }
@@ -31,7 +19,7 @@
 
 .screen > div {
   animation: auto both;
-  animation-timeline: product-view;
+  animation-timeline: --product-view;
   animation-range: contain 0% contain 100%;
 }
 .screen > div:nth-child(2) {
@@ -42,25 +30,6 @@
 }
 
 @keyframes grow-and-shrink {
-  0% {
-    --foo: '';
-    transform: translateY(50%) scale(1, 0) translateY(-50%);
-    opacity: 0;
-  }
-  60% {
-    transform: translateY(50%) scale(1, 1) translateY(-50%);
-    opacity: 1;
-  }
-  80% {
-    transform: translateY(-50%) scale(1, 1) translateY(50%);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-50%) scale(1, 0) translateY(50%);
-    opacity: 0;
-  }
-}
-@keyframes composited-grow-and-shrink {
   0% {
     transform: translateY(50%) scale(1, 0) translateY(-50%);
     opacity: 0;
@@ -81,16 +50,10 @@
 
 .line {
   animation: grow-and-shrink auto both;
-  animation-timeline: product-view;
+  animation-timeline: --product-view;
 }
 
 @keyframes show-and-hide {
-  0%   { opacity: 0; transform: translateY(40px); --foo: ''}
-  20%  { opacity: 1; }
-  80%  { opacity: 1; }
-  100% { opacity: 0; }
-}
-@keyframes composited-show-and-hide {
   0%   { opacity: 0; transform: translateY(40px); }
   20%  { opacity: 1; }
   80%  { opacity: 1; }
@@ -99,7 +62,7 @@
 
 .feature-text {
   animation: show-and-hide auto both;
-  animation-timeline: product-view;
+  animation-timeline: --product-view;
 }
 
 .line1,.feature1 {
