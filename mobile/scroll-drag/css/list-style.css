@@ -1,0 +1,16 @@
+ul {
+    border: 2px solid gray;
+    padding: 0;
+}
+
+li {
+    border: 1px solid lightgray;
+    list-style: none;
+    padding: 20px 10px;
+    font-size: larger;
+    transition: transform 200ms;
+}
+
+li:hover {
+    background: rgb(255, 255, 200);
+}
