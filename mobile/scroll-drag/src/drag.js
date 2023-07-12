@@ -1,83 +1,140 @@
-class EventListenerRegistry {
-  constructor() {
-    this.listeners = new Map();
-  }
-
-  listen(obj, eventName, listener) {
-    if (!this.listeners.has(obj)) {
-      this.listeners[obj] = [];
-    }
-    this.listeners[obj].push([eventName, listener]);
-    obj.addEventListener(eventName, listener);
-  }
-
-  cleanup() {
-    for (let obj of this.listeners.keys()) {
-      for (const [eventName, listener] of this.listeners[obj]) {
-        obj.removeEventListener(eventName, listener);
-      }
-    }
-    this.listeners = new Map();
-  }
-}
+let dragged = null;
 
 // Given a list element, make the items of the list draggable.
 function setupDraggableList(list) {
-  let items = list.children;
-  for (let item of items) {
-    item.setAttribute('draggable', true);
-    item.setAttribute('contenteditable', true);
-    item.addEventListener('dragstart', (evt) => {
-      let registry = new EventListenerRegistry();
-      const height = item.clientHeight;
-      let index = -1;
-      let target = -1;
-      let makeSpace = function() {
-        // All items that are before the target slide forward
-        for (let i = 0; i < items.length; ++i) {
-          if (i < index) {
-            items[i].style.transform = (i < target) ? '' : `translateY(${height}px)`;
-          } else if (i > index) {
-            items[i].style.transform = (i > target) ? '' : `translateY(${-height}px)`;
-          }
-        }
-      };
-      requestAnimationFrame(() => {
-        item.style.opacity = 0;
-      });
+  let index = -1;
+  let target = -1;
+  let cleanup = (options) => {
+    if (dragged?.dropTarget === list)
+      dragged.dropTarget = null;
+    let items = list.children;
+    for (let i = 0; i < items.length; ++i) {
+      items[i].style.transform = '';
+    }
+    if (!options?.animate) {
       for (let i = 0; i < items.length; ++i) {
-        if (items[i] === item) {
-          index = i;
-          target = i;
-        }
-        registry.listen(items[i], 'dragenter', (evt) => {
-          let offset = 0;
-          if (i < index && i >= target)
-            offset += 1;
-          else if (i > index && i <= target)
-            offset -= 1;
-          target = i + offset;
-          makeSpace();
-        });
+        for (let anim of items[i].getAnimations())
+          anim.finish();
       }
-      registry.listen(list, 'dragover', (evt) => {
-        // Required to allow dropping on this target.
-        evt.preventDefault();
-      });
-      registry.listen(list, 'drop', (evt) => {
-        evt.preventDefault();
-        registry.cleanup();
-        for (let i = 0; i < items.length; ++i) {
-          items[i].style.transform = '';
+    }
+  };
+  let pendingLeave = null;
+  list.addEventListener('dragover', (evt) => {
+    // Must prevent dragover to allow dropping on this target.
+    evt.preventDefault();
+    evt.dataTransfer.dropEffect = 'move';
+  });
+  list.addEventListener('dragenter', (evt) => {
+    let items = list.children;
+    // The setup only needs to be done when we enter a new target.
+    if (dragged?.dropTarget === list) {
+      // If we have a pending leave for this target, cancel it.
+      if (pendingLeave) {
+        clearTimeout(pendingLeave);
+        pendingLeave = 0;
+      }
+    } else {
+
+      dragged = dragged || {
+        elem: null,
+        height: 0
+      };
+      if (!dragged.elem) {
+        dragged.height = list.children.length ? list.children[0].clientHeight : 100;
+      }
+      dragged.dropTarget = list;
+
+      target = index = items.length;
+      for (let i = 0; i < items.length; ++i) {
+        if (items[i] === dragged.elem) {
+          target = index = i;
         }
-        for (let i = 0; i < items.length; ++i) {
-          for (let anim of items[i].getAnimations())
-            anim.finish();
-        }  
-        list.insertBefore(item, items[target + (index < target ? 1 : 0)]);
-        item.style.opacity = 1;
-        console.log('drop');
-      })
+      }
+
+    }
+    let makeSpace = function() {
+      // All items that are before the target slide forward
+      for (let i = 0; i < items.length; ++i) {
+        if (i < index) {
+          items[i].style.transform = (i < target) ? '' : `translateY(${dragged.height}px)`;
+        } else if (i > index) {
+          items[i].style.transform = (i > target) ? '' : `translateY(${-dragged.height}px)`;
+        }
+      }
+    };
+    if (evt.target !== list) {
+      let items = list.children;
+      let item = evt.target;
+      while (item.parentElement !== list) {
+        item = item.parentElement;
+      }
+      let i = Array.prototype.indexOf.apply(items, [item]);
+      let offset = 0;
+      if (i < index && i >= target)
+        offset += 1;
+      else if (i > index && i <= target)
+        offset -= 1;
+      target = i + offset;
+      makeSpace();
+    }
+  });
+  list.addEventListener('drop', (evt) => {
+    if (evt.target !== list)
+      return;
+    cleanup();
+    evt.preventDefault();
+    let elem = dragged.elem;
+    if (!elem) {
+      let parent = document.createElement('div');
+      const html = evt.dataTransfer.getData("text/html");
+      parent.innerHTML = html;
+      elem = parent.lastElementChild;
+    }
+    list.insertBefore(elem, list.children[target + (index < target ? 1 : 0)]);
+  });
+  list.addEventListener('dragleave', (evt) => {
+    // Only consider leaves of the top level element.
+    if (evt.target !== list) {
+      return;
+    }
+    if (pendingLeave) {
+      clearTimeout(pendingLeave);
+    }
+    // NOTE: It feels like a bug that we don't have a clear signal (e.g. dragout) for
+    // when the drag leaves a particular element that doesn't fire when entering
+    // sub-elements, e.g. equivalent to mouseout / pointerout.
+    pendingLeave = setTimeout(() => {
+      cleanup({animate: true});
+    }, 200);
+  });
+  for (let item of list.children) {
+    item.setAttribute('draggable', true);
+    item.setAttribute('tabindex', 0);
+    item.addEventListener('focus', () => {
+      item.setAttribute('contenteditable', true);
+    });
+    item.addEventListener('blur', () => {
+      item.setAttribute('contenteditable', false);
     });
   }
+  list.addEventListener('dragstart', (evt) => {
+    let item = evt.target;
+    evt.dataTransfer.setData("text/html", item.outerHTML);
+    dragged = {
+      elem: item,
+      height: item.clientHeight,
+      dropTarget: null
+    };
+    requestAnimationFrame(() => {
+      item.style.opacity = 0;
+    });
+    item.addEventListener('dragend', (evt) => {
+      cleanup({animate: true});
+      item.style.opacity = 1;
+      dragged = null;
+      if (dragged?.dropTarget !== list && item.parentElement === list) {
+        item.remove();
+      }
+    }, {once: true});
+  });
 }

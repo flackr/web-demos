@@ -8,33 +8,45 @@
   </head>
   <body>
     <h1>TODO List editor</h1>
-    <p>This is a demo of a list app. You can scroll, or drag to reorder items.</p>
-    <ul>
-      <li>Finish the demo</li>
-      <li>Take a walk</li>
-      <li>Sleep</li>
-      <li>Coffee</li>
-      <li>Work</li>
-      <li>Buy groceries</li>
-      <li>Write a book</li>
-      <li>Bike ride</li>
-      <li>Do laundry</li>
-      <li>Pay bills</li>
-      <li>Clean</li>
-      <li>Exercise</li>
-      <li>Finish report</li>
-      <li>Schedule dental appointment</li>
-      <li>Read a book</li>
-      <li>Plan a trip</li>
-      <li>Write a blog post</li>
-      <li>Learn a new skill</li>
-      <li>Meditate</li>
-      <li>Organize closet</li>
-      <li>Bake a cake</li>
-      <li>Watch a movie</li>
-    </ul>
+    <p>This is a demo of a list app. You can drag items between lists, dragging near the edge scrolls.</p>
+    <div class="lists">
+      <div>
+        <h3>Urgent:</h3>
+        <ul id="urgent">
+          <li>Finish the demo</li>
+          <li>Take a walk</li>
+          <li>Sleep</li>
+          <li>Coffee</li>
+          <li>Work</li>
+          <li>Buy groceries</li>
+          <li>Write a book</li>
+          <li>Bike ride</li>
+          <li>Do laundry</li>
+          <li>Pay bills</li>
+          <li>Clean</li>
+          <li>Exercise</li>
+          <li>Finish report</li>
+          <li>Schedule dental appointment</li>
+          <li>Read a book</li>
+          <li>Plan a trip</li>
+          <li>Write a blog post</li>
+          <li>Learn a new skill</li>
+          <li>Meditate</li>
+          <li>Organize closet</li>
+          <li>Bake a cake</li>
+          <li>Watch a movie</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Low priority:</h3>
+        <ul id="low">
+        </ul>
+      </div>
+    </div>
   </body>
   <script>
-    setupDraggableList(document.querySelector('ul'));
+    for (const list of document.querySelectorAll('ul')) {
+      setupDraggableList(list);
+    }
   </script>
 </html>
