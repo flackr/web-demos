@@ -25,6 +25,7 @@ function setupDraggableList(list) {
     evt.dataTransfer.dropEffect = 'move';
   });
   list.addEventListener('dragenter', (evt) => {
+    console.log(`dragenter on ${evt.target.tagName}`);
     let items = list.children;
     // The setup only needs to be done when we enter a new target.
     if (dragged?.dropTarget === list) {
@@ -94,6 +95,7 @@ function setupDraggableList(list) {
     dragged.elem = null;
   });
   list.addEventListener('dragleave', (evt) => {
+    console.log(`dragleave on ${evt.target.tagName}`);
     // Only consider leaves of the top level element.
     if (evt.target !== list) {
       return;
