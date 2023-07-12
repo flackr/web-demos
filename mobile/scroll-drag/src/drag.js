@@ -91,6 +91,7 @@ function setupDraggableList(list) {
       elem = parent.lastElementChild;
     }
     list.insertBefore(elem, list.children[target + (index < target ? 1 : 0)]);
+    dragged.elem = null;
   });
   list.addEventListener('dragleave', (evt) => {
     // Only consider leaves of the top level element.
@@ -132,7 +133,7 @@ function setupDraggableList(list) {
       cleanup({animate: true});
       item.style.opacity = 1;
       dragged = null;
-      if (dragged?.dropTarget !== list && item.parentElement === list) {
+      if (dragged?.elem === item && dragged?.dropTarget !== list && item.parentElement === list) {
         item.remove();
       }
     }, {once: true});
