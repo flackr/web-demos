@@ -18,24 +18,19 @@ function setupDraggableList(list) {
       }
     }
   };
-  let pendingLeave = null;
   list.addEventListener('dragover', (evt) => {
     // Must prevent dragover to allow dropping on this target.
     evt.preventDefault();
-    evt.dataTransfer.dropEffect = 'move';
+    if (evt.dataTransfer)
+      evt.dataTransfer.dropEffect = 'move';
   });
+  let overCount = 0;
   list.addEventListener('dragenter', (evt) => {
-    console.log(`dragenter on ${evt.target.tagName}`);
+    overCount++;
+    list.classList.add('targeted');
     let items = list.children;
     // The setup only needs to be done when we enter a new target.
-    if (dragged?.dropTarget === list) {
-      // If we have a pending leave for this target, cancel it.
-      if (pendingLeave) {
-        clearTimeout(pendingLeave);
-        pendingLeave = 0;
-      }
-    } else {
-
+    if (dragged?.dropTarget !== list) {
       dragged = dragged || {
         elem: null,
         height: 0
@@ -51,7 +46,6 @@ function setupDraggableList(list) {
           target = index = i;
         }
       }
-
     }
     let makeSpace = function() {
       // All items that are before the target slide forward
@@ -80,6 +74,8 @@ function setupDraggableList(list) {
     }
   });
   list.addEventListener('drop', (evt) => {
+    // This list likely received a dragenter but will never see a dragleave.
+    overCount = 0;
     if (evt.target !== list)
       return;
     cleanup();
@@ -87,7 +83,7 @@ function setupDraggableList(list) {
     let elem = dragged.elem;
     if (!elem) {
       let parent = document.createElement('div');
-      const html = evt.dataTransfer.getData("text/html");
+      const html = evt.dataTransfer?.getData("text/html");
       parent.innerHTML = html;
       elem = parent.lastElementChild;
     }
@@ -95,20 +91,14 @@ function setupDraggableList(list) {
     dragged.elem = null;
   });
   list.addEventListener('dragleave', (evt) => {
-    console.log(`dragleave on ${evt.target.tagName}`);
-    // Only consider leaves of the top level element.
-    if (evt.target !== list) {
-      return;
-    }
-    if (pendingLeave) {
-      clearTimeout(pendingLeave);
-    }
+    overCount--;
     // NOTE: It feels like a bug that we don't have a clear signal (e.g. dragout) for
     // when the drag leaves a particular element that doesn't fire when entering
     // sub-elements, e.g. equivalent to mouseout / pointerout.
-    pendingLeave = setTimeout(() => {
+    if (overCount <= 0) {
       cleanup({animate: true});
-    }, 200);
+      list.classList.remove('targeted');
+    }
   });
   for (let item of list.children) {
     item.setAttribute('draggable', true);
@@ -122,7 +112,8 @@ function setupDraggableList(list) {
   }
   list.addEventListener('dragstart', (evt) => {
     let item = evt.target;
-    evt.dataTransfer.setData("text/html", item.outerHTML);
+    if (evt.dataTransfer)
+      evt.dataTransfer.setData("text/html", item.outerHTML);
     dragged = {
       elem: item,
       height: item.clientHeight,
@@ -132,6 +123,9 @@ function setupDraggableList(list) {
       item.style.opacity = 0;
     });
     item.addEventListener('dragend', (evt) => {
+      for (let elem of document.querySelectorAll('.targeted')) {
+        elem.classList.remove('targeted');
+      }
       cleanup({animate: true});
       item.style.opacity = 1;
       dragged = null;

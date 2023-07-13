@@ -4,6 +4,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>List editor</title>
     <link rel="stylesheet" href="css/list-style.css">
+    <script>
+      if (window.location.search.indexOf('polyfill') != -1) {
+        let script = document.createElement('script');
+        script.setAttribute('src', 'src/touch-drag-polyfill.js');
+        document.head.insertBefore(script, document.head.firstElementChild);
+      }
+    </script>
     <script src="src/drag.js"></script>
   </head>
   <body>

@@ -46,3 +46,7 @@ body {
     overflow: auto;
     flex: 1;
 }
+
+.targeted {
+    outline: 1px solid rgba(100, 100, 255, 0.8);
+}
