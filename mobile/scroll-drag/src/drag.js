@@ -111,6 +111,7 @@ function setupDraggableList(list) {
     });
   }
   list.addEventListener('dragstart', (evt) => {
+    document.activeElement.blur();
     let item = evt.target;
     if (evt.dataTransfer)
       evt.dataTransfer.setData("text/html", item.outerHTML);

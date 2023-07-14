@@ -11,7 +11,7 @@
     installed = true;
 
     // Polyfill contextmenu events for iOS Safari.
-    if (navigator.userAgent.toLowerCase().indexOf('iphone/') > -1) {
+    if (navigator.userAgent.toLowerCase().indexOf('iphone') > -1) {
       const LONGPRESS_TIMEOUT = 500;
       const TOUCH_PROPS = ['clientX', 'clientY', 'layerX', 'layerY', 'offsetX', 'offsetY', 'pageX', 'pageY', 'screenX', 'screenY'];
       let longpress = null;
@@ -72,7 +72,34 @@
           cancelLongpress();
         }, LONGPRESS_TIMEOUT);
       }, {passive: false});
-    } else {
+    }
+
+    // Polyfill drag and drop events for Android.
+    if (navigator.userAgent.toLowerCase().indexOf('iphone') == -1) {
+      console.log('setattr')
+      // Android drag and drop is broken so we need to use a non-standard attribute.
+      // We could also use mutation observer to ensure that we change this anytime
+      // the attribute is set.
+      const elementSetAttribute = Element.prototype.setAttribute;
+      const POLYFILL_DRAGGABLE_ATTRIBUTE = 'data-polyfill-draggable';
+      for (let elem of document.querySelectorAll('[draggable]')) {
+        elem.setAttribute(POLYFILL_DRAGGABLE_ATTRIBUTE, elem.getAttribute('draggable'));
+        elem.removeAttribute('draggable');
+      }
+      Element.prototype.setAttribute = function(name, value) {
+        if (name == 'draggable') {
+          name = POLYFILL_DRAGGABLE_ATTRIBUTE;
+        }
+        return elementSetAttribute.apply(this, [name, value]);
+      };
+      const elementGetAttribute = Element.prototype.getAttribute;
+      Element.prototype.getAttribute = function(name, value) {
+        if (name == 'draggable') {
+          name = POLYFILL_DRAGGABLE_ATTRIBUTE;
+        }
+        return elementGetAttribute.apply(this, [name, value]);
+      };
+
       let dragStarted = false;
       document.body.addEventListener('touchstart', () => {
         dragStarted = false;
@@ -81,15 +108,24 @@
         if (dragStarted)
           evt.preventDefault();
       }, {passive: false});
-      document.body.addEventListener('contextmenu', (ctxevt) => {
-        let target = ctxevt.target;
+      function findDraggable(elem) {
+        let target = elem;
         while (target) {
           if (target.getAttribute) {
             if (target.getAttribute('draggable'))
-              break;
+              return target;
           }
           target = target.parentElement;
         }
+        return target;
+      }
+      document.body.addEventListener('selectstart', (evt) => {
+        // Prevent selection if there is a draggable element.
+        if (findDraggable(evt.target))
+          evt.preventDefault();
+      });
+      document.body.addEventListener('contextmenu', (ctxevt) => {
+        let target = findDraggable(ctxevt.target);
         // No draggable target.
         if (!target)
           return;
@@ -147,9 +183,12 @@
 
   function addListenerMixin(eventName, listener, options) {
     if (eventName === 'dragstart' ||
-        eventName === 'contextmenu' && navigator.userAgent.toLowerCase().indexOf('safari/') > -1) {
+        eventName === 'contextmenu' && navigator.userAgent.toLowerCase().indexOf('iphone') > -1) {
       install();
     }
+  }
+  if (navigator.userAgent.toLowerCase().indexOf('iphone') == -1) {
+    install();
   }
 
   mixin(Element.prototype, 'addEventListener', addListenerMixin);
