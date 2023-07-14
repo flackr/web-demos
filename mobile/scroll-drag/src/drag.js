@@ -76,8 +76,6 @@ function setupDraggableList(list) {
   list.addEventListener('drop', (evt) => {
     // This list likely received a dragenter but will never see a dragleave.
     overCount = 0;
-    if (evt.target !== list)
-      return;
     cleanup();
     evt.preventDefault();
     let elem = dragged.elem;
