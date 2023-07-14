@@ -81,11 +81,18 @@ function setupDraggableList(list) {
     cleanup();
     evt.preventDefault();
     let elem = dragged.elem;
-    if (!elem) {
-      let parent = document.createElement('div');
-      const html = evt.dataTransfer?.getData("text/html");
-      parent.innerHTML = html;
-      elem = parent.lastElementChild;
+    if (!elem && evt.dataTransfer) {
+      if (evt.dataTransfer.types.indexOf("text/html") != -1) {
+        let parent = document.createElement('div');
+        const html = evt.dataTransfer.getData("text/html");
+        parent.innerHTML = html;
+        elem = parent.lastElementChild;
+      } else if (evt.dataTransfer.types.indexOf('Files') != -1) {
+        elem = document.createElement('img');
+        const file = evt.dataTransfer.files[0];
+        elem.setAttribute('src', URL.createObjectURL(file));
+        elem.style.maxWidth = '100%';
+      }
     }
     list.insertBefore(elem, list.children[target + (index < target ? 1 : 0)]);
     dragged.elem = null;
