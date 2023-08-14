@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Nested scroll-snap sections.</title>
+    <style>
+      html, body {
+        scroll-snap-type: y mandatory;
+      }
+      section {
+        scroll-snap-align: start;
+        --size: 70px;
+        --angle: 45deg;
+        background: repeating-linear-gradient(
+          var(--angle),
+          var(--c1),
+          var(--c1) var(--size),
+          var(--c2) var(--size),
+          var(--c2) calc(2 * var(--size))
+        );
+      }
+      section {
+        --c1: #efe;
+        --c2: #cfc;
+        padding: 20px;
+        border: 2px solid rgba(0, 0, 0, 0.6);
+      }
+      body > section:first-child {
+        border-bottom: none;
+      }
+      section:nth-child(even) {
+        --c1: #eef;
+        --c2: #ccf;
+
+      }
+      section > section {
+        --size: 40px;
+        --angle: 135deg;
+        margin: 20px;
+        --c1: #ffe;
+        --c2: #ffc;
+      }
+      section > section:nth-child(even) {
+        --size: 40px;
+        --c1: #fef;
+        --c2: #fcf;
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <h1>Section 1</h1>
+      <div style="height: 150vh;"></div>
+      <p>End of section 1</p>
+    </section>
+    <section>
+      <h1>Section 2</h1>
+      <div style="height: 180vh;"></div>
+      <p>About to have subsections 2.1 - 2.4</p>
+      <section>
+        <h2>Section 2.1</h2>
+        <div style="height: 15vh;"></div>
+        <p>End of section 2.1</p>
+      </section>
+      <div style="height: 20vh;"></div>
+      <section>
+        <h2>Section 2.2</h2>
+        <div style="height: 15vh;"></div>
+        <p>End of section 2.2</p>
+      </section>
+      <section>
+        <h2>Section 2.3</h2>
+        <div style="height: 25vh;"></div>
+        <p>End of section 2.3</p>
+      </section>
+      <section>
+        <h2>Section 2.4</h2>
+        <div style="height: 150vh;"></div>
+        <p>End of section 2.4</p>
+      </section>
+      <div style="height: 180vh;"></div>
+      <p>End of section 2</p>
+    </section>
+  </body>
+</html>

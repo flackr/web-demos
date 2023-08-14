@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Body with nested scroll-snap sections.</title>
+    <style>
+      html, body {
+        scroll-snap-type: y mandatory;
+      }
+      body {
+        scroll-snap-align: start;
+        margin: 0;
+      }
+      body > * {
+        margin: 8px;
+      }
+      section {
+        margin: 0;
+        scroll-snap-align: start;
+        --c1: #efe;
+        --c2: #cfc;
+        --size: 70px;
+        --angle: 45deg;
+        background: repeating-linear-gradient(
+          var(--angle),
+          var(--c1),
+          var(--c1) var(--size),
+          var(--c2) var(--size),
+          var(--c2) calc(2 * var(--size))
+        );
+        height: 100vh;
+        padding: 20px;
+        box-sizing: border-box;
+        border: 2px solid rgba(0, 0, 0, 0.6);
+      }
+      body > section:first-of-type {
+        border-bottom: none;
+      }
+      section:nth-child(even) {
+        --c1: #eef;
+        --c2: #ccf;
+      }
+      h2 {
+        margin-top: 20vh;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Before snap sections</h1>
+    <p>
+      This initial part is before the forced snap full screen sized sections
+    </p>
+
+    <h2>What should happen</h2>
+    <p>
+      Users should be able to scroll freely in this section
+    </p>
+    <h2>When might this happen</h2>
+    <p>
+      There may be a different "experience" that you swipe into after all the regular flowing content.
+    </p>
+    <h2>Space</h2>
+    <p>
+      Just making space.
+    </p>
+    <h2>Space</h2>
+    <p>
+      Just making space.
+    </p>
+    <h2>Space</h2>
+    <p>
+      Just making space.
+    </p>
+    <h2>Space</h2>
+    <p>
+      Just making space.
+    </p>
+    <h2>Space</h2>
+    <p>
+      Just making space.
+    </p>
+    <h2>Space</h2>
+    <p>
+      Just making space.
+    </p>
+    <h2>Space</h2>
+    <p>
+      Just making space.
+    </p>
+    <h2>Space</h2>
+    <p>
+      Just making space.
+    </p>
+    <h1>End of top stuff</h1>
+    <p>Sections coming next.</p>
+    <section>1</section>
+    <section>2</section>
+    <section>3</section>
+    <section>4</section>
+    <section>5</section>
+  </body>
+</html>
