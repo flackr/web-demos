@@ -12,8 +12,11 @@ let initBeforeMatch = function() {
     input.addEventListener('input', () => {
       let inputs = document.querySelectorAll('section > label > input');
       for (let input of inputs) {
+        let details = input.parentElement.parentElement.querySelector('.details');
         if (!input.checked) {
-          input.parentElement.parentElement.querySelector('.details').setAttribute('hidden', 'until-found');
+          details.setAttribute('hidden', 'until-found');
+        } else {
+          details.removeAttribute('hidden');
         }
       }
     });
