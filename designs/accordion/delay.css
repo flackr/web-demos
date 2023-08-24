@@ -1,0 +1,12 @@
+
+/* Delay 500ms to close. */
+.details,
+label > input::before {
+  transition-delay: 500ms;
+}
+
+/* No delay to open from closed. */
+label:has(input:checked) + .details,
+label > input:checked::before {
+  transition-delay: 0ms;
+}

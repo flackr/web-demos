@@ -1,0 +1,61 @@
+/* General styling to look like details element. */
+label > input::before {
+  display: inline-block;
+  margin: 0.15em;
+  width: 0.5em;
+  height: 0.5em;
+  content: '';
+  border-style: solid;
+  border-width: 0.2em 0.2em 0 0;
+  transform: rotate(45deg);
+}
+label > input:checked::before {
+  transform: rotate(135deg);
+}
+label > input {
+  appearance: none;
+}
+
+/**
+  * Animate the chevron.
+  * This would need to be exposed on details, e.g. details:marker
+  **/
+label > input::before {
+  transition: transform 200ms;
+}
+
+/**
+  * Animate details open / closed
+  * This would also need to be exposed on details elements, e.g. details:details
+  **/
+.details {
+  /* transition: content-visibility allow-discrete 500ms, height 500ms; */
+  transition: height 500ms;
+  height: 0px;
+  overflow: clip;
+}
+label:has(input:checked) + .details {
+  /* Would be nice to use auto here, but we can't
+      transition to height auto. */
+  height: 200px;
+}
+
+/**
+  * When transitioning discrete properties is available,
+  * mimic the actual transition of content-visibility on the details.
+  **/
+  @supports(transition-behavior: allow-discrete) {
+
+  /* General styling to look like details element. */
+  label:has(input:checked) + .details {
+    content-visibility: visible;
+  }
+  .details {
+    content-visibility: hidden;
+  }
+
+  /* Animate details open / closed */
+  .details {
+    transition: content-visibility allow-discrete 500ms, height 500ms;
+  }
+}
