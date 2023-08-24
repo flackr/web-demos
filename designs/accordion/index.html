@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Accordion example</title>
+    <style>
+      /* General styling to look like details element. */
+      label > input::before {
+        display: inline-block;
+        margin: 0.15em;
+        width: 0.5em;
+        height: 0.5em;
+        content: '';
+        border-style: solid;
+        border-width: 0.2em 0.2em 0 0;
+        transform: rotate(45deg);
+      }
+      label > input:checked::before {
+        transform: rotate(135deg);
+      }
+      label > input {
+        appearance: none;
+      }
+      label:has(input:checked) + .details {
+        /* content-visibility: visible; */
+      }
+      .details {
+        /* content-visibility: hidden; */
+      }
+
+      /* Animate chevron */
+      label > input::before {
+        transition: transform 200ms;
+      }
+
+      /* Animate details open / closed */
+      .details {
+        /* transition: content-visibility allow-discrete 500ms, height 500ms; */
+        transition: height 500ms;
+        height: 0px;
+        overflow: clip;
+      }
+      label:has(input:checked) + .details {
+        /* Would be nice to use auto here, but we can't
+           transition to height auto. */
+        height: 200px;
+      }
+
+    </style>
+  </head>
+  <body>
+    <h1>Accordion example</h1>
+    <p>
+      An accordion built with hidden input boxes.
+      Expand the sections to learn how it's built.
+    </p>
+    <section>
+      <label class="summary">
+        <input type="radio" name="group">
+        Stateful elements
+      </label>
+      <div class="details">
+        <p>
+          We begin by using the radio button.
+          By using a radio button with a shared name,
+          we ensure exclusive access to one section at a time.
+        </p>
+        <p>
+          Using the <code>:checked</code> pseudo-class,
+          we can show the details when the radio button is selected.
+        </p>
+      </div>
+    </section>
+    <section>
+      <label class="summary">
+        <input type="radio" name="group">
+        Styling
+      </label>
+      <div class="details">
+        <p>
+          To make it look like a details element,
+          we set <code>appearance: none</code> on the input,
+          and use a rotated <code>::before</code> pseudo element
+          with two visible borders as a chevron.
+        </p>
+        <p>
+          When the input is <code>:checked</code>,
+          we rotate the pseudo 90 degrees to reflect the open state.
+        </p>
+      </div>
+    </section>
+    <section>
+      <label class="summary">
+        <input type="radio" name="group">
+        Animating it all
+      </label>
+      <div class="details">
+        <p>
+          To animate the chevron,
+          we simply set a <code>transition-duration</code> on its transform.
+        </p>
+        <p>
+          To animate the details,
+          we transition <code>content-visibility</code> to delay hiding it,
+          and add a transition on height,
+          using <code>overflow: clip</code> to reveal the contents as it expands.
+        </p>
+        <p>
+          Unfortunately, without transitions to/from <code>height: auto</code>,
+          we have to give it a specified height
+          which may be too large / small for the details.
+        </p>
+      </div>
+    </section>
+  </body>
+</html>
