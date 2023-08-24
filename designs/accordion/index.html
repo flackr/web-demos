@@ -25,7 +25,7 @@
         document.head.appendChild(node);
       }
       function injectScript(src, attrs = {}) {
-        injectNode({tagName: 'script', src, ...attrs});
+        injectNode({tagName: 'script', defer: true, src, ...attrs});
       }
       function injectStylesheet(href, attrs = {}) {
         injectNode({tagName: 'link', rel: 'stylesheet', href, ...attrs});
@@ -33,6 +33,9 @@
       let attrs = parseAttrs();
       if (attrs.closable) {
         injectScript('./script/closable.js');
+      }
+      if (attrs.beforematch) {
+        injectScript('./script/beforematch.js');
       }
       if (attrs.variant == 'delay' || attrs.delay) {
         injectStylesheet('./css/delay.css');
@@ -52,6 +55,7 @@
         <li><a href="?closable">Closable.</a></li>
         <li><a href="?delay">Delay closing until new section is open.</a></li>
         <li><a href="?delay&closable">Closable, with delay closing until new section is open.</a></li>
+        <li><a href="?beforematch">Beforematch handler to open sections.</a></li>
       </ul>
     </p>
     <div class="accordion">

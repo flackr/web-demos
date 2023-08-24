@@ -10,16 +10,13 @@ let initBeforeMatch = function() {
       input.dispatchEvent(new InputEvent('input'));
     });
     input.addEventListener('input', () => {
-      // Run after other input listeners which may modify the checked state.
-      setTimeout(() => {
-        let inputs = document.querySelectorAll('section > label > input');
-        for (let input of inputs) {
-          if (!input.checked) {
-            input.parentElement.parentElement.querySelector('.details').setAttribute('hidden', 'until-found');
-          }
+      let inputs = document.querySelectorAll('section > label > input');
+      for (let input of inputs) {
+        if (!input.checked) {
+          input.parentElement.parentElement.querySelector('.details').setAttribute('hidden', 'until-found');
         }
-      }, 0);
+      }
     });
   }
 }
-document.addEventListener('DOMContentLoaded', initBeforeMatch);
+initBeforeMatch();

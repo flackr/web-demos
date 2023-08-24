@@ -4,9 +4,7 @@ let init = function() {
     input.setAttribute('type', 'checkbox');
   }
 }
-// Run immediately (in case we missed DOMContentLoaded.
 init();
-document.addEventListener('DOMContentLoaded', init);
 document.addEventListener('input', (evt) => {
   const target = evt.target;
   if (target.checked) {
