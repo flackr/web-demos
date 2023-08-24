@@ -3,7 +3,8 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Accordion example</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./script/base.js"></script>
     <script>
       function parseAttrs() {
         let attrs = window.location.search.substring(1).split('&');
@@ -34,7 +35,7 @@
         injectScript('./script/closable.js');
       }
       if (attrs.variant == 'delay' || attrs.delay) {
-        injectStylesheet('css/delay.css');
+        injectStylesheet('./css/delay.css');
       }
     </script>
   </head>
