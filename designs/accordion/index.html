@@ -3,13 +3,38 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Accordion example</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
     <script>
-      if (window.location.search == '?variant=delay') {
-        let style = document.createElement('link');
-        style.setAttribute('href', 'delay.css');
-        style.setAttribute('rel', 'stylesheet');
-        document.head.appendChild(style);
+      function parseAttrs() {
+        let attrs = window.location.search.substring(1).split('&');
+        let map = {};
+        for (let i = 0; i < attrs.length; ++i) {
+          let attr = attrs[i].split('=', 2);
+          map[attr[0]] = attr[1] !== undefined ? attr[1] : true;
+        }
+        return map;
+      }
+      function injectNode(attrs) {
+        let node = document.createElement(attrs.tagName);
+        for (let attr in attrs) {
+          if (attr != 'tagName') {
+            node.setAttribute(attr, attrs[attr]);
+          }
+        }
+        document.head.appendChild(node);
+      }
+      function injectScript(src, attrs = {}) {
+        injectNode({tagName: 'script', src, ...attrs});
+      }
+      function injectStylesheet(href, attrs = {}) {
+        injectNode({tagName: 'link', rel: 'stylesheet', href, ...attrs});
+      }
+      let attrs = parseAttrs();
+      if (attrs.closable) {
+        injectScript('./script/closable.js');
+      }
+      if (attrs.variant == 'delay' || attrs.delay) {
+        injectStylesheet('css/delay.css');
       }
     </script>
   </head>
