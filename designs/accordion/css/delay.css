@@ -1,12 +1,22 @@
 
-/* Delay 500ms to close. */
+@container accordion style(--any-open: true) {
+/* Delay 500ms to run after close animation if any are open. */
 .details,
-label > input::before {
-  transition-delay: 500ms;
+  label > input::before {
+    transition-delay: 500ms;
+  }
 }
 
 /* No delay to open from closed. */
 label:has(input:checked) + .details,
 label > input:checked::before {
   transition-delay: 0ms;
+}
+
+.accordion {
+  container-name: accordion;
+}
+
+.accordion:has(input:checked) {
+  --any-open: true;
 }

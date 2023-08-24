@@ -47,63 +47,65 @@
     <p>
       Try with a <a href="?variant=delay">delay</a> or <a href="?">plain</a>.
     </p>
-    <section>
-      <label class="summary">
-        <input type="radio" name="group">
-        Stateful elements
-      </label>
-      <div class="details">
-        <p>
-          We begin by using the radio button.
-          By using a radio button with a shared name,
-          we ensure exclusive access to one section at a time.
-        </p>
-        <p>
-          Using the <code>:checked</code> pseudo-class,
-          we can show the details when the radio button is selected.
-        </p>
-      </div>
-    </section>
-    <section>
-      <label class="summary">
-        <input type="radio" name="group">
-        Styling
-      </label>
-      <div class="details">
-        <p>
-          To make it look like a details element,
-          we set <code>appearance: none</code> on the input,
-          and use a rotated <code>::before</code> pseudo element
-          with two visible borders as a chevron.
-        </p>
-        <p>
-          When the input is <code>:checked</code>,
-          we rotate the pseudo 90 degrees to reflect the open state.
-        </p>
-      </div>
-    </section>
-    <section>
-      <label class="summary">
-        <input type="radio" name="group">
-        Animating it all
-      </label>
-      <div class="details">
-        <p>
-          To animate the chevron,
-          we simply set a <code>transition-duration</code> on its transform.
-        </p>
-        <p>
-          To animate the details,
-          we transition <code>content-visibility</code> to delay hiding it,
-          and add a transition on height,
-          using <code>overflow: clip</code> to reveal the contents as it expands.
-        </p>
-        <p>
-          Unfortunately, without transitions to/from <code>height: auto</code>,
-          we have to give it a specified height
-          which may be too large / small for the details.
-        </p>
-      </div>
-    </section>
+    <div class="accordion">
+      <section>
+        <label class="summary">
+          <input type="radio" name="group">
+          Stateful elements
+        </label>
+        <div class="details">
+          <p>
+            We begin by using the radio button.
+            By using a radio button with a shared name,
+            we ensure exclusive access to one section at a time.
+          </p>
+          <p>
+            Using the <code>:checked</code> pseudo-class,
+            we can show the details when the radio button is selected.
+          </p>
+        </div>
+      </section>
+      <section>
+        <label class="summary">
+          <input type="radio" name="group">
+          Styling
+        </label>
+        <div class="details">
+          <p>
+            To make it look like a details element,
+            we set <code>appearance: none</code> on the input,
+            and use a rotated <code>::before</code> pseudo element
+            with two visible borders as a chevron.
+          </p>
+          <p>
+            When the input is <code>:checked</code>,
+            we rotate the pseudo 90 degrees to reflect the open state.
+          </p>
+        </div>
+      </section>
+      <section>
+        <label class="summary">
+          <input type="radio" name="group">
+          Animating it all
+        </label>
+        <div class="details">
+          <p>
+            To animate the chevron,
+            we simply set a <code>transition-duration</code> on its transform.
+          </p>
+          <p>
+            To animate the details,
+            we transition <code>content-visibility</code> to delay hiding it,
+            and add a transition on height,
+            using <code>overflow: clip</code> to reveal the contents as it expands.
+          </p>
+          <p>
+            Unfortunately, without transitions to/from <code>height: auto</code>,
+            we have to give it a specified height
+            which may be too large / small for the details.
+          </p>
+        </div>
+      </section>
+    </div>
   </body>
 </html>
