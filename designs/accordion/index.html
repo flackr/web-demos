@@ -22,12 +22,18 @@
         appearance: none;
       }
 
-      /* Animate chevron */
+      /**
+       * Animate the chevron.
+       * This would need to be exposed on details, e.g. details:marker
+       **/
       label > input::before {
         transition: transform 200ms;
       }
 
-      /* Animate details open / closed */
+      /**
+       * Animate details open / closed
+       * This would also need to be exposed on details elements, e.g. details:details
+       **/
       .details {
         /* transition: content-visibility allow-discrete 500ms, height 500ms; */
         transition: height 500ms;
