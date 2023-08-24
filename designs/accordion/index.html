@@ -21,12 +21,6 @@
       label > input {
         appearance: none;
       }
-      label:has(input:checked) + .details {
-        /* content-visibility: visible; */
-      }
-      .details {
-        /* content-visibility: hidden; */
-      }
 
       /* Animate chevron */
       label > input::before {
@@ -44,6 +38,26 @@
         /* Would be nice to use auto here, but we can't
            transition to height auto. */
         height: 200px;
+      }
+
+      /**
+       * When transitioning discrete properties is available,
+       * mimic the actual transition of content-visibility on the details.
+       **/
+       @supports(transition-behavior: allow-discrete) {
+
+        /* General styling to look like details element. */
+        label:has(input:checked) + .details {
+          content-visibility: visible;
+        }
+        .details {
+          content-visibility: hidden;
+        }
+
+        /* Animate details open / closed */
+        .details {
+          transition: content-visibility allow-discrete 500ms, height 500ms;
+        }
       }
 
     </style>
