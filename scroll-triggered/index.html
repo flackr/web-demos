@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: translateX(-50px);
+        }
+      }
+      .space {
+        min-height: 100vh;
+      }
+      .target {
+        height: 100px;
+        background: green;
+        color: white;
+        animation: fade-in 300ms both;
+      }
+      .once {
+        --animation-trigger: view() once contain;
+      }
+      .repeat {
+        --animation-trigger: view() repeat contain;
+      }
+      .alternate {
+        --animation-trigger: view() alternate contain;
+      }
+      body {
+        height: 300vh;
+      }
+    </style>
+    <script src="scroll-triggered.js"></script>
+  </head>
+  <body>
+    <h1>Animation trigger test</h1>
+    <div class="space">
+      <p>This is an extremely experimental implementation of animation triggers proposed in <a href="https://github.com/w3c/csswg-drafts/issues/8942">#8942</a>.</p>
+      <p>Scroll down the page to observe each type of trigger</p>
+      <p>Note there is empty space intentionally here</p>
+    </div>
+    <h2>Once trigger</h2>
+    <p>The following element animation is only triggered once.</p>
+    <div class="target once">Triggered once!</div>
+    <h2>Repeat trigger</h2>
+    <p>The following element animation is triggered every time .</p>
+    <div class="target repeat">Triggered every time!</div>
+    <h2>Alternate trigger</h2>
+    <p>The following element animation is only triggered every time, but reverses when leaving the range</p>
+    <div class="target alternate">Triggered every time, reverses on leaving range!</div>
+    <div class="space"></div>
+    <h2>Footer</h2>
+    <a id="bottom" href="#bottom">Click this to anchor to the bottom of the page below all of the animations.</a>
+  </body>
+</html>
