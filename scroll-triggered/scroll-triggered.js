@@ -12,7 +12,7 @@ const TRIGGER_ANIMATION_NAME = '--animation-trigger';
 function setupAnimationTriggers() {
   let stylesheets = document.querySelectorAll('style');
   for (let sheet of stylesheets) {
-    sheet.innerHTML = sheet.innerHTML.replace(/animation-trigger\s+:/, '--animation-trigger:');
+    sheet.innerHTML = sheet.innerHTML.replaceAll('animation-trigger:', '--animation-trigger:');
   }
   let stylesheet = document.createElement('style');
   stylesheet.innerHTML = `
@@ -51,6 +51,7 @@ function setupAnimationTriggers() {
     let triggerAnimation = animations.find(anim => anim.animationName == TRIGGER_ANIMATION_NAME);
     animations = animations.filter(anim => anim != triggerAnimation);
     for (let anim of animations) {
+      anim.cancel();
       anim.pause();
     }
     let triggered = false;
