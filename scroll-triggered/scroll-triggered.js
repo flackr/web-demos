@@ -68,10 +68,15 @@ function setupAnimationTriggers() {
           anim.updatePlaybackRate(1);
           anim.play();
         }
-      } else if (!triggered && (frequency == 'alternate')) {
+      } else if (!triggered && frequency != 'once') {
         for (let anim of animations) {
-          anim.updatePlaybackRate(-1);
-          anim.play();          
+          if (frequency == 'alternate') {
+            anim.updatePlaybackRate(-1);
+            anim.play();
+          } else {
+            anim.cancel();
+            anim.pause();
+          }
         }
       }
     }
