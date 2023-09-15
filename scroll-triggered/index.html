@@ -18,19 +18,19 @@
         animation: fade-in 300ms both;
       }
       .once {
-        --animation-trigger: view() once contain;
+        animation-trigger: view() once contain;
       }
       .repeat {
-        --animation-trigger: view() repeat contain;
+        animation-trigger: view() repeat contain;
       }
       .alternate {
-        --animation-trigger: view() alternate contain 0% contain 100%;
+        animation-trigger: view() alternate contain 0% contain 100%;
       }
       body {
         height: 300vh;
       }
     </style>
-    <script src="scroll-triggered.js"></script>
+    <script src="scroll-triggered.js" defer></script>
   </head>
   <body>
     <h1>Animation trigger test</h1>

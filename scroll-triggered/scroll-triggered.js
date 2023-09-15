@@ -10,6 +10,10 @@ if (window.CSS && window.CSS.registerProperty) {
 const TRIGGER_ANIMATION_NAME = '--animation-trigger';
 
 function setupAnimationTriggers() {
+  let stylesheets = document.querySelectorAll('style');
+  for (let sheet of stylesheets) {
+    sheet.innerHTML = sheet.innerHTML.replace(/animation-trigger\s+:/, '--animation-trigger:');
+  }
   let stylesheet = document.createElement('style');
   stylesheet.innerHTML = `
   @keyframes --animation-trigger {
