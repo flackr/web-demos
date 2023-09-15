@@ -27,6 +27,12 @@ function setupAnimationTriggers() {
     let components = trigger.split(/\s/);
     const timeline = components.splice(0, 1)[0];
     const frequency = components.splice(0, 1)[0];
+    const range = components.join(' ');
+    let hasMultipleRanges = components.length > 1;
+    if (['entry', 'exit', 'contain', 'cover', 'normal'].indexOf(components[0]) != -1) {
+      hasMultipleRanges = components.length > 2;
+    }
+    const fillMode = hasMultipleRanges ? 'none' : 'forwards';
 
     // To observe a specified timeline, we need to create an animation --animation-trigger that uses it.
     let animationName = cs.animationName;
@@ -35,8 +41,8 @@ function setupAnimationTriggers() {
 
     elem.style.animationName = cs.animationName + `, ${TRIGGER_ANIMATION_NAME}`;
     elem.style.animationTimeline = cs.animationTimeline + `, ${timeline}`;
-    elem.style.animationRange = cs.animationRange + `, ${components.join(' ')}`;
-    elem.style.animationFillMode = cs.animationFillMode + `, none`;
+    elem.style.animationRange = cs.animationRange + `, ${range}`;
+    elem.style.animationFillMode = cs.animationFillMode + `, ${fillMode}`;
     let animations = elem.getAnimations();
     let triggerAnimation = animations.find(anim => anim.animationName == TRIGGER_ANIMATION_NAME);
     animations = animations.filter(anim => anim != triggerAnimation);
