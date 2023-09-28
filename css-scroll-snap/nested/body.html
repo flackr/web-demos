@@ -17,8 +17,8 @@
       section {
         margin: 0;
         scroll-snap-align: start;
-        --c1: #efe;
-        --c2: #cfc;
+        --c1: white;
+        --c2: black;
         --size: 70px;
         --angle: 45deg;
         background: repeating-linear-gradient(
@@ -36,9 +36,29 @@
       body > section:first-of-type {
         border-bottom: none;
       }
-      section:nth-child(even) {
-        --c1: #eef;
-        --c2: #ccf;
+      section:nth-of-type(1) {
+        --c1: hsl(0deg, 50%, 80%);
+        --c2: hsl(0deg, 50%, 60%);
+      }
+      section:nth-of-type(2) {
+        --c1: hsl(60deg, 50%, 80%);
+        --c2: hsl(60deg, 50%, 60%);
+      }
+      section:nth-of-type(3) {
+        --c1: hsl(120deg, 50%, 80%);
+        --c2: hsl(120deg, 50%, 60%);
+      }
+      section:nth-of-type(4) {
+        --c1: hsl(180deg, 50%, 80%);
+        --c2: hsl(180deg, 50%, 60%);
+      }
+      section:nth-of-type(5) {
+        --c1: hsl(240deg, 50%, 80%);
+        --c2: hsl(240deg, 50%, 60%);
+      }
+      section:nth-of-type(6) {
+        --c1: hsl(320deg, 50%, 80%);
+        --c2: hsl(320deg, 50%, 60%);
       }
       h2 {
         margin-top: 20vh;
@@ -59,9 +79,9 @@
     <p>
       There may be a different "experience" that you swipe into after all the regular flowing content.
     </p>
-    <h2>Space</h2>
+    <h2>Coloring</h2>
     <p>
-      Just making space.
+      The sections are colored in order by hue to make it easier to tell where in the page you are. This is to make glitches in scroll position more obvious.
     </p>
     <h2>Space</h2>
     <p>
@@ -98,5 +118,6 @@
     <section>3</section>
     <section>4</section>
     <section>5</section>
+    <section>6</section>
   </body>
 </html>
