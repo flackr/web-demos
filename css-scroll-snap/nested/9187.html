@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    .scroller {
+      border: 2px solid black;
+      border-radius: 5px;
+      width: 240px;
+      height: 500px;
+      padding: 15px;
+      font-size: 24px;
+      overflow: auto;
+      scroll-snap-type: y mandatory;
+      position: relative;
+    }
+    figure {
+      border: 1px solid gray;
+      position: relative;
+    }
+    figure img {
+      width: 100%;
+    }
+
+    .snaparea {
+      box-sizing: border-box;
+      border: 2px solid blue;
+      left: 0px;
+      width: 100%;
+    }
+    .snaparea.inner {
+      left: 5px;
+      width: calc(100% - 10px);
+    }
+  </style>
+</head>
+<body>
+  <h1>Nested scroll snap area avoidance</h1>
+  <p>This is an example to show the proposed behavior for <a href="https://github.com/w3c/csswg-drafts/issues/9187">#9187</a></p>
+  <p>Snap alignment:</p>
+  <select id="align">
+    <option value="center">Center</option>
+    <option value="start">Start</option>
+    <option value="end">End</option>
+  </select>
+  <p>Avoidance strategy:</p>
+  <select id="mode">
+    <option value="native">Native</option>
+    <option value="complete">Avoid completely</option>
+    <option value="proportional">Proportional to size</option>
+  </select>
+  <h2>Example</h2>
+  <div class="scroller">
+    <div class="outer">
+      <h3>Section</h3>
+      <p>
+        When using CSS scroll-snap-1,
+        nesting areas with snap-align specified,
+        the browser should try to respect the inner snap areas.
+        Currently, most browsers consider any position to be a valid snap position
+        as they are valid for the outer snap area.
+        This can lead to situations where the browser ignores the inner snap points
+        and only considers the outer snap points, which can be inconvenient for users.
+      </p>
+      <p>
+        The proposal is to divide up a snap area larger than the viewport
+        into regions before and after inner snap areas.
+        We also may want to scale the inner snap area avoidance
+        by the size of the inner snap area in proportion to the screen,
+        in order to avoid full page snap scrolls for narrow snap items.
+      </p>
+      <figure class="inner">
+        <img src="nested-avoidance.svg"><br>
+        Example of avoiding nested areas
+      </figure>
+      <p>
+        When the area is smaller than the viewport,
+        a proportional strategy allows for an overlap proportional
+        to the portion of the scrollport not filled by the inner snap area.
+        This overlap is either split 50/50 if the alignment is center,
+        otherwise the overlap is allowed on the opposite edge of the alignment
+        to minimize the jump when scrolling into / out of the inner area.
+      </p>
+      <p>
+        In summary,
+        the goal of dividing the larger snap point into valid snap regions
+        is to conceptually divide the larger snap point into before and after inner snap points,
+        so that the browser can respect the inner snap points and provide a more intuitive and user-friendly experience.
+      </p>
+    </div>
+  </div>
+</body>
+<script>
+let align = 'center';
+let areas = [];
+function addArea(y, height, srcElem) {
+  let elem = document.createElement('div');
+  elem.style.position = 'absolute';
+  elem.className = srcElem.className;
+  elem.classList.add('snaparea');
+  elem.style.top = `${y}px`;
+  elem.style.height = `${height}px`;
+  elem.style.scrollSnapAlign = align;
+  document.querySelector('.scroller').appendChild(elem);
+  areas.push(elem);
+}
+function updateAreas() {
+  // First remove any areas from before.
+  for (let area of areas) {
+    area.remove();
+  }
+  areas = [];
+  let scroller = document.querySelector('.scroller');
+  align = document.getElementById('align').value;
+  let selected = document.getElementById('mode').value;
+  let outer = document.querySelector('.outer');
+  let inner = document.querySelector('.inner');
+  if (selected == "native") {
+    addArea(outer.offsetTop, outer.offsetHeight, outer);
+    addArea(inner.offsetTop, inner.offsetHeight, inner);
+  } else {
+    let proportion = (selected == "complete") ? 1 : (inner.offsetHeight / scroller.clientHeight);
+    let overlap = (1 - proportion) * inner.offsetHeight;
+    let start = outer.offsetTop;
+    let end = inner.offsetTop + (align == 'center' ? overlap * 0.5 : align == 'start' ? overlap : 0);
+    addArea(start, end - start, outer);
+    start = end;
+    end = inner.offsetTop + inner.offsetHeight - (align == 'center' ? overlap * 0.5 : align == 'start' ? 0 : overlap);
+    if (align == 'center')
+      addArea(start, end - start, inner);
+    else
+      addArea(inner.offsetTop, inner.offsetHeight, inner);
+    start = end;
+    end = outer.offsetTop + outer.offsetHeight;
+    addArea(start, end - start, outer);
+  }
+}
+window.addEventListener('load', updateAreas);
+document.getElementById('mode').addEventListener('input', updateAreas);
+document.getElementById('align').addEventListener('input', updateAreas);
+</script>
+</html>
