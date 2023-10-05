@@ -24,13 +24,17 @@
 
     .snaparea {
       box-sizing: border-box;
-      border: 2px solid blue;
+      border: 2px dashed blue;
       left: 0px;
       width: 100%;
     }
+    .snaparea.outer:last-of-type {
+      left: 2px;
+      width: calc(100% - 4px);
+    }
     .snaparea.inner {
-      left: 5px;
-      width: calc(100% - 10px);
+      left: 10px;
+      width: calc(100% - 20px);
     }
   </style>
 </head>
@@ -125,14 +129,13 @@ function updateAreas() {
     addArea(outer.offsetTop, outer.offsetHeight, outer);
     addArea(inner.offsetTop, inner.offsetHeight, inner);
   } else {
-    let proportion = (selected == "complete") ? 1 : (inner.offsetHeight / scroller.clientHeight);
-    let overlap = (1 - proportion) * inner.offsetHeight;
+    let overlap = (selected == "complete") ? 0 : Math.max(0, scroller.clientHeight - inner.offsetHeight);
     let start = outer.offsetTop;
     let end = inner.offsetTop + (align == 'center' ? overlap * 0.5 : align == 'start' ? overlap : 0);
     addArea(start, end - start, outer);
     start = end;
     end = inner.offsetTop + inner.offsetHeight - (align == 'center' ? overlap * 0.5 : align == 'start' ? 0 : overlap);
-    addArea(start, end - start, inner, align == 'center' ? 0 : overlap);
+    addArea(inner.offsetTop, inner.offsetHeight, inner);
     start = end;
     end = outer.offsetTop + outer.offsetHeight;
     addArea(start, end - start, outer);
