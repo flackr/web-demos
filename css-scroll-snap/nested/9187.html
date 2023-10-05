@@ -93,7 +93,7 @@
 <script>
 let align = 'center';
 let areas = [];
-function addArea(y, height, srcElem) {
+function addArea(y, height, srcElem, margin) {
   let elem = document.createElement('div');
   elem.style.position = 'absolute';
   elem.className = srcElem.className;
@@ -101,6 +101,12 @@ function addArea(y, height, srcElem) {
   elem.style.top = `${y}px`;
   elem.style.height = `${height}px`;
   elem.style.scrollSnapAlign = align;
+  if (margin) {
+    if (align == 'start')
+      elem.style.scrollMarginBlockStart = `${margin}px`;
+    else if (align == 'end')
+      elem.style.scrollMarginBlockEnd = `${margin}px`;
+  }
   document.querySelector('.scroller').appendChild(elem);
   areas.push(elem);
 }
@@ -126,10 +132,7 @@ function updateAreas() {
     addArea(start, end - start, outer);
     start = end;
     end = inner.offsetTop + inner.offsetHeight - (align == 'center' ? overlap * 0.5 : align == 'start' ? 0 : overlap);
-    if (align == 'center')
-      addArea(start, end - start, inner);
-    else
-      addArea(inner.offsetTop, inner.offsetHeight, inner);
+    addArea(start, end - start, inner, align == 'center' ? 0 : overlap);
     start = end;
     end = outer.offsetTop + outer.offsetHeight;
     addArea(start, end - start, outer);
