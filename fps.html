@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+  <style>
+    body {
+      height: 400vh;
+    }
+  </style>
+</head>
+<body>
+  <p>Simple fps counter:</p>
+  <div id="log"></div>
+  <div id="history"></div>
+  <button>Test</button>
+</body>
+<script>
+let last = 0;
+let frames = 0;
+
+function raf(ts) {
+  ++frames;
+  let delta = ts - last;
+  last = ts;
+  if (delta > 0) {
+    document.getElementById('log').textContent = `${Math.round(1000 / delta)} fps`;
+  }
+  requestAnimationFrame(raf);
+}
+requestAnimationFrame(raf);
+
+let rates = [];
+setInterval(() => {
+  const seconds = 10;
+  rates.push(frames);
+  if (rates.length > seconds) {
+    rates.splice(0, 1);
+  }
+  document.getElementById('history').textContent = `Last ${seconds} seconds: ${rates.join(', ')}`;
+  frames = 0;
+}, 1000);
+
+</script>
+</html>
