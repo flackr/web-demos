@@ -1,0 +1,45 @@
+carousel {
+  /* TODO: Make this dynamic */
+  width: 800px;
+  height: 400px;
+
+  & li {
+    padding: 10px;
+
+    & > figure {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      overflow: clip;
+      margin: 0;
+      position: relative;
+
+      & > img {
+        height: 100%;
+      }
+      & > figcaption {
+        position: absolute;
+        font-size: 2em;
+        color:white;
+        bottom: 0;
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        text-align: center;
+      }
+    }
+  }
+
+  & .pseudo-marker {
+    appearance: none;
+    width: 1em;
+    height: 1em;
+    border-radius: 100%;
+    border: 2px solid #777;
+    background: white content-box;
+  }
+
+  & .pseudo-marker:checked {
+    background: #99f content-box;
+  }
+}

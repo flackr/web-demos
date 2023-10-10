@@ -1,0 +1,51 @@
+carousel {
+  display: grid;
+  grid-template:
+    'previous scroller next' 1fr
+    '. markers .' auto
+    / auto 1fr auto;
+
+  & li {
+    list-style-type: none;
+    display: block;
+    position: relative;
+    aspect-ratio: 2 / 3;
+    box-sizing: border-box;
+  }
+  
+  & > .pseudo-grid-flow-scroller {
+    grid-area: scroller;
+    overflow-x: auto;
+    scrollbar-width: none;
+    white-space: nowrap;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    overscroll-behavior-x: contain;
+    display: flex;
+
+    & > .pseudo-page {
+      scroll-snap-align: center;
+      display: flex;
+    }
+  }
+
+  & > .pseudo-grid-flow-markers {
+    grid-area: markers;
+    text-align: center;
+
+    & > .pseudo-marker {
+      display: inline-block;
+    }  
+  }
+
+  /* Originally &::next */
+  & > .pseudo-next {
+    grid-area: next;
+  }
+
+  /* Originally &::next */
+  & > .pseudo-previous {
+    grid-area: previous;
+  }
+
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Carousel example</title>
+    <link rel="stylesheet" href="carousel.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="carousel.js"></script>
+  </head>
+  <body>
+    <h1>Carousel example</h1>
+    <p>
+      This is an example of the carousel
+      with pseudo-elements from the <a href="https://css.oddbird.net/overflow/explainer/">CSS Overflow Extensions Explainer</a>
+      referesented by full html elements.
+    </p>
+    <carousel>
+      <button class="pseudo-previous">
+        &lt;
+      </button>
+      <div class="pseudo-grid-flow-scroller">
+        <div class="pseudo-page">
+          <li><figure><img src="images/loc1.jpg"><figcaption>Item 1</figcaption></figure></li>
+          <li><figure><img src="images/loc2.jpg"><figcaption>Item 2</figcaption></figure></li>
+          <li><figure><img src="images/loc3.jpg"><figcaption>Item 3</figcaption></figure></li>
+        </div>
+        <div class="pseudo-page">
+          <li><figure><img src="images/loc4.jpg"><figcaption>Item 4</figcaption></figure></li>
+          <li><figure><img src="images/loc5.jpg"><figcaption>Item 5</figcaption></figure></li>
+          <li><figure><img src="images/loc6.jpg"><figcaption>Item 6</figcaption></figure></li>
+        </div>
+        <div class="pseudo-page">
+          <li><figure><img src="images/loc7.jpg"><figcaption>Item 7</figcaption></figure></li>
+          <li><figure><img src="images/loc1.jpg"><figcaption>Item 8</figcaption></figure></li>
+        </div>
+      </div>        
+      <button class="pseudo-next">
+        &gt;
+      </button>
+      <div class="pseudo-grid-flow-markers">
+        <input type="radio" name="marker" class="pseudo-marker" checked></input>
+        <input type="radio" name="marker" class="pseudo-marker"></input>
+        <input type="radio" name="marker" class="pseudo-marker"></input>
+      </div>
+    </carousel>
+  </body>
+</html>
