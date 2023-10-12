@@ -10,6 +10,10 @@ function init() {
   }
 
   let raf = null;
+  const RADIUS = 30;
+  const FONTSIZE = 16;
+  const LINESPACING = 4;
+  const PADDING = 8;
   function draw() {
     if (raf === null) {
       raf = requestAnimationFrame(() => {
@@ -22,8 +26,21 @@ function init() {
           let pointer = pointers[id];
           ctx.fillStyle = `hsla(${(id * 30) % 360}deg 50% 50% / ${pointer.state == 'down' ? 100 : 50}%)`
           ctx.beginPath();
-          ctx.arc(pointer.x, pointer.y, 80, 0, 2 * Math.PI);
+          ctx.arc(pointer.x, pointer.y, RADIUS, 0, 2 * Math.PI);
           ctx.fill();
+        }
+
+        ctx.font = `${FONTSIZE}px sans-serif`;
+        for (let id in pointers) {
+          let pointer = pointers[id];
+          let text = `pointerId: ${id}\nbuttons: ${pointer.buttons}`;
+          let lines = text.split('\n');
+          let y = pointer.y - (lines.length * 0.5 - 0.5) * (FONTSIZE + LINESPACING);
+          ctx.fillStyle = 'black';
+          for (let line of lines) {
+            ctx.fillText(line, pointer.x + RADIUS + PADDING, y);
+            y += FONTSIZE + LINESPACING;
+          }
         }
         ctx.restore();
       });
