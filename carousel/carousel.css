@@ -26,6 +26,7 @@ carousel {
     & > .pseudo-page {
       scroll-snap-align: center;
       display: flex;
+      width: 100%;
     }
   }
 
