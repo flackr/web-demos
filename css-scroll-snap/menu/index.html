@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+      .menu-scroller {
+        height: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-behavior: smooth;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        overscroll-behavior: none;
+        scroll-timeline: --menu inline;
+      }
+      .menu-scroller > div {
+        display: flex;
+        position: relative;
+        flex-direction: row;
+        inline-size: max-content;
+      }
+      #menu {
+        position: relative;
+        background: #eee;
+        padding: 16px;
+        border-right: 1px solid #ccc;
+        z-index: 1;
+        margin: 0;
+        height: 100vh;
+        scroll-snap-align: none start;
+      }
+      @keyframes fade {
+        0% {
+          opacity: 1;
+          pointer-events: auto;
+        }
+        100% {
+          opacity: 0;
+          pointer-events: none;
+        }
+      }
+      #content {
+        height: 100vh;
+        width: 100vw;
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 1;
+        opacity: 0;
+        pointer-events: none;
+        background: rgba(0, 0, 0, 0.5);
+        scroll-snap-align: none start;
+        animation-name: fade;
+        animation-timeline: --menu;
+      }
+      .content {
+        overflow: auto;
+        position: sticky;
+        width: 100vw;
+        height: 100vh;
+        right: 0;
+        padding: 8px;
+        box-sizing: border-box;
+      }
+      #showmenu > button {
+        position: sticky;
+        top: 0;
+        font-size: 32px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="menu-scroller">
+      <div>
+        <menu id="menu">
+          <h1>Menu</h1>
+          <ul>
+            <li>Option One</li>
+            <li>Option Two</li>
+            <li>Option Three</li>
+          </ul>
+        </menu>
+        <a id="content" href="#content"></a>
+        <div class="content">
+          <a id="showmenu" href="#menu"><button>🍔</button></a>
+          <h1>Menu example</h1>
+          <hr>
+          <p>This is an example of a side menu.</p>
+          <p>Try it out, show the menu by dragging to the right or clicking the menu button.</p>
+          <h1>Details</h1>
+          <h2>Scrolling interaction</h2>
+          <p>This is implemented using a horizontal scroller outside of the main document scroller.</p>
+          <p>When you attempt to scroll beyond the horizontal limits of the document, it chains to the root scroller.</p>
+          <h2>Scroll snap</h2>
+          <p>Snap points ensure that the side menu is either fully in view or fully hidden.</p>
+          <h2>Scroll driven animation</h2>
+          <p>A scroll driven animation fades in the overlay which obscures the main content.</p>
+          <h2>Sticky position</h2>
+          <p>The content itself uses <pre>position: sticky; right: 0;</pre> such that it is always shifted into the viewport, even if that means sliding under the menu.</p>
+          <h2>Fragment navigation</h2>
+          <p>Fragment links are used to either scroll to the menu or scroll to the content area.</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
