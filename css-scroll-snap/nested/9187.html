@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="scroll-snap.js"></script>
   <style>
     .scroller {
       border: 2px solid black;
@@ -21,21 +22,6 @@
     figure img {
       width: 100%;
     }
-
-    .snaparea {
-      box-sizing: border-box;
-      border: 2px dashed blue;
-      left: 0px;
-      width: 100%;
-    }
-    .snaparea.outer:last-of-type {
-      left: 2px;
-      width: calc(100% - 4px);
-    }
-    .snaparea.inner {
-      left: 10px;
-      width: calc(100% - 20px);
-    }
   </style>
 </head>
 <body>
@@ -50,8 +36,9 @@
   <p>Avoidance strategy:</p>
   <select id="mode">
     <option value="native">Native</option>
-    <option value="complete">Avoid completely</option>
+    <option value="avoid">Avoid completely</option>
     <option value="proportional">Proportional to size</option>
+    <option value="join">Join with inner ranges</option>
   </select>
   <h2>Example</h2>
   <div class="scroller">
@@ -95,51 +82,21 @@
   </div>
 </body>
 <script>
-let align = 'center';
-let areas = [];
-function addArea(y, height, srcElem, margin) {
-  let elem = document.createElement('div');
-  elem.style.position = 'absolute';
-  elem.className = srcElem.className;
-  elem.classList.add('snaparea');
-  elem.style.top = `${y}px`;
-  elem.style.height = `${height}px`;
-  elem.style.scrollSnapAlign = align;
-  if (margin) {
-    if (align == 'start')
-      elem.style.scrollMarginBlockStart = `${margin}px`;
-    else if (align == 'end')
-      elem.style.scrollMarginBlockEnd = `${margin}px`;
-  }
-  document.querySelector('.scroller').appendChild(elem);
-  areas.push(elem);
-}
+
+var snap = null;
+
 function updateAreas() {
-  // First remove any areas from before.
-  for (let area of areas) {
-    area.remove();
-  }
-  areas = [];
   let scroller = document.querySelector('.scroller');
+  if (!snap) {
+    snap = new ScrollSnap(scroller);
+  }
   align = document.getElementById('align').value;
   let selected = document.getElementById('mode').value;
   let outer = document.querySelector('.outer');
   let inner = document.querySelector('.inner');
-  if (selected == "native") {
-    addArea(outer.offsetTop, outer.offsetHeight, outer);
-    addArea(inner.offsetTop, inner.offsetHeight, inner);
-  } else {
-    let overlap = (selected == "complete") ? 0 : Math.max(0, scroller.clientHeight - inner.offsetHeight);
-    let start = outer.offsetTop;
-    let end = inner.offsetTop + (align == 'center' ? overlap * 0.5 : align == 'start' ? overlap : 0);
-    addArea(start, end - start, outer);
-    start = end;
-    end = inner.offsetTop + inner.offsetHeight - (align == 'center' ? overlap * 0.5 : align == 'start' ? 0 : overlap);
-    addArea(inner.offsetTop, inner.offsetHeight, inner);
-    start = end;
-    end = outer.offsetTop + outer.offsetHeight;
-    addArea(start, end - start, outer);
-  }
+  outer.style.scrollSnapAlign = align;
+  inner.style.scrollSnapAlign = align;
+  snap.update(selected);
 }
 window.addEventListener('load', updateAreas);
 document.getElementById('mode').addEventListener('input', updateAreas);
