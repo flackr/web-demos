@@ -3,7 +3,7 @@ class ScrollSnap {
   #enabled = null;
   #lastY = 0;
   #ranges = [];
-  mode = "";
+  mode = "native";
 
   constructor(scroller) {
     this.#scroller = scroller;
