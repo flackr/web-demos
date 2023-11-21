@@ -7,9 +7,11 @@ class ScrollSnap {
 
   constructor(scroller) {
     this.#scroller = scroller;
+    const resizeObserver = new ResizeObserver(() => {this.update();});
+    resizeObserver.observe(this.#scroller);
   }
 
-  update(mode) {
+  update = (mode) => {
     this.mode = mode || this.mode;
     const scrollerHeight = this.#scroller.clientHeight;
     let getTop = (element) => {
@@ -81,13 +83,14 @@ class ScrollSnap {
           ranges.splice(ranges.length, 0, ...getSnapRanges(child));
         }
       }
-      return ranges;
+      return ranges.sort((r1, r2) => {return r1[0] - r2[0];});
     };
     this.#ranges = getSnapRanges(this.#scroller).map(convertRange).sort((r1, r2) => {return r1[0] - r2[0]});
     if (this.mode == "native") {
       this.disable();
     } else {
       this.enable();
+      this.onScrollEnd();
     }
   }
 
