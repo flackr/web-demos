@@ -46,7 +46,9 @@ class ScrollSnap {
           let start = getTop(child);
           const bottom = start + child.offsetHeight;
           const innerRanges = getSnapRanges(child);
-          for (let innerRange of innerRanges) {
+          for (let i = 0; i < innerRanges.length; ++i) {
+            const innerRange = innerRanges[i];
+            const nextOuterEnd = i < innerRanges.length - 1 ? innerRanges[i + 1][0] : bottom;
             const innerAlign = innerRange[2];
             const innerHeight = innerRange[1] - innerRange[0];
             let gapBefore = 0;
@@ -66,15 +68,17 @@ class ScrollSnap {
               let overlap = this.mode == "proportional" ? gapAfter : 0;
               ranges.push([start, innerRange[0] + overlap, align]);
             }
-            if (this.mode == "avoid" || this.mode == "proportional") {
-              // Avoid the inner range.              
-              ranges.push(innerRange);
-              let overlap = this.mode == "proportional" ? gapBefore : 0;
-              start = innerRange[1] - overlap;
-            } else if (this.mode == "join") {
+            const joinInnerRange = this.mode == "join" || (
+                this.mode == "join-short" && nextOuterEnd - innerRange[1] < scrollerHeight);
+            if (joinInnerRange) {
               // Join with the inner range, assumings its alignment.
               start = innerRange[0];
               align = innerAlign;
+            } else {
+              // Avoid the inner range.
+              ranges.push(innerRange);
+              let overlap = this.mode == "proportional" ? gapBefore : 0;
+              start = innerRange[1] - overlap;
             }
           }
           if (innerRanges.length == 0 || start < bottom)
