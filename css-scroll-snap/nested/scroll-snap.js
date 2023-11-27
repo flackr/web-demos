@@ -22,6 +22,9 @@ class ScrollSnap {
       }
       return y;
     }
+    let clampOffset = (offset) => {
+      return Math.max(0, Math.min(this.#scroller.scrollHeight - scrollerHeight, offset));
+    }
     let convertRange = (range) => {
       const align = range[2];
       const height = Math.max(0, range[1] - range[0] - scrollerHeight);
@@ -33,9 +36,9 @@ class ScrollSnap {
           start -= gap;
         } else if (align == 'center') {
           start -= gap / 2;
-        }  
+        }
       }
-      return [start, start + height];
+      return [clampOffset(start), clampOffset(start + height)];
     };
     let getSnapRanges = (element) => {
       let children = element.children;
@@ -64,12 +67,16 @@ class ScrollSnap {
                 gapBefore = gap;
               }
             }
+            if (this.mode == "join-short-both" && i == 0 &&
+                innerRange[0] - start < scrollerHeight) {
+              innerRange[0] = start;
+            }
             if (innerRange[0] > start) {
               let overlap = this.mode == "proportional" ? gapAfter : 0;
               ranges.push([start, innerRange[0] + overlap, align]);
             }
             const joinInnerRange = this.mode == "join" || (
-                this.mode == "join-short" && nextOuterEnd - innerRange[1] < scrollerHeight);
+                (this.mode == "join-short" || this.mode == "join-short-both") && nextOuterEnd - innerRange[1] < scrollerHeight);
             if (joinInnerRange) {
               // Join with the inner range, assumings its alignment.
               start = innerRange[0];
