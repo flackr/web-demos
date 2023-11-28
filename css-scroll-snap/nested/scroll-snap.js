@@ -75,8 +75,9 @@ class ScrollSnap {
               let overlap = this.mode == "proportional" ? gapAfter : 0;
               ranges.push([start, innerRange[0] + overlap, align]);
             }
+            const lastInnerArea = i == innerRanges.length - 1;
             const joinInnerRange = this.mode == "join" || (
-                (this.mode == "join-short" || this.mode == "join-short-both") && nextOuterEnd - innerRange[1] < scrollerHeight);
+                (this.mode == "join-short" || this.mode == "join-short-both" || (this.mode == "join-short-inner" && !lastInnerArea)) && nextOuterEnd - innerRange[1] < scrollerHeight);
             if (joinInnerRange) {
               // Join with the inner range, assumings its alignment.
               start = innerRange[0];
