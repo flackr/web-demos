@@ -229,6 +229,10 @@ class FragmentNode {
   }
 }
 
+function updateSelectors(selector) {
+  return selector.replaceAll('::fragment', '>.fragment').replace(/::grid-flow\(([^)]*)\)/g, '>.grid-flow-\$1');
+}
+
 function update() {
   let generated = document.createElement('style');
   generated.setAttribute('polyfill-generated', 'true');
@@ -239,13 +243,24 @@ function update() {
   }
   let extraCSS = '';
   let fragmentElems = new Set();
+  let flowContainers = {};
+  let flowElems = new Set();
   for (let block of blocks) {
-    if (block.selector.indexOf('::fragment') != -1) {
+    let flow = /^(.*)::grid-flow\(([^)]*)\)$/.exec(block.selector);
+    if (flow) {
+      // Selector on which grid flow was added.
+      const selector = updateSelectors(flow[1]);
+      const name = flow[2];
+      flowContainers[selector] = flowContainers[selector] || new Set();
+      flowContainers[selector].add(name);
+    }
+    let mutatedSelector = updateSelectors(block.selector);
+    if (mutatedSelector != block.selector) {
       let props = '';
       for (let prop in block.props) {
         props += `  ${prop}: ${block.props[prop]};\n`
       };
-      extraCSS += `\n${block.selector.replaceAll('::fragment', '>.fragment')} {\n${props}}`;
+      extraCSS += `\n${mutatedSelector} {\n${props}}`;
     }
     if (block.props['fragment']) {
       extraCSS += `\n${block.selector} {\n  --fragment: ${block.props.fragment}}\n`;
@@ -253,13 +268,38 @@ function update() {
         fragmentElems.add(elem);
       }
     }
+    if (block.props['grid-flow']) {
+      extraCSS += `\n${block.selector} {\n  --grid-flow: ${block.props['grid-flow']}}\n`;
+      for (let elem of document.querySelectorAll(block.selector)) {
+        flowElems.add(elem);
+      }
+    }
   }
   generated.innerHTML = extraCSS;
   document.head.appendChild(generated);
+  for (let selector in flowContainers) {
+    for (let elem of document.querySelectorAll(selector)) {
+      elem.gridFlows = {};
+      for (let area of flowContainers[selector]) {
+        let div = document.createElement('div');
+        div.className = `grid-flow-${area}`;
+        elem.appendChild(div);
+        elem.gridFlows[area] = div;
+      }
+    }
+  }
   for (let elem of fragmentElems) {
     const fragment = getComputedStyle(elem).getPropertyValue('--fragment');
-    if (fragment == 'node') {
+    if (fragment == 'element') {
       new FragmentNode(elem);
+    }
+  }
+  for (let elem of flowElems) {
+    const gridflow = getComputedStyle(elem).getPropertyValue('--grid-flow');
+    const flows = elem.parentElement.gridFlows || {};
+    const flow = flows[gridflow];
+    if (flow) {
+      flow.appendChild(elem);
     }
   }
 }
