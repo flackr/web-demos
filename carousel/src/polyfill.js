@@ -229,8 +229,22 @@ class FragmentNode {
   }
 }
 
-function updateSelectors(selector) {
-  return selector.replaceAll('::fragment', '>.fragment').replace(/::grid-flow\(([^)]*)\)/g, '>.grid-flow-\$1');
+function updateSelectors(selector, forPseudo) {
+  return selector.
+      replaceAll('::fragment', '>.fragment').
+      replace(/::grid-flow\(([^)]*)\)/g, '>.grid-flow-\$1').
+      replace(/[^ >+,]*::scroll-marker$/, forPseudo?'.scroll-marker::before':'.scroll-marker').
+      replace(/[^ >+,]*::scroll-marker:checked$/, forPseudo?'.scroll-marker:checked::before':'.scroll-marker:checked');
+}
+
+function getElems(selectors) {
+  let elems = new Set();
+  for (let selector of selectors) {
+    for (let elem of document.querySelectorAll(selector)) {
+      elems.add(elem);
+    }
+  }
+  return elems;
 }
 
 function update() {
@@ -241,10 +255,15 @@ function update() {
   for (let sheet of stylesheets) {
     blocks = blocks.concat(parseCSS(sheet.innerHTML));
   }
-  let extraCSS = '';
-  let fragmentElems = new Set();
+  let extraCSS = `
+.scroll-marker {
+  appearance: none;
+  display: block;
+}`;
+  let fragmentSelectors = new Set();
   let flowContainers = {};
-  let flowElems = new Set();
+  let markers = new Set();
+  let flowSelectors = new Set();
   for (let block of blocks) {
     let flow = /^(.*)::grid-flow\(([^)]*)\)$/.exec(block.selector);
     if (flow) {
@@ -254,25 +273,35 @@ function update() {
       flowContainers[selector] = flowContainers[selector] || new Set();
       flowContainers[selector].add(name);
     }
+    let marker = /^(.*)::scroll-marker$/.exec(block.selector);
+    if (marker) {
+      const selector = updateSelectors(marker[1]);
+      markers.add(selector);
+    }
     let mutatedSelector = updateSelectors(block.selector);
     if (mutatedSelector != block.selector) {
       let props = '';
+      let pseudoProps = '';
       for (let prop in block.props) {
-        props += `  ${prop}: ${block.props[prop]};\n`
+        if (prop == 'content') {
+          pseudoProps += `  ${prop}: ${block.props[prop]};\n`;
+        } else {
+          props += `  ${prop}: ${block.props[prop]};\n`
+        }
       };
-      extraCSS += `\n${mutatedSelector} {\n${props}}`;
+      if (props)
+        extraCSS += `\n${mutatedSelector} {\n${props}}`;
+      if (pseudoProps)
+        extraCSS += `\n${updateSelectors(block.selector, true)} {\n${pseudoProps}}`;
+
     }
     if (block.props['fragment']) {
-      extraCSS += `\n${block.selector} {\n  --fragment: ${block.props.fragment}}\n`;
-      for (let elem of document.querySelectorAll(block.selector)) {
-        fragmentElems.add(elem);
-      }
+      extraCSS += `\n${mutatedSelector} {\n  --fragment: ${block.props.fragment}}\n`;
+      fragmentSelectors.add(mutatedSelector);
     }
     if (block.props['grid-flow']) {
-      extraCSS += `\n${block.selector} {\n  --grid-flow: ${block.props['grid-flow']}}\n`;
-      for (let elem of document.querySelectorAll(block.selector)) {
-        flowElems.add(elem);
-      }
+      extraCSS += `\n${mutatedSelector} {\n  --grid-flow: ${block.props['grid-flow']}}\n`;
+      flowSelectors.add(mutatedSelector);
     }
   }
   generated.innerHTML = extraCSS;
@@ -288,13 +317,32 @@ function update() {
       }
     }
   }
-  for (let elem of fragmentElems) {
+  // Process fragmented elements.
+  for (let elem of getElems(fragmentSelectors)) {
     const fragment = getComputedStyle(elem).getPropertyValue('--fragment');
     if (fragment == 'element') {
       new FragmentNode(elem);
     }
   }
-  for (let elem of flowElems) {
+
+  // TODO: Update scroll markers and grid flows when fragmented elements change.
+
+  // Process elements with scroll-markers
+  for (let elem of getElems(markers)) {
+    let marker = document.createElement('input');
+    marker.className = 'scroll-marker';
+    marker.setAttribute('type', 'radio');
+    // TODO: Auto-select marker that is currently scrolled into view.
+    // TODO: Name radio buttons something unique per scrollable area.
+    marker.setAttribute('name', 'scroll-marker');
+    marker.addEventListener('input', () => {
+      elem.scrollIntoView();
+    });
+    elem.parentElement.insertBefore(marker, elem.nextElementSibling);
+  }
+
+  // Process elements with grid-flow
+  for (let elem of getElems(flowSelectors)) {
     const gridflow = getComputedStyle(elem).getPropertyValue('--grid-flow');
     const flows = elem.parentElement.gridFlows || {};
     const flow = flows[gridflow];
