@@ -247,6 +247,25 @@ function getElems(selectors) {
   return elems;
 }
 
+function ancestorScroller(elem) {
+  const SCROLLER_OVERFLOW = ['scroll', 'auto'];
+  while (elem.parentElement) {
+    // TODO: This should follow the containing block chain.
+    elem = elem.parentElement;
+    if (elem && SCROLLER_OVERFLOW.indexOf(getComputedStyle(elem).overflowX) != -1) {
+      return elem;
+    }
+  }
+  return document.scrollingElement;
+}
+
+function eventTarget(scroller) {
+  if (scroller === document.scrollingElement) {
+    return window;
+  }
+  return scroller;
+}
+
 function update() {
   let generated = document.createElement('style');
   generated.setAttribute('polyfill-generated', 'true');
@@ -262,7 +281,7 @@ function update() {
 }`;
   let fragmentSelectors = new Set();
   let flowContainers = {};
-  let markers = new Set();
+  let markerSelectors = new Set();
   let flowSelectors = new Set();
   for (let block of blocks) {
     let flow = /^(.*)::grid-flow\(([^)]*)\)$/.exec(block.selector);
@@ -276,7 +295,7 @@ function update() {
     let marker = /^(.*)::scroll-marker$/.exec(block.selector);
     if (marker) {
       const selector = updateSelectors(marker[1]);
-      markers.add(selector);
+      markerSelectors.add(selector);
     }
     let mutatedSelector = updateSelectors(block.selector);
     if (mutatedSelector != block.selector) {
@@ -328,16 +347,17 @@ function update() {
   // TODO: Update scroll markers and grid flows when fragmented elements change.
 
   // Process elements with scroll-markers
-  for (let elem of getElems(markers)) {
+  let markers = [];
+  for (let elem of getElems(markerSelectors)) {
     let marker = document.createElement('input');
     marker.className = 'scroll-marker';
     marker.setAttribute('type', 'radio');
-    // TODO: Auto-select marker that is currently scrolled into view.
     // TODO: Name radio buttons something unique per scrollable area.
     marker.setAttribute('name', 'scroll-marker');
     marker.addEventListener('input', () => {
       elem.scrollIntoView();
     });
+    markers.push({element: elem, marker});
     elem.parentElement.insertBefore(marker, elem.nextElementSibling);
   }
 
@@ -349,6 +369,36 @@ function update() {
     if (flow) {
       flow.appendChild(elem);
     }
+  }
+
+  // Determine scrollers after grid-flow.
+  let scrollers = new Map();
+  for (let markerPair of markers) {
+    let scroller = ancestorScroller(markerPair.element);
+    if (!scrollers.has(scroller)) {
+      scrollers.set(scroller, []);
+    }
+    scrollers.get(scroller).push(markerPair);
+  }
+  for (let scroller of scrollers.keys()) {
+    let updateMarker = () => {
+      const markers = scrollers.get(scroller);
+      if (markers.length == 0)
+        return;
+      let i = 1;
+      for (i = 1; i < markers.length; ++i) {
+        const {element, marker} = markers[i];
+        let position = relativeOffset(scroller, element);
+        // TODO: Consider snap-align, scroll-margin and scroll-padding.
+        const desiredOffset = Math.min(scroller.scrollHeight - scroller.clientHeight, position.offsetTop);
+        if (desiredOffset > scroller.scrollTop) {
+          break;
+        }
+      }
+      markers[i - 1].marker.checked = true;
+    };
+    eventTarget(scroller).addEventListener('scroll', updateMarker);
+    updateMarker();
   }
 }
 document.addEventListener('DOMContentLoaded', update);
