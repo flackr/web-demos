@@ -356,6 +356,7 @@ function addMarker(elem) {
   scroller.markers.push(elem)
   scroller.onscroll = handleScroll;
   scroller.onscrollend = resetHandleScroll;
+  handleScroll.apply(scroller);
 }
 
 function update() {
@@ -492,7 +493,6 @@ Element.prototype.insertBefore = function(node, child) {
   }
   let marker = cs.getPropertyValue('--scroll-marker');
   if (marker == 'yes') {
-    console.log('Add marker for', node);
     addMarker(node);
   }
 }
