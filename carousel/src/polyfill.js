@@ -1,21 +1,24 @@
-CSS.registerProperty({
-  name: '--grid-flow',
-  syntax: 'none | <custom-ident>',
-  inherits: false,
-  initialValue: 'none'
-});
-CSS.registerProperty({
-  name: '--fragment',
-  syntax: 'none | element',
-  inherits: false,
-  initialValue: 'none'
-});
-CSS.registerProperty({
-  name: '--scroll-marker',
-  syntax: 'none | yes',
-  inherits: false,
-  initialValue: 'none'
-});
+const registerPropertySupported = !!(window.CSS && CSS.registerProperty);
+if (registerPropertySupported) {
+  CSS.registerProperty({
+    name: '--grid-flow',
+    syntax: 'none | <custom-ident>',
+    inherits: false,
+    initialValue: 'none'
+  });
+  CSS.registerProperty({
+    name: '--fragment',
+    syntax: 'none | element',
+    inherits: false,
+    initialValue: 'none'
+  });
+  CSS.registerProperty({
+    name: '--scroll-marker',
+    syntax: 'none | yes',
+    inherits: false,
+    initialValue: 'none'
+  });
+}
 
 // Parses CSS text into flattened selectors and property values
 function parseCSS(str) {
@@ -379,6 +382,9 @@ function update() {
     if (block.props['grid-flow']) {
       let mutatedSelector = updateSelectors(block.selector);
       extraCSS += `${mutatedSelector} {\n  --grid-flow: ${block.props['grid-flow']};\n}\n`;
+      if (!registerPropertySupported) {
+        extraCSS += `:where(${mutatedSelector}>*) {\n  --grid-flow: none;\n}\n`;
+      }
       flowSelectors.add(mutatedSelector);
 
       // Mutate any styles targeting this selector to the destination in which content will be placed.
@@ -410,6 +416,9 @@ function update() {
       const selector = updateSelectors(marker[1]);
       markerSelectors.add(selector);
       extraCSS += `${selector} {\n  --scroll-marker: yes;\n}\n`;
+      if (!registerPropertySupported) {
+        extraCSS += `:where(${selector}>*) {\n  --scroll-marker: none;\n}\n`;
+      }
     }
 
     let mutatedSelector = updateSelectors(selector);
@@ -430,6 +439,9 @@ function update() {
     }
     if (block.props['fragment']) {
       extraCSS += `${mutatedSelector} {\n  --fragment: ${block.props.fragment};\n}\n`;
+      if (!registerPropertySupported) {
+        extraCSS += `:where(${mutatedSelector}>*) {\n  --fragment: none;\n}\n`;
+      }
       fragmentSelectors.add(mutatedSelector);
     }
   }
