@@ -1,10 +1,18 @@
 carousel {
-  /* TODO: Make this dynamic */
   width: 800px;
   height: 400px;
+  border: 1px solid lightgray;
+  overflow: hidden;
+  resize: both;
+  padding-bottom: 8px;
 
   & li {
     padding: 10px;
+    list-style-type: none;
+    display: block;
+    position: relative;
+    aspect-ratio: 2 / 3;
+    box-sizing: border-box;
 
     & > figure {
       width: 100%;
@@ -28,18 +36,5 @@ carousel {
         text-align: center;
       }
     }
-  }
-
-  & .pseudo-marker {
-    appearance: none;
-    width: 1em;
-    height: 1em;
-    border-radius: 100%;
-    border: 2px solid #777;
-    background: white content-box;
-  }
-
-  & .pseudo-marker:checked {
-    background: #99f content-box;
   }
 }

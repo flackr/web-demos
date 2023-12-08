@@ -3,9 +3,60 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Carousel example</title>
-    <link rel="stylesheet" href="carousel.css">
     <link rel="stylesheet" href="style.css">
-    <script src="carousel.js"></script>
+    <script src="src/polyfill.js"></script>
+    <style>
+      carousel {
+        display: grid;
+        grid-template:
+            'previous scroller next' 1fr
+            '. markers .' auto
+            / auto 1fr auto;
+
+        & li {
+          grid-flow: --scroller;
+        }
+
+        &::grid-flow(--scroller) {
+          grid-area: scroller;
+          overflow-x: auto;
+          scrollbar-width: none;
+          white-space: nowrap;
+          scroll-snap-type: x mandatory;
+          scroll-behavior: smooth;
+          overscroll-behavior-x: contain;
+          display: flex;
+          position: relative;
+          fragment: element;
+
+          &::fragment {
+            scroll-snap-align: center;
+            display: flex;
+            width: 100%;
+
+            &::scroll-marker {
+              grid-flow: --markers;
+              width: 1em;
+              height: 1em;
+              border-radius: 100%;
+              border: 2px solid #777;
+              background: white content-box;
+
+              &:checked {
+                background: #99f content-box;
+              }
+            }
+          }
+        }
+
+        &::grid-flow(--markers) {
+          grid-area: markers;
+          display: flex;
+          justify-content: center;
+        }
+      }
+
+    </style>
   </head>
   <body>
     <h1>Carousel example</h1>
@@ -15,33 +66,14 @@
       referesented by full html elements.
     </p>
     <carousel>
-      <button class="pseudo-previous">
-        &lt;
-      </button>
-      <div class="pseudo-grid-flow-scroller">
-        <div class="pseudo-page">
-          <li><figure><img src="images/loc1.jpg"><figcaption>Item 1</figcaption></figure></li>
-          <li><figure><img src="images/loc2.jpg"><figcaption>Item 2</figcaption></figure></li>
-          <li><figure><img src="images/loc3.jpg"><figcaption>Item 3</figcaption></figure></li>
-        </div>
-        <div class="pseudo-page">
-          <li><figure><img src="images/loc4.jpg"><figcaption>Item 4</figcaption></figure></li>
-          <li><figure><img src="images/loc5.jpg"><figcaption>Item 5</figcaption></figure></li>
-          <li><figure><img src="images/loc6.jpg"><figcaption>Item 6</figcaption></figure></li>
-        </div>
-        <div class="pseudo-page">
-          <li><figure><img src="images/loc7.jpg"><figcaption>Item 7</figcaption></figure></li>
-          <li><figure><img src="images/loc1.jpg"><figcaption>Item 8</figcaption></figure></li>
-        </div>
-      </div>        
-      <button class="pseudo-next">
-        &gt;
-      </button>
-      <div class="pseudo-grid-flow-markers" role="tablist">
-        <input type="radio" role="tab" name="marker" class="pseudo-marker" checked></input>
-        <input type="radio" role="tab" name="marker" class="pseudo-marker"></input>
-        <input type="radio" role="tab" name="marker" class="pseudo-marker"></input>
-      </div>
+      <li><figure><img src="images/loc1.jpg"><figcaption>Item 1</figcaption></figure></li>
+      <li><figure><img src="images/loc2.jpg"><figcaption>Item 2</figcaption></figure></li>
+      <li><figure><img src="images/loc3.jpg"><figcaption>Item 3</figcaption></figure></li>
+      <li><figure><img src="images/loc4.jpg"><figcaption>Item 4</figcaption></figure></li>
+      <li><figure><img src="images/loc5.jpg"><figcaption>Item 5</figcaption></figure></li>
+      <li><figure><img src="images/loc6.jpg"><figcaption>Item 6</figcaption></figure></li>
+      <li><figure><img src="images/loc7.jpg"><figcaption>Item 7</figcaption></figure></li>
+      <li><figure><img src="images/loc1.jpg"><figcaption>Item 8</figcaption></figure></li>
     </carousel>
   </body>
 </html>
