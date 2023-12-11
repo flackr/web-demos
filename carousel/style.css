@@ -1,6 +1,6 @@
 carousel {
-  width: 800px;
-  height: 400px;
+  width: min(calc(100vw - 16px), 800px);
+  height: min(calc(100vh - 16x), 400px);
   border: 1px solid lightgray;
   overflow: hidden;
   resize: both;
