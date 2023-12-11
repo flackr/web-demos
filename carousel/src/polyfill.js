@@ -262,8 +262,9 @@ function updateSelectors(selector, forPseudo) {
   return selector.
       replaceAll('::fragment', '>.fragment').
       replace(/::grid-flow\(([^)]*)\)/g, '>.grid-flow-\$1').
-      replace(/[^ >+,]*::scroll-marker$/, forPseudo?'.scroll-marker::before':'.scroll-marker').
-      replace(/[^ >+,]*::scroll-marker:checked$/, forPseudo?'.scroll-marker:checked::before':'.scroll-marker:checked');
+      replace(/[^ >+,]*::scroll-(left|right|up|down)-button/g, forPseudo?'.scroll-\$1-button::before':'.scroll-\$1-button').
+      replace(/[^ >+,]*::scroll-marker$/g, forPseudo?'.scroll-marker::before':'.scroll-marker').
+      replace(/[^ >+,]*::scroll-marker:checked$/g, forPseudo?'.scroll-marker:checked::before':'.scroll-marker:checked');
 }
 
 function getElems(selectors) {
@@ -378,6 +379,7 @@ function update() {
   let fragmentSelectors = new Set();
   let flowContainers = {};
   let remap = {};
+  let buttonContainers = {};
   for (let block of blocks) {
     if (block.props['grid-flow']) {
       let mutatedSelector = updateSelectors(block.selector);
@@ -402,6 +404,13 @@ function update() {
       if (selector.startsWith(prefix)) {
         selector = remap[prefix] + selector.slice(prefix.length);
       }
+    }
+    let button = /^(.*)::scroll-(up|down|left|right)-button$/.exec(block.selector);
+    if (button) {
+      const selector = updateSelectors(button[1]);
+      const direction = button[2];
+      buttonContainers[direction] = buttonContainers[direction] || new Set();
+      buttonContainers[direction].add(selector);
     }
     let flow = /^(.*)::grid-flow\(([^)]*)\)$/.exec(block.selector);
     if (flow) {
@@ -457,6 +466,46 @@ function update() {
         elem.appendChild(div);
         elem.gridFlows[area] = div;
       }
+    }
+  }
+  const SCROLL_AMOUNTS = {
+    right: {left: 40},
+    left: {left: -40},
+    up: {top: -40},
+    down: {top: 40}
+  };
+  // TODO: Create in consistent order.
+  for (let direction in buttonContainers) {
+    for (let scroller of getElems(buttonContainers[direction])) {
+      let button = document.createElement('button');
+      button.className = `scroll-${direction}-button`;
+      let nextSibling = scroller;
+      if (['down', 'right'].indexOf(direction) != -1) {
+        nextSibling = nextSibling.nextElementSibling;
+      }
+      scroller.parentElement.insertBefore(button, nextSibling);
+      button.addEventListener('click', (evt) => {
+        scroller.scrollBy({...SCROLL_AMOUNTS[direction], behavior: 'smooth'});
+        evt.preventDefault();
+      });
+      let updateDisabled = () => {
+        const disabled =
+            direction == 'up' && scroller.scrollTop <= 0 ||
+            direction == 'left' && scroller.scrollLeft <= 0 ||
+            direction == 'down' && scroller.scrollTop >= scroller.scrollHeight - scroller.clientHeight ||
+            direction == 'right' && scroller.scrollLeft >= scroller.scrollWidth - scroller.clientWidth;
+        if (disabled) {
+          button.setAttribute('disabled', true);
+        } else {
+          button.removeAttribute('disabled');
+        }
+      };
+      scroller.addEventListener('scroll', updateDisabled);
+      const resizeObserver = new ResizeObserver((entries) => {
+        updateDisabled();
+      });
+      resizeObserver.observe(scroller);
+      updateDisabled();
     }
   }
 

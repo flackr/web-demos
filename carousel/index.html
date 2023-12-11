@@ -8,6 +8,7 @@
     <style>
       carousel {
         display: grid;
+        position: relative;
         grid-template:
             'previous scroller next' 1fr
             '. markers .' auto
@@ -28,6 +29,27 @@
           display: flex;
           position: relative;
           fragment: element;
+
+          &::scroll-left-button, &::scroll-right-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            align-self: center;
+            position: absolute;
+            z-index: 1;
+            transition: background-color 300ms, border-color 300ms, color 300ms;
+          }
+          &::scroll-left-button {
+            grid-area: previous;
+            content: '<';
+            left: 0;
+          }
+
+          &::scroll-right-button {
+            grid-area: next;
+            content: '>';
+            right: 0;
+          }
 
           &::fragment {
             scroll-snap-align: center;
@@ -121,5 +143,10 @@
       which scrolls / tracks when the target element is scrolled into view.
     </p>
     <p><a href="scroll-marker/">Standalone scroll-marker demo</a></p>
+    <h3>Scroll buttons</h3>
+    <p>
+      Scroll button pseudoclasses are used to
+      automatically add buttons allowing scrolling in particular directions.
+    </p>
   </body>
 </html>
