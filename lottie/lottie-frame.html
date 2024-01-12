@@ -6,17 +6,23 @@
   <body>
   </body>
   <script>
-window.onmessage = (evt) => {
-  let target = parent.frames[1].document.querySelector('#target');
+
+function start() {
+  let target = parent.frames[1]?.document.querySelector('#target');
+  if (!target) {
+    setTimeout(start, 100);
+    return;
+  }
   let animData = {
       wrapper: target,
+      renderer: 'canvas',
       loop: true,
       prerender: true,
       autoplay: true,
       path: 'third_party/lottie-web/demo/bodymovin/data.json'
-
   };
   var anim = bodymovin.loadAnimation(animData);
-};
+}
+setTimeout(start, 100);
   </script>
 </html>
