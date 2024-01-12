@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+  </head>
+  <body>
+  </body>
+  <script>
+window.onmessage = (evt) => {
+  let target = parent.frames[1].document.querySelector('#target');
+  let animData = {
+      wrapper: target,
+      loop: true,
+      prerender: true,
+      autoplay: true,
+      path: 'third_party/lottie-web/demo/bodymovin/data.json'
+
+  };
+  var anim = bodymovin.loadAnimation(animData);
+};
+  </script>
+</html>

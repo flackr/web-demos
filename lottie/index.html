@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <style>
+    #lottie-frame {
+      position: absolute;
+      /* Far away from being visible */
+      top: -10000vh;
+      /* Also doesn't render anything */
+      visibility: hidden;
+    }
+    #render-frame {
+      resize: both;
+    }
+  </style>
+  <body>
+    <iframe id="lottie-frame" src="lottie-frame.html" width="0" height="0"></iframe>
+    <iframe id="render-frame" src="render-frame.html"></iframe>
+  </body>
+  <script>
+    let lottieframe = document.querySelector('#lottie-frame');
+    let renderframe = document.querySelector('#render-frame');
+    let loaded = (frame) => {
+      return new Promise((resolve) => {
+        frame.onload = () => {
+          resolve(frame);
+        }
+      });
+    }
+    Promise.all([loaded(lottieframe), loaded(renderframe)]).then(() => {
+      lottieframe.contentWindow.postMessage('start');
+    });
+  </script>
+</html>
