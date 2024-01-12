@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+    <style>
+      #target {
+        aspect-ratio: 4/1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="target"></div>
+  </body>
+<script>
+  let target = document.querySelector('#target');
+  let animData = {
+      wrapper: target,
+      renderer: 'canvas',
+      loop: true,
+      prerender: true,
+      autoplay: true,
+      path: 'third_party/lottie-web/demo/bodymovin/data.json'
+  };
+  var anim = bodymovin.loadAnimation(animData);
+  </script>
+</html>
