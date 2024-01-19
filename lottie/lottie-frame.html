@@ -15,7 +15,7 @@ function start() {
   }
   let animData = {
       wrapper: target,
-      renderer: 'canvas',
+      renderer: window.location.search.slice(1) || 'canvas',
       loop: true,
       prerender: true,
       autoplay: true,
