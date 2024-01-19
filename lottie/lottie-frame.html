@@ -22,6 +22,9 @@ function start() {
       path: 'third_party/lottie-web/demo/bodymovin/data.json'
   };
   var anim = bodymovin.loadAnimation(animData);
+  anim.addEventListener('drawnFrame', (evt) => {
+    console.log(evt);
+  });
 }
 setTimeout(start, 100);
   </script>
