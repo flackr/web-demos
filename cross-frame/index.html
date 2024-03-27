@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+  <h3>Renderer frame</h3>
+  <iframe></iframe>
+  <h3>Target frame</h3>
+  <iframe src="target.html"></iframe>
+  <script>
+    document.querySelector('iframe').setAttribute('src', 'renderer.html' + window.location.search);
+  </script>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <body>
+  </body>
+  <script>
+    function start() {
+      let target = parent.frames[1]?.document.querySelector('#animate');
+      let canvas = parent.frames[1]?.document.querySelector('canvas');
+      if (!target) {
+        setTimeout(start, 100);
+        return;
+      }
+      const param = window.location.search;
+      if (param == '' || param == 'css') {
+        let animate = function(ts) {
+          const x = Math.round(Math.sin(ts/1000) * 50 + 50);
+          target.style.transform = `translateX(${x}px)`;
+          requestAnimationFrame(animate);
+        }
+        requestAnimationFrame(animate);
+      }
+      if (param == '' || param == 'canvas') {
+        let draw = function(ts) {
+          let ctx = canvas.getContext('2d');
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = 'green';
+          const x = Math.round(Math.sin(ts/1000) * 50 + 50);
+          ctx.fillRect(x, 0, 50, 50);
+          requestAnimationFrame(draw);
+        }
+        requestAnimationFrame(draw);
+      }
+    }
+    start();
+
+    if (window.location.search)
+    document.body.innerHTML = window.location.search;
+  </script>
+</html>
