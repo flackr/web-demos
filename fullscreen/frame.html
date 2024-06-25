@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta id=viewport name=viewport content='width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover'>
+    <style>
+    .positioned {
+        position: fixed;
+        bottom: env(safe-area-inset-bottom, 0);
+        border: 2px solid blue;
+        right: 8px;
+    }
+    </style>
+    </head>
+    <body>
+    <button onclick='document.documentElement.requestFullscreen()'>Fullscreen</button>
+    <div class=positioned>Also avoids safe area</div>
+    </body>
+</html>
