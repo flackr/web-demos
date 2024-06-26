@@ -2,6 +2,7 @@
 <html>
     <head>
     <meta id=viewport name=viewport content='width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover'>
+    <script src="fullscreen.js"></script>
     <style>
     .positioned {
         position: fixed;
@@ -35,7 +36,7 @@
     <body>
     <div id="viewport"></div>
     <div id="safe">
-        <button onclick='document.documentElement.requestFullscreen()'>Fullscreen inner frame</button>
+        <button class="fullscreen">Enter fullscreen inner frame</button>
     </div>
     <div class=positioned>Inner frame safe area</div>
     </body>
