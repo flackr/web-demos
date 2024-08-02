@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Touch adjustment test</title>
+    <style>
+      body {
+        height: 100vh;
+      }
+
+      .event {
+        position: absolute;
+        border: 2px solid;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+      }
+
+      .up {
+        border: 2px dashed;
+      }
+
+      .pointer {
+        border-color: blue;
+      }
+
+      .mouse {
+        border-color: green;
+      }
+
+      .touch {
+        border-color: purple;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Test events with touch targeting</h1>
+    <p>
+      Try tapping near the <button>Button</button> or the following <a href="#">link</a>. Many browsers will adjust touches near clickable elements towards those elements.
+    </p>
+    <div id="log"></div>
+  </body>
+  <script>
+    const LOG_EVENTS = ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click', 'touchstart', 'touchend'];
+    let logEl = document.querySelector('#log');
+    let events = [];
+    for (let eventType of LOG_EVENTS) {
+      document.body.addEventListener(eventType, (evt) => {
+        const timestamp = performance.now();
+        let el = document.createElement('div');
+        el.classList.add('event');
+        let details = evt;
+        // Remove previous touches
+        for (let i = 0; i < events.length;) {
+          if (events[i].timestamp >= timestamp - 1000) {
+            ++i;
+            continue;
+          }
+          if (events[i].el)
+            document.body.removeChild(events[i].el);
+          events.splice(i, 1);
+        }
+        if (evt.type.startsWith('touch')) {
+          el.classList.add('touch');
+          details = evt.touches[0];
+        } else if (evt.type.startsWith('pointer')) {
+          el.classList.add('pointer');
+        } else {
+          el.classList.add('mouse');
+        }
+        console.log(evt, details);
+        if (details) {
+          el.style.top = `${details.pageY}px`;
+          el.style.left = `${details.pageX}px`;
+          el.style.width = `${details.radiusX}px`;
+          el.style.height = `${details.radiusY}px`;
+          document.body.appendChild(el);
+        } else {
+          el = null;
+        }
+        events.push({event: evt, el: el, timestamp});
+        updateLog();
+      });
+    }
+    function targetName(el) {
+      if (el.id)
+        return el.id;
+      return el.tagName;
+    }
+    function updateLog() {
+      let logText = '';
+      for (let i = events.length - 1; i >= 0; --i) {
+        const details = events[i];
+        logText += `${details.event.type} targeting ${targetName(details.event.target)}<br>`
+      }
+      logEl.innerHTML = logText;
+    }
+  </script>
+</html>
