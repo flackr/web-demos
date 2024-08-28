@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      Pointer capture frame test
+    </title>
+    <style>
+      #parent {
+        background: blue;
+        color: white;
+        height: 200px;
+        width: 60vw;
+      }
+    </style>
+  </head>
+  <body>
+    Tests pointer capture API capturing to different frames.
+    <div id="parent">
+      Parent frame
+    </div>
+    <iframe src="child-frame.html"></iframe>
+    <p>Event log, most recent to oldest:</p>
+    <div id="log"></div>
+  </body>
+  <script>
+    const EVENT_TYPES = ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'pointerover', 'pointerout', 'gotpointercapture', 'lostpointercapture'];
+    const logEl = document.querySelector('#log');
+    const iframe = document.querySelector('iframe');
+    iframe.addEventListener('load', () => {
+      const parentEl = document.querySelector('#parent');
+      const frameEl = iframe.contentDocument.querySelector('#child');
+      frameEl.addEventListener('pointerdown', (evt) => {
+        parentEl.setPointerCapture(evt.pointerId);
+      });
+      parentEl.addEventListener('pointerdown', (evt) => {
+        frameEl.setPointerCapture(evt.pointerId);
+      });
+      for (const eventType of EVENT_TYPES) {
+        parentEl.addEventListener(eventType, logEv);
+        frameEl.addEventListener(eventType, logEv);
+      }
+    });
+    function identifier(el) {
+      if (el.id) return `#${el.id}`;
+      return `<${el.tagName}>`;
+    }
+
+    function logEv(evt) {
+      loghtml(`${evt.type} on ${identifier(evt.target)}`);
+    }
+    let prevhtml = '';
+    let last = '';
+    let times = 0;
+    function loghtml(html) {
+      if (last == html) {
+        logEl.innerHTML = `${html} (x${++times})<br>${prevhtml}`;
+        return;
+      }
+      last = html;
+      times = 1;
+      prevhtml = logEl.innerHTML;
+      logEl.innerHTML = `${html}<br>${prevhtml}`;
+    }
+  </script>
+</html>
