@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Safe Area Inset Bottom Example</title>
+    <style>
+      body {
+        --max-safe-area-inset: 100px;
+        margin: 0;
+        padding: 0;
+      }
+
+      #footer {
+        left: 0;
+        box-sizing: border-box;
+        width: 100%;
+        margin-top: 1em;
+        background-color: #f0f0f0;
+        padding: 1em;
+      }
+
+      .fixed #footer {
+        position: fixed;
+      }
+      .sticky #footer {
+        position: sticky;
+        margin-bottom: calc(-1 * var(--max-safe-area-inset));
+      }
+      .padding #footer {
+        padding-bottom: calc(1em + env(safe-area-inset-bottom));
+        bottom: 0; 
+      }
+      .bottom #footer {
+        /* Size the the maximum safe area inset to ensure that we don't move the element visibly above the bottom of the screen. */
+        padding-bottom: calc(1em + var(--max-safe-area-inset));
+        bottom: calc(env(safe-area-inset-bottom, 0px) - var(--max-safe-area-inset));
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Working with `safe-area-inset-bottom`</h1>
+
+    <p>
+      Modern mobile devices often have non-rectangular screen shapes, like notches or rounded corners. These can overlap with your website's content, especially fixed elements like footers.
+    </p>
+
+    <p>
+      The CSS environment variable <code>safe-area-inset-bottom</code> provides the size of the bottom safe area inset, allowing you to adjust your layout accordingly.
+    </p>
+
+    <p>
+      In some cases, browsers dynamically change the safe area insets as the viewport is extended into unsafe regions (e.g. hiding the browser bottom UI may allow the page to paint behind an OS application switching affordance).
+    </p>
+
+    <h2>Example</h2>
+
+    <p>This example demonstrates both approaches combined with either sticky or fixed positioning. Use the dropdown to switch between them:</p>
+
+    <select id="behaviorSelect">
+      <option value="fixed-padding">Fixed position + padding</option>
+      <option value="fixed-bottom">Fixed position + bottom</option>
+      <option value="sticky-padding">Sticky position + padding</option>
+      <option value="sticky-bottom">Sticky position + bottom</option>
+    </select>
+
+    <h2>Approaches</h2>
+
+    <p>
+      There are two common ways to use <code>safe-area-inset-bottom</code> to prevent content from being obscured:
+    </p>
+
+    <h3>1. Using <code>padding-bottom</code></h3>
+
+    <p>
+      Add padding to the bottom of your footer equal to the value of <code>safe-area-inset-bottom</code>:
+    </p>
+
+    <code>
+      #footer {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+    </code>
+
+    <p>
+      This ensures that when positioned at the bottom of the screen, the content portion of the footer is visible,
+      with the footer background painting behind the entire visible screen area to the bottom of the screen.
+    </p>
+
+    <h3>2. Using <code>bottom</code></h3>
+
+    <p>
+      Set the <code>bottom</code> property of your footer to the value of <code>safe-area-inset-bottom</code>:
+    </p>
+
+    <code>
+      #footer {
+        bottom: env(safe-area-inset-bottom);
+      }
+    </code>
+
+    <p>
+      In order to avoid seeing the page background as the footer slides up, the natural solution is to oversize the footer by the maximum safe area inset.
+    </p>
+
+    <h3>3. Choice of sticky or fixed positioning</h3>
+
+    <p>
+      Sticky positioning ensures that the footer never obscures the content. However, when combined with oversizing the footer can result in undesirable extra blank space at the bottom of the document.
+    </p>
+
+    <p>
+      Fixed positioning ensures that the footer is always at the bottom, and that any extra reserved space is never in the content area, however if the developer isn't careful content can be hidden by the footer.
+    </p>
+
+    <h2>Performance vs ergonomics</h2>
+
+    <p>
+      The padding approach with position: sticky is easier to use and ensures that content is never obscured,
+      however updating the padding requires a main thread style and layout update to change which can result in visible jitter while scrolling.
+    </p>
+    <p>
+      The bottom position constraints lends itself to beind composited as it is purely a visual shift,
+      however it requires knowing the maximum size of the element and exposes the extra space when used with sticky positioning.
+    </p>
+
+    <div id="footer">
+      This footer uses `safe-area-inset-bottom` to keep text and <a href="#">interactive content</a> accessibly within the device's safe area.
+    </div>
+
+    <script>
+      const footer = document.getElementById('footer');
+      const select = document.getElementById('behaviorSelect');
+
+      const params = new URLSearchParams(location.search.slice(1));
+      const behavior = params.get('behavior') || 'fixed-padding';
+      select.value = behavior;
+      document.body.className = behavior.split('-').join(' ');
+      select.addEventListener('change', () => {
+        location = `?behavior=${select.value}`;
+      });
+    </script>
+  </body>
+</html>
