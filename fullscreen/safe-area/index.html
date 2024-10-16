@@ -31,6 +31,10 @@
       text-align: center;
     }
 
+    p {
+      text-align: left;
+    }
+
     body {
       height: 300vh;
     }
@@ -50,6 +54,8 @@
 <body>
   <div id="viewport"></div>
   <div id="safe">
+    <p>This is a demo of the safe area for the main frame (green) and an inner iframe (blue) with the ability to make either fullscreen. The frame viewports themselves have a red border which is covered by the safe area when it is the same.</p>
+    <p>For a demo of how the safe area could be used to position a bottom-bar, see <a href="../../css-env/safe-area-inset/">safe-area-inset example</a>.</p>
     <button class=fullscreen>Enter fullscreen main frame</button><br>
     <iframe allow="fullscreen" src="frame.html"></iframe>  
   </div>
