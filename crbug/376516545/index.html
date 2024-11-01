@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Animation</title>
+    <style>
+        body {
+            margin: 0px;
+        }
+
+        .container {
+            width: 100%;
+            height: 800px;
+            background-color: grey;
+            position: relative;
+        }
+
+        .div1 {
+            width: 100px;
+            height: 100px;
+            background-color: cornflowerblue;
+            position: absolute;
+            animation: right-bottom 1s;
+            animation-fill-mode: forwards;
+        }
+
+        .div2 {
+            width: 100px;
+            height: 100px;
+            background-color: cornflowerblue;
+            position: absolute;
+            animation: right-top 1s;
+            animation-fill-mode: forwards;
+        }
+
+        .div3 {
+            width: 100px;
+            height: 100px;
+            background-color: cornflowerblue;
+            position: absolute;
+            animation: left-top 1s;
+            animation-fill-mode: forwards;
+        }
+
+        .div4 {
+            width: 100px;
+            height: 100px;
+            background-color: cornflowerblue;
+            position: absolute;
+            animation: left-bottom 1s;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes right-top {
+            from {
+                right: 50%;
+                top: 50%;
+            }
+
+            to {
+                right: 0;
+                top: 0%;
+            }
+        }
+
+        @keyframes right-bottom {
+            from {
+                right: 50%;
+                bottom: 50%;
+            }
+
+            to {
+                right: 0%;
+                bottom: 0%;
+            }
+        }
+
+        @keyframes left-top {
+            from {
+                top: 50%;
+                left: 50%;
+            }
+
+            to {
+                top: 0%;
+                left: 0%;
+            }
+        }
+
+        @keyframes left-bottom {
+            from {
+                left: 50%;
+                bottom: 50%;
+            }
+
+            to {
+                left: 0%;
+                bottom: 0%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="div1"></div>
+        <div class="div2"></div>
+        <div class="div3"></div>
+        <div class="div4"></div>
+    </div>
+</body>
+</html>
