@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Iframe Focus Demo</title>
+<style>
+  body {
+    font-family: sans-serif;
+  }
+  #mainframe {
+    height: 200vh;
+  }
+  #mainframe:focus-within {
+    background: #ddf;
+  }
+  iframe {
+    width: 500px;
+    height: 200px;
+    border: 1px solid #ccc;
+  }
+</style>
+</head>
+<body>
+
+<div id=mainframe tabindex=0>
+  
+<h1>Iframe Focus Demo</h1>
+
+  <p>Try scrolling or touching down on the input</p>
+
+<p>Parent Input: <input type="text" id="parentInput"></p>
+<p id="focusDisplay">Current focus: None</p>
+
+<iframe id="myIframe" srcdoc='
+  <!DOCTYPE html>
+  <html>
+  <head>
+  <title>Iframe</title>
+  </head>
+  <style>
+    body { background: white; }
+    #iframe-div {
+      height: 200vh;                          
+    }
+    #iframe-div:focus-within {
+      background: #ddf;
+    } canvas { border: 2px solid black; }
+  </style>
+  <body>
+    <div id="iframe-div" tabindex=0>
+      <p>Iframe Input: <input type="text" id="iframeInput"></p>
+      <canvas width=200 height=200></canvas>
+    </div>
+  </body>
+  </html>
+'></iframe>
+</div>
+
+<script>
+  const parentInput = document.getElementById('parentInput');
+  const iframe = document.getElementById('myIframe');
+  const focusDisplay = document.getElementById('focusDisplay');
+
+  // Function to get the path of the focused element
+  function getElementPath(element) {
+    let path = [];
+    while (element) {
+      let name = element.nodeName;
+      if (element.id) {
+        name += "#" + element.id;
+      }
+      path.unshift(name);
+      element = element.parentNode;
+    }
+    return path.join(" > ");
+  }
+
+  // Function to update the focus display
+  function updateFocusDisplay(event) {
+    let focus = 'None';
+    if (iframe.contentWindow.document.activeElement != iframe.contentWindow.document.body) {
+      focus = "IFRAME > " + getElementPath(iframe.contentWindow.document.activeElement);
+    } else {
+      focus = getElementPath(document.activeElement);
+    }
+    focusDisplay.textContent = "Current focus: " + focus;
+    requestAnimationFrame(updateFocusDisplay);
+  }
+
+  requestAnimationFrame(updateFocusDisplay);
+
+  function enableCanvasTouchDrawing(canvas) {
+    let isDrawing = false;
+    let lastX, lastY;
+
+    function startDrawing(e) {
+      isDrawing = true;
+      [lastX, lastY] = [e.touches[0].pageX - canvas.offsetLeft, e.touches[0].pageY - canvas.offsetTop];
+      e.preventDefault();
+    }
+
+    function draw(e) {
+      const ctx = canvas.getContext('2d');
+      const currentX = e.touches[0].pageX - canvas.offsetLeft;
+      const currentY = e.touches[0].pageY - canvas.offsetTop;
+
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(currentX, currentY);
+      ctx.stroke();
+
+      [lastX, lastY] = [currentX, currentY];
+    }
+
+    canvas.addEventListener('touchstart', startDrawing);
+    canvas.addEventListener('touchmove', draw);
+  }
+  iframe.addEventListener('load', () => {
+    const canvas = iframe.contentDocument.querySelector('canvas');
+    enableCanvasTouchDrawing(canvas);
+  });
+  
+</script>
+
+</body>
+</html>
