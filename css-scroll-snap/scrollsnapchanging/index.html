@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Scrollsnapchanging behavior test</title>
+    <script src="polyfill.js"></script>
+    <style>
+      @media screen and (min-width: 600px) {
+        body {
+          padding: 0 10vw;
+        }        
+      }
+      body {
+        --thickness: 4px;
+        --color1: magenta;
+        --color2: #10bfff;
+      }
+      .container {
+        border: 2px solid black;
+        position: relative;
+      }
+      .scroller {
+        height: 200px;
+        overflow: auto;
+        overscroll-behavior: contain;
+        position: relative;
+        white-space: nowrap;
+        scroll-snap-type: x mandatory;
+        padding: 0 50%;
+      }
+      .item {
+        box-sizing: border-box;
+        border: 1px solid gray;
+        display: inline-block;
+        width: 120px;
+        height: 180px;
+        margin: 10px;
+        scroll-snap-align: center;
+        position: relative;
+      }
+      .markers {
+        text-align: center;
+        overflow: auto;
+        padding: var(--thickness);
+      }
+      .marker {
+        margin: 2px;
+        position: relative;
+        box-sizing: border-box;
+        border-width: var(--thickness);
+      }
+      .item::before, .marker::before {
+        position: absolute;
+        top: calc(-1*var(--thickness));
+        left: calc(-1*var(--thickness));
+        box-sizing: border-box;
+        width: calc(100% + 2*var(--thickness));
+        height: calc(100% + 2*var(--thickness));
+        pointer-events: none;
+        content: "";
+      }
+      .color1 {
+        outline: var(--thickness) solid var(--color1);
+      }
+      .color2 {
+        outline: var(--thickness) solid var(--color2);
+      }
+      .marker.snapped1 {
+        border: var(--thickness) solid var(--color1);
+      }
+      .item.snapped1 {
+        outline: var(--thickness) solid var(--color1);
+      }
+      .marker.snapped2 {
+        outline: var(--thickness) solid var(--color2);
+      }
+      .item.snapped2::before {
+        outline: var(--thickness) solid var(--color2);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Scrollsnapchanging behavior</h1>
+    <p>This demo is designed to showcase and test different behaviors for scrollsnapchanging.</p>
+    <p class="color1">First behavior: <select id="behavior1">
+      <option value="native">Native</option>
+      <option value="none">None</option>
+      <option value="current">Current location</option>
+      <option value="targeted">Targeted location</option>
+    </select></p>
+    <p class="color2">
+      Second behavior:
+      <select id="behavior2">
+      </select>
+    </p>
+    <div class="container">
+      <div class="items scroller"></div>
+      <div class="markers"></div>
+    </div>
+  </body>
+  <script>
+    const scroller = document.querySelector('.scroller');
+    const items = document.querySelector('.items');
+    const markers = document.querySelector('.markers');
+    let num = 0;
+
+    for (let i = 1; i <= 20; ++i) {
+      const item = document.createElement('div');
+      item.classList.add('item');
+      item.textContent = `Item ${i}`;
+      const marker = document.createElement('button');
+      marker.classList.add('marker');
+      item.marker = marker;
+      marker.textContent = `${i}`;
+      marker.addEventListener('click', () => {
+        item.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});
+      });
+      items.appendChild(item);
+      markers.appendChild(marker);
+    }
+
+    const behaviorSelects = [document.querySelector('#behavior1'), document.querySelector('#behavior2')];
+    behavior2.innerHTML = behavior1.innerHTML;
+
+    const listener = (className, evt) => {
+      document.querySelectorAll(`.${className}`).forEach(element => element.classList.remove(className));
+      const target = evt.snapTargetInline;
+      if (!target) return;
+      target.classList.add(className);
+      if (target.marker)
+        target.marker.classList.add(className);
+    }
+    const listeners = [listener.bind(null, 'snapped1'), listener.bind(null, 'snapped2')];
+    let selected = ['none', 'none'];
+    function setBehavior(index, behavior) {
+      if (selected[index] != 'none') {
+        scroller.removeEventListener('scrollsnapchanging', listeners[index], {behavior: selected[index]});
+      }
+      if (behavior != 'none') {
+        scroller.addEventListener('scrollsnapchanging', listeners[index], {behavior});
+      }
+      listeners[index].apply(scroller, [{}]);
+      selected[index] = behavior;
+    }
+    
+    for (let i = 0; i < behaviorSelects.length; ++i) {
+      const select = behaviorSelects[i];
+      setBehavior(i, select.value);
+      select.addEventListener('change', () => {
+        setBehavior(i, select.value);
+      });
+    }
+    
+  </script>
+</html>
