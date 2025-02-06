@@ -87,8 +87,9 @@
       }
       target.classList.toggle(composited ? 'transform' : 'width');
       if (flush) {
-        // Forces style
-        target.offsetLeft;
+        // Forces style and get animation
+        const anim = target.getAnimations()[0];
+        logHtml(`forced style, animation startTime = ${anim.startTime ? relativeTime(anim.startTime) : 'null'}`);
       }
     });
   </script>
