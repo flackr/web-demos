@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      #target {
+        width: 100px;
+        height: 100px;
+        background: green;
+        transition: all 100ms;
+      }
+
+      .transform {
+        transform: translateX(100px);
+      }
+
+      #target.width {
+        width: 80px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Transition timing test</h1>
+    <p>Starts a transition on click, and tests when that shows up with respect to raf.</p>
+    <input id="composited" type="checkbox" checked> Composited transition?<br>
+    <input id="flush-style" type="checkbox"> Flush style immediately?<br>
+    <input id="on-click" type="checkbox" checked> Transition on click?<br>
+    <div id="target"></div>
+    <button id="click">Test</button>
+    <div id="log"></div>
+  </body>
+  <script>
+    const click = document.getElementById('click');
+    const target = document.getElementById('target');
+    const log = document.getElementById('log');
+    const PRECISION = 100;
+    let startTime = 0;
+
+    // Adds the given html to the log element
+    function logHtml(html) {
+      log.innerHTML += `${relativeTime(performance.now())}: ${html}<br>`;
+    };
+
+    function relativeTime(number) {
+      return `${Math.round((number - startTime) * PRECISION) / PRECISION}ms`;
+    }
+
+    // Returns a promise resolved on next raf
+    function raf() {
+      return new Promise(resolve => requestAnimationFrame(resolve));
+    }
+
+    // Returns a promise resolved after the given time
+    function wait(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    click.addEventListener('click', async (evt) => {
+      startTime = performance.now();
+      const flush = document.getElementById('flush-style').checked;
+      const composited = document.getElementById('composited').checked;
+      const onClick = document.getElementById('on-click').checked;
+      log.innerHTML = '';
+      logHtml('click');
+      for (const eventType of ['transitionrun', 'transitionstart']) {
+        target.addEventListener(eventType, (evt) => {
+          const anim = target.getAnimations()[0];
+          logHtml(`${evt.type} startTime = ${relativeTime(anim.startTime)}`);
+        }, {once: true});
+      }
+      let logRafs = true;
+      function logRaf(ts) {
+        logHtml(`requestAnimationFrame frame = ${relativeTime(ts)}`);
+        if (logRafs)
+          requestAnimationFrame(logRaf);
+      }
+      target.addEventListener('transitionend', () => {
+        logHtml('transitionend');
+        logRafs = false;
+      }, {once: true});
+      requestAnimationFrame(logRaf);
+      if (!onClick) {
+        await wait(3);
+        logHtml('timer');
+      }
+      target.classList.toggle(composited ? 'transform' : 'width');
+      if (flush) {
+        // Forces style
+        target.offsetLeft;
+      }
+    });
+  </script>
+</html>
