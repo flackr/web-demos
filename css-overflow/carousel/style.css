@@ -99,7 +99,7 @@
   
   &::scroll-marker {
     display: inline-block;
-    content: "" / attr(data-marker-label);
+    content: "" / attr(data-label);
     border-radius: 50%;
     box-sizing: border-box;
     width: 16px;
