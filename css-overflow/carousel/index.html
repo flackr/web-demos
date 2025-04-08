@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Carousel example</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Example carousel">
+    <div class="scroller">
+      <div class="slides">
+        <div class="slide">
+          <div class="content" aria-label="1 of 6" role="tabpanel" aria-roledescription="slide">
+            <h3>Introduction</h3>
+            <p>This demonstrates the accessibility of the slides from the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/carousel/examples/carousel-2-tablist/">APG guidelines</a>.</p>
+          </div>
+        </div>
+        <div class="slide">
+          <div class="content" aria-label="2 of 6" role="tabpanel" aria-roledescription="slide">
+            <h3>Features</h3>
+            <p>Several features CSS features enable this carousel:</p>
+            <ul>
+              <li><a href="#scroll-button">::scroll-button</a></li>
+              <li><a href="#scroll-marker">::scroll-marker</a></li>
+              <li><a href="#interactivity">::interactivity: inert</a></li>
+            </ul>
+          </div>
+        </div>
+        <div id="scroll-button" class="slide">
+          <div class="content" aria-label="3 of 6" role="tabpanel" aria-roledescription="slide">
+            <h3>::scroll-button</h3>
+            <p>These establish the buttons that allow navigating forward / backward through the slides:</p>
+            <code>
+              ::scroll-button(*) { /* Common visual styles */ }
+              ::scroll-button(inline-end) { content: url(next.svg) / "Next Slide"; }
+              ::scroll-button(inline-start) { content: url(prev.svg) / "Previous Slide"; }
+            </code>
+          </div>
+        </div>
+        <div id="scroll-marker" class="slide">
+          <div class="content" aria-label="4 of 6" role="tabpanel" aria-roledescription="slide">
+            <h3>::scroll-marker</h3>
+            <p>
+              The ::scroll-marker pseudo-element is established off of the content you wish to target with the marker.
+              This creates the dots in the carousel.
+            </p>
+            <code>
+              ::scroll-marker {
+                content: "" / attr(data-marker-label);
+                /* Visual styles */
+              }
+            </code>
+          </div>
+        </div>
+        <div class="slide">
+          <div class="content" aria-label="5 of 6" role="tabpanel" aria-roledescription="slide">
+            <h3 id="interactivity">interactivity</h3>
+            <p>
+              The interactivity property can be used to establish the expected pattern of making the next / previous slides not displayed
+              per the established <a href="https://www.w3.org/WAI/ARIA/apg/patterns/carousel/">APG carousel guidelines</a>:
+            </p>
+            <quote>
+              the screen reader experience can be confusing and disorienting if slides that are not visible on screen are incorrectly hidden, e.g., displayed off-screen.
+            </quote>
+          </div>
+        </div>
+        <div class="slide">
+          <div class="content" aria-label="6 of 6" role="tabpanel" aria-roledescription="slide">
+            <h3>Status</h3>
+            <p>
+              The carousel APIs are specified in the css-overflow-5 specification and shipped in Chrome 135.
+            </p>
+          </div>
+        </div>
+      </ul>        
+    </div>
+  </div>
+</body>
+</html>
