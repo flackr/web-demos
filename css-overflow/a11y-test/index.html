@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Carousel example</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="src/script.js" async></script>
+</head>
+<body>
+  <div class="carousel" role="region" aria-label="Example carousel">
+    <div class="scroll-marker-group">
+      <input type="radio" name="slide" class="scroll-marker" aria-details="slide1" aria-controls="scroller" id="tab1" role="tab">
+      <input type="radio" name="slide" class="scroll-marker" aria-details="slide2" aria-controls="scroller" id="tab2" role="tab">
+      <input type="radio" name="slide" class="scroll-marker" aria-details="slide3" aria-controls="scroller" id="tab3" role="tab">
+      <input type="radio" name="slide" class="scroll-marker" aria-details="slide4" aria-controls="scroller" id="tab4" role="tab">
+      <input type="radio" name="slide" class="scroll-marker" aria-details="slide5" aria-controls="scroller" id="tab5" role="tab">
+      <input type="radio" name="slide" class="scroll-marker" aria-details="slide6" aria-controls="scroller" id="tab6" role="tab">
+    </div>
+    <button class="scroll-button inline-start" aria-controls="scroller"><img src="images/prev.svg" alt="Previous slide"></button>
+    <button class="scroll-button inline-end" aria-controls="scroller"><img src="images/next.svg" alt="Next slide"></button>
+    <div class="scroller" id="scroller">
+      <div class="slides">
+        <div class="slide" role="tabpanel" aria-label="1 of 6" id="slide1" aria-flowto="tab1">
+          <div class="content">
+            <h3>Introduction</h3>
+            <p>This demonstrates potential accessibility patterns for carousels using <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-flowto">aria-flowto</a> as well as implicit tab orders</p>
+          </div>
+        </div>
+        <div class="slide" role="tabpanel" aria-label="2 of 6" id="slide2" aria-flowto="tab2">
+          <div class="content">
+            <h3>tabindex</h3>
+            <p>
+              Rather than setting <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/inert">inert</a> on offscreen content,
+              <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/tabindex">tabindex</a> is set to -1 on all focusable elements in offscreen tabpanels
+              to ensure that the tab order skips the rest of the content.
+            </p>
+          </div>
+        </div>
+        <div class="slide" role="tabpanel" aria-label="3 of 6" id="slide3" aria-flowto="tab3">
+          <div class="content">
+            <h3>aria-flowto</h3>
+            <p>
+              In order to provide screen reader users with a sensible reading order,
+              the <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-flowto">aria-flowto</a> property indicates that flow should return to the tab controls.
+            </p>
+            <code>
+              &lt;div role="tabpanel" id="slide3" aria-flowto="tab3"&gt;
+            </code>
+          </div>
+        </div>
+        <div class="slide" role="tabpanel" aria-label="4 of 6" id="slide4" aria-flowto="tab4">
+          <div class="content">
+            <h3>aria-controls</h3>
+            <p>The <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-controls">aria-controls</a> property indicates that the scroll marker group and scroll buttons control the scrolling container.</p>
+            <code>
+              &lt;div class="scroll-marker-group" aria-controls="scroller"&gt;<br>
+              &nbsp;&nbsp;&lt;div class="scroll-marker"&gt;&lt;/div&gt;<br>
+              &nbsp;&nbsp;...<br>
+              &lt;/scroll-marker-group&gt;<br>
+              &lt;button aria-controls="scroller"&gt;<br>
+              &nbsp;&nbsp;Previous slide<br>
+              &lt;/button&gt;<br>
+              &lt;button aria-controls="scroller"&gt;<br>
+              &nbsp;&nbsp;Next slide<br>
+              &lt;/button&gt;
+            </code>
+          </div>
+        </div>
+        <div class="slide" role="tabpanel" aria-label="5 of 6" id="slide5" aria-flowto="tab5">
+          <div class="content">
+            <h3>aria-details</h3>
+            <p>
+              The <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-details">aria-details</a> property links from the tab to the associated tabpanel.
+            </p>
+          </div>
+        </div>
+        <div class="slide" role="tabpanel" aria-label="6 of 6" id="slide6" aria-flowto="tab6">
+          <div class="content">
+            <h3>Status</h3>
+            <p>
+              This is a test of a potential model.
+            </p>
+          </div>
+        </div>
+      </ul>        
+    </div>
+  </div>
+</body>
+</html>
