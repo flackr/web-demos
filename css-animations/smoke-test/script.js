@@ -109,7 +109,15 @@ if (window.location.hash.length > 0) {
   updateFromHash();
 }
 
-for (let i = 0; i < window.innerWidth / 5; i++) {
+const args = window.location.search.slice(1).split('&');
+let argMap = {};
+for (const arg of args) {
+  const parts = arg.split('=');
+  argMap[parts[0]] = parts[1];
+}
+const particleCount = argMap.n ? parseInt(argMap.n) : Math.round(window.innerWidth / 5);
+
+for (let i = 0; i < particleCount; i++) {
   const flame = document.createElement('div');
   flame.classList.add('flame');
   flame.style.left = (Math.random() * 100) + '%';
