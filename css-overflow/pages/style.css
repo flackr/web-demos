@@ -1,7 +1,6 @@
 :root {
   --control-background: rgba(0, 0, 0, 0.6);
   --focus-background: rgba(0, 0, 160, 0.6);
-  --peak-pixels: 60px;
   --slide-padding: 10px;
 }
 
@@ -22,6 +21,7 @@
   grid-column: 1 / 4;
   overflow: auto;
   padding: 10px;
+  position: relative;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   scrollbar-width: none;
@@ -33,6 +33,7 @@
     background: var(--control-background);
     border-radius: 5px;
     padding: 0;
+    position: relative;
     appearance: none;
     grid-row: 1;
     margin: 4px;
@@ -68,37 +69,18 @@
 }
 
 .carousel .scroller > .slides {
-  margin: 0;
-  padding: 0 var(--peak-pixels);
-  display: flex;
-}
+  columns: 1;
+  width: 100%;
+  height: 100%;
+  text-align: center;
 
-.slide {
-  display: block;
-  background: lemonchiffon;
-  box-shadow: 5px 10px 5px rgba(0, 0, 0, 0.3);
-  border-radius: 15px;
-  box-sizing: border-box;
-  margin: 0 var(--slide-padding);
-  min-width: calc(100cqw - 2 * var(--peak-pixels));
-  max-width: 100cqw;
-  padding: 16px;
-  height: 100cqh;
-  scroll-snap-align: center;
-  container-type: scroll-state;
-  
-  > .content {
-    interactivity: inert;
+  &::column {
+    scroll-snap-align: center;
   }
-  @container scroll-state(snapped: inline) {
-    > .content {
-      interactivity: auto;
-    }
-  }
-  
-  &::scroll-marker {
+
+  &::column::scroll-marker {
     display: inline-block;
-    content: "" / attr(data-label);
+    content: "";
     border-radius: 50%;
     box-sizing: border-box;
     width: 16px;
@@ -108,13 +90,61 @@
     border: 2px solid white;
   }
   
-  &::scroll-marker:hover {
+  &::column::scroll-marker:hover {
     border-color: black;
     outline: 2px solid white;
   }
   
-  &::scroll-marker:target-current {
+  &::column::scroll-marker:target-current {
     background: white;
   }
+}
+
+@keyframes interactive-on-screen {
+  0% { interactivity: auto; }
+}
+
+.carousel .scroller > .slides > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+
+  & > li {
+    display: inline-block;
+    background: #eee;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.6);
+    box-sizing: border-box;
+    padding: 4px;
+    height: 100%;
+    container-type: scroll-state;
+    
+    interactivity: inert;
+    animation: interactive-on-screen steps(1);
+    animation-timeline: view(inline);
+  }  
+}
+
+figure {
+  margin: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
   
+  & img {
+    height: 100%;
+    max-width: 100%;
+    aspect-ratio: auto;
+  }
+  & figcaption {
+    position: absolute;
+    bottom: 48px;
+    font-size: 32px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    
+  }
 }
