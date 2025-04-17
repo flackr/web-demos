@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" async></script>
+  <title>CSS Animation smoke test</title>
+</head>
+<body>
+  <div id="fps-indicator"></div>
+  <h1>Animation smoke test</h1>
+  <p>Testing animated background-color:</p>
+  <ul>
+    <li><input type=checkbox checked id=fps><label for=fps>Show main thread fps counter</label></li>
+    <li><input type=checkbox checked id=transform><label for=transform>Transform animation at same time?</label></li>
+    <li><input type=checkbox checked id=mainanim><label for=main-anims>Main thread animation at same time</label></li>
+    <li><input type=checkbox id=jank><label for=jank>Add main thread jank</label></li>
+  </ul>
+  <div id="moon">
+    <div class="eye"></div>
+    <div class="eye"></div>
+    <div class="mouth"></div>
+  </div>
+  <div class=rock id=r1></div>
+  <div class=rock id=r2></div>
+  <div class=rock id=r3></div>
+  <div class=rock id=r4></div>
+  <div class=rock id=r5></div>
+  <div class=rock id=r6></div>
+</body>
+</html>

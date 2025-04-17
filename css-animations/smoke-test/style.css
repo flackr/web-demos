@@ -1,0 +1,170 @@
+html {
+  color-scheme: dark;
+  --flame-height: 30vh;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+#fps-indicator {
+  position: fixed;
+  top: 8px;
+  right: 8px;
+}
+
+@keyframes flame {
+  0% {
+    background-color: red;
+    transform: none;
+  }
+  15% {
+    background-color: orange;
+  }
+  30% {
+    background-color: yellow;
+  }
+  60% {
+    background-color: rgba(255, 255, 0, 0.7);
+  }
+  70% {
+    background-color: rgba(180, 180, 180, 0.5);
+  }
+  100% {
+    background-color: rgba(180, 180, 180, 0);
+    transform: translate(0, calc(-1 * var(--flame-height)));
+  }
+}
+
+.flame {
+  display: none;
+}
+
+.transform-anims .flame {
+  display: block;
+}
+
+.flame {
+  width: 50px;
+  height: 50px;
+  position: fixed;
+  bottom: 4vh;
+  border-radius: 50%;
+  animation: flame 5s infinite;
+}
+
+@keyframes glow {
+  0% {
+    background-color: #ff6633;
+  }
+  100% {
+    background-color: #aa3333;
+  }
+}
+.rock {
+  width: 25vw;
+  height: 8vh;
+  border-radius: 50%;
+  background: gray;
+  border: 2px solid black;
+  position: fixed;
+  bottom: 0;
+  z-index: 1;
+  animation: glow 700ms infinite alternate;
+}
+#r1 {
+  left: -1vw;
+}
+#r2 {
+  left: 18vw;
+  bottom: 3vh;
+  animation-delay: -300ms;
+}
+#r3 {
+  left: 33vw;
+  bottom: 1vh;
+  animation-delay: -400ms;
+}
+#r4 {
+  left: 54vw;
+  bottom: 2vh;
+  animation-delay: -100ms;
+}
+#r5 {
+  left: 70vw;
+  bottom: 0.5vh;
+  animation-delay: -600ms;
+}
+#r6 {
+  left: 85vw;
+  bottom: 0.2vh;  
+  animation-delay: -200ms;
+}
+
+@keyframes blink {
+  0% {
+    height: var(--height);
+  }
+  20% {
+    height: 0;
+  }
+  40% {
+    height: var(--height);
+  }
+  100% {
+    height: var(--height);
+  }
+}
+
+@keyframes laugh {
+  50% {
+    height: 15%;
+  }
+}
+
+#moon {
+  position: fixed;
+  top: 15vh;
+  right: 8vw;
+  width: 15vw;
+  height: 15vw;
+  border-radius: 50%;
+  background: #eee;
+  
+  & > .eye {
+    position: absolute;
+    top: 30%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+    width: 3vw;
+    height: var(--height);
+    --height: 3vw;
+    background: white;
+    border: 0.3vw solid black;
+    border-radius: 1vw;
+  }
+  & > .eye:nth-of-type(2) {
+    left: 60%;
+    animation-delay: 0.3s;
+  }
+  
+  & > .mouth {
+    position: absolute;
+    border-radius: 0 0 30% 50%;
+    height: 10%;
+    width: 50%;
+    top: 70%;
+    left: 45%;
+    border: 0.3vw solid black;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.main-anims .eye {
+  animation: blink 1s infinite;
+}
+
+.main-anims .mouth {
+  animation: laugh 500ms infinite;
+}
