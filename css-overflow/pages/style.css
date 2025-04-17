@@ -107,7 +107,7 @@
 .carousel .scroller > .slides > .content {
   height: 100%;
 
-  & > li {
+  & > * {
     display: inline-block;
     background: #eee;
     box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.6);
