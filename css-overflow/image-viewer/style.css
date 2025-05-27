@@ -1,0 +1,169 @@
+:root {
+  color-scheme: dark;
+}
+
+.viewer {
+  --auto-advance-duration: 5s;
+
+  position: relative;
+  height: 80vh;
+  border: 2px gray ridge;
+}
+.scroller {
+  --marker-click-height: 2rem;
+  --marker-dimmed:  rgba(100, 100, 100, 0.7);
+  --marker-light:   rgba(255, 255, 255, 0.98);
+  --marker-width: 4rem;
+  --marker-height: 0.5rem;
+  --marker-double-width: 8rem;
+
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  scroll-snap-type: x mandatory;
+  scroll-marker-group: before;
+  
+  &::scroll-button(*) {
+    min-width: 20%;
+    font-size: 6rem;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-weight: bold;
+    top: var(--marker-click-height);
+    bottom: 0;
+    position: absolute;
+    background: transparent;
+    border: none;
+    appearance: none;
+  }
+  &::scroll-button(left) {
+    content: "<";
+    left: 0;
+    text-align: left;
+    padding-left: 2rem;
+  }
+  &::scroll-button(right) {
+    content: ">";
+    right: 0;
+    text-align: right;
+    padding-right: 2rem;
+  }
+  
+  &::scroll-marker-group {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    overflow: auto;
+    scrollbar-width: none;
+    scroll-padding: 0.5rem;
+    height: var(--marker-click-height);
+    white-space: nowrap;
+    z-index: 1;
+  }
+}
+
+.slide {
+  min-width: 100%;
+  scroll-snap-align: center;
+  position: relative;
+  container-type: scroll-state;
+}
+
+.tabpanel {
+  position: relative;
+  height: 100%;
+
+  /* Only expose active tabpanel. */
+  interactivity: inert;
+  @container scroll-state(snapped: inline) {
+    interactivity: auto;
+  }
+  
+  &::scroll-marker {
+    content: "";
+    box-sizing: border-box;
+    display: inline-block;
+    width: var(--marker-width);
+    max-width: 10%;
+    margin: 0 0.3rem;
+    height: var(--marker-height);
+    border: 1px solid rgba(127, 127, 127, 0.5);
+  }
+}
+
+/* Highlight markers up to the current page. */
+@keyframes marker-color {
+  from  { background: var(--marker-dimmed); }
+  to    { background: var(--marker-light); }
+}
+.tabpanel {
+  view-timeline: --in-view inline;
+
+  &::scroll-marker {
+    animation: marker-color both;
+    animation-timeline: --in-view;
+    animation-range: entry 50% entry 50%;
+  }
+}
+
+/* Auto-advance animation progresses unless focus or the cursor is within the content. */
+@property --marker-progress {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0;
+}
+@keyframes marker-fill-in {
+  from {
+    --marker-progress: 0;
+  }
+  to {
+    --marker-progress: 4rem;
+  }
+}
+.scroller:not(:hover):not(:focus-within) .tabpanel::scroll-marker:target-current {
+  background: linear-gradient(90deg, var(--marker-light) 0, var(--marker-light) var(--marker-progress), var(--marker-dimmed) var(--marker-progress), var(--marker-dimmed) var(--marker-width)) no-repeat;
+  animation: marker-fill-in linear var(--auto-advance-duration) both;
+}
+
+.placeholder + .slide {
+  /* Start scrolled to first slide after placeholder slide */
+  scroll-initial-target: nearest;
+}
+
+figure {
+  margin: 0;
+  height: 100%;
+  
+  & > img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+  
+  & > figcaption {
+    position: absolute;
+    bottom: 0;
+    left: 1rem;
+    right: 1rem;
+    text-align: center;
+    /* Increase contrast with surrounding content. */
+    filter: drop-shadow(1px 1px 2px black);
+  }
+}
+
+/* Toggled to hit test scroll buttons and scroll marker pseudo-elements.
+ * See usage in script.js. */
+.hit-test-scroll-button-left,
+.hit-test-scroll-button-right,
+.hit-test-scroll-marker {
+  pointer-events: none;
+}
+.hit-test-scroll-button-left::scroll-button(left) {
+  pointer-events: auto;
+}
+.hit-test-scroll-button-right::scroll-button(right) {
+  pointer-events: auto;
+}
+.hit-test-scroll-marker::scroll-marker {
+  pointer-events: auto;
+}
