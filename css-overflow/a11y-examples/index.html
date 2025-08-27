@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carousel accessibility examples</title>
+  <style>
+    *:focus-visible {
+      outline-offset: 2px;
+    }
+    body {
+      font-family: sans-serif;
+      margin: 2rem 10%;
+    }
+    code {
+      white-space: pre-wrap;
+    }
+    .carousel {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: row;
+      anchor-name: --carousel;
+      anchor-scope: --carousel;
+      overflow: auto;
+      position: relative;
+      container-type: size;
+      height: min(50vh, 500px);
+      scroll-snap-type: inline mandatory;
+      scroll-marker-group: after;
+      &.paginated {
+        display: block;
+        white-space: normal;
+        columns: 1;
+      }
+    }
+    @keyframes interactive-when-visible {
+      0% { interactivity: auto; }
+    }
+    .carousel.paginated.discrete .item {
+      interactivity: inert;
+      animation: interactive-when-visible steps(1);
+      animation-timeline: view(inline);
+    }
+    .slides {
+      & > * {
+        min-width: 80%;
+        margin: 2%;
+        position: relative;
+      }
+      & .item {
+        height: 100%;
+        box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+        border: 1px solid #444;
+      }
+    }
+
+    .tabpanels.cards {
+      padding-left: 50%;
+      padding-right: 50%;
+    }
+
+    .itemized > * {
+      scroll-snap-align: center;
+    }
+  
+    .tabpanels > * {
+      container-type: scroll-state;
+      & > * {
+        interactivity: inert;
+        opacity: 0.5;
+        transition: opacity 0.1s;
+        @container scroll-state(snapped: inline) {
+          interactivity: auto;
+          opacity: 1;
+        }
+      }
+    }
+    
+    .cards .item {
+      min-width: 240px;
+      height: calc(100cqh - 32px);
+      margin: 8px;
+      display: inline-block;
+      box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+      border: 1px solid #444;
+    }
+  
+    .paginated::column {
+      scroll-snap-align: center;
+    }
+
+    /* ::scroll-button pseudo-elements: */
+    .carousel::scroll-button(*) {
+      position-anchor: --carousel;
+      position: absolute;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+    }
+    
+    .carousel::scroll-button(inline-start) {
+      content: "◀" / "Previous";
+      position-area: left center;
+    }
+    
+    .carousel::scroll-button(inline-end) {
+      content: "▶" / "Next";
+      position-area: right center;
+    }
+    
+    /* ::scroll-marker pseudo-elements: */
+    .carousel::scroll-marker-group {
+      overflow: auto;
+      display: block;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      text-align: center;
+      white-space: nowrap;
+      height: 2.5rem;
+    }
+    .itemized > *::scroll-marker,
+    .paginated::column::scroll-marker {
+      content: "" / attr(data-label);
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      border: 1px solid black;
+      display: inline-block;
+    }
+    .itemized > *::scroll-marker:target-current,
+    .paginated::column::scroll-marker:target-current {
+      background: #9999ff;
+    }
+  </style>
+</head>
+<body>
+  <h1>Carousel accessibility examples</h1>
+
+  <p>There are a few types of carousels.</p>
+
+  <h2>Per-item full page carousels</h2>
+
+  <p>
+    Single item carousels are carousels where only one child element is readable at a time.
+    Examples include
+    <a href="https://www.w3.org/WAI/ARIA/apg/patterns/carousel/examples/carousel-2-tablist/">the APG tabs carousel</a>,
+    <a href="https://www.w3.org/WAI/ARIA/apg/patterns/carousel/examples/carousel-1-prev-next/">the APG buttons carousel</a>,
+    <a href="https://flackr.github.io/web-demos/css-overflow/carousel/">slideshows</a>, or
+    <a href="https://chrome.dev/carousel/horizontal/slider/">hero carousels</a>.
+    There may be peeking into the next or previous items but they are not intended to be interacted with.
+  </p>
+  <p>
+    These carousels should:
+  </p>
+  <ul>
+    <li>Use scroll snapping to ensure that exactly one item is the focus at a time. E.g.
+<code>
+  .carousel { scroll-snap-type: inline mandatory; }
+  .item { scroll-snap-align: center; }
+</code>
+    </li>
+    <li>
+      Have <code>role="region"</code> and an <code>aria-label</code>on the carousel container so that the carousel is announced as a landmark.
+      It should also use <code>aria-live="polite"</code> which in combination with interactivity will announce slide changes
+      when using any of the scrolling mechanisms to change the active slide. E.g.
+<code>
+  &lt;div class="carousel" role="region" aria-label="Slideshow" aria-live="polite"&gt;
+    ...
+  &lt;/div&gt;
+</code>
+    </li>
+    <li>
+      Use a <code>scroll-state</code> query to make only the current item interactive.
+      As the item which is in view changes it will result in an announced change to the user.
+      E.g.
+<code>
+  .item {
+    container-type: scroll-state;
+  }
+  .item > * {
+    interactivity: inert;
+
+    @container scroll-state(snapped: inline) {
+      > .content {
+        interactivity: auto;
+      }
+    }
+  }
+</code>
+    </li>
+    <li>
+      Use <code>role=tabpanel</code> for the slide elements, which are inerted when not current by the scroll-state query above.
+    </li>
+  </ul>
+  
+  <h3>Example</h3>
+
+  <p>The following example demonstrates all of these practices:</p>
+
+  <div class="carousel slides itemized tabpanels" role="region" aria-label="Slideshow carousel" aria-live="polite">
+    <div>
+      <div class="slide item" role="tabpanel">
+        <h4>Slide 1</h4>
+        <p>Example slide content including potentially focusable links, clickable images or buttons would go here.</p>
+      </div>
+    </div>
+    <div>
+      <div class="slide item" role="tabpanel">
+        <h4>Slide 2</h4>
+        <p>For example, here's a link to the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/carousel/">APG Carousel Example</a>.</p>
+      </div>
+    </div>
+    <div>
+      <div class="slide item" role="tabpanel">
+        <h4>Slide 3</h4>
+      </div>
+    </div>
+    <div>
+      <div class="slide item" role="tabpanel">
+        <h4>Slide 4</h4>
+      </div>
+    </div>
+  </div>
+  
+  <h2>Automatically paginated carousels</h2>
+  
+  <p>
+    A common pattern is to use scroll markers and scroll buttons to step through pages of contents.
+    E.g. a list of products, choice of tv shows, etc.
+    You can present this content in one of two ways.
+  </p>
+
+  <p>
+    To present as a carousel with discrete pages:
+  </p>
+  <ul>
+    <li>Have a role=region on a containing element. Within that, wrap the content in a <code>role=tabpanel</code> element. This single tabpanel will update its content to reflect the active tab / page.
+    E.g.
+<code>
+  &lt;div role=region class="carousel" aria-label="Carousel"&gt;
+    &lt;div role=tabpanel&gt;
+      &lt;div class="item"&gt;Item 1&lt;/div&gt;
+      ...
+      &lt;div class="item"&gt;Item n&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;div&gt;
+</code>
+    </li>
+    <li>Use an animation to set interactivity: auto on visible content. This ensures that the tab order only reaches currently visible items. E.g.
+<code>
+@keyframes interactive-when-visible {
+  0% { interactivity: auto; }
+}
+.item {
+  interactivity: inert;
+  animation: interactive-when-visible steps(1);
+  animation-timeline: view(inline);
+}
+</code>
+    </li>
+    <li>The use of <code>aria-live=polite</code> could be confusing if users are able to scroll slowly as items will come in one by one. It should be avoided.</li>
+  </ul>
+  
+  <p>
+    To present as a list of contents:
+  </p>
+  <ul>
+    <li>Use a <code>&lt;ul&gt;</code> element to represent the content as a list.</li>
+    <li>Don't use interactivity, leave all content in the accessibility tree. Making offscreen content inert will affect the item count.</li>
+    <li>Caveat: this does not conform to the expectations of the generated tablist / tabs for the <code>::scroll-marker-group</code> / <code>::scroll-marker</code> pseudo-elements.</li>
+  </ul>
+
+  <h3>Examples</h3>
+  
+  <h4>Discretely accessed pages</h4>
+
+  <div class="carousel cards paginated discrete">
+    <div role="tabpanel">
+      <div class="item">
+        <a href="#">Item 1</a>
+      </div>
+      <div class="item">
+        <a href="#">Item 2</a>
+      </div>
+      <div class="item">
+        <a href="#">Item 3</a>
+      </div>
+      <div class="item">
+        <a href="#">Item 4</a>
+      </div>
+      <div class="item">
+        <a href="#">Item 5</a>
+      </div>
+      <div class="item">
+        <a href="#">Item 6</a>
+      </div>
+      <div class="item">
+        <a href="#">Item 7</a>
+      </div>
+      <div class="item">
+        <a href="#">Item 8</a>
+      </div>
+      <div class="item">
+        <a href="#">Item 9</a>
+      </div>
+      <div class="item">
+        <a href="#">Item 10</a>
+      </div>
+      <div class="item">
+        <a href="#">Item 11</a>
+      </div>
+      <div class="item">
+        <a href="#">Item 12</a>
+      </div>
+      <div class="item">
+        <a href="#">Item 13</a>
+      </div>
+      <div class="item">
+        <a href="#">Item 14</a>
+      </div>
+      <div class="item">
+        <a href="#">Item 15</a>
+      </div>
+      <div class="item">
+        <a href="#">Item 16</a>
+      </div>
+    </div>
+  </div>
+  
+  <h4>List of paginated items</h4>
+
+  <ul role="region" aria-label="List of items" class="carousel cards paginated">
+    <li class="item">
+      <a href="#">Item 1</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 2</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 3</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 4</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 5</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 6</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 7</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 8</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 9</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 10</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 11</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 12</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 13</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 14</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 15</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 16</a>
+    </li>
+  </ul>
+
+  <h4>List of contents</h4>
+
+
+  <h2>Multiple items visible at a time carousels</h2>
+  
+  <p>
+    Multi-item carousels are carousels where multiple child elements are readable at a time.
+    These are tricky to match the expected tab pattern.
+    To match it correctly use the pattern from the per-item full page carousel and ensure sufficient padding such that every item can be snapped to. The <a href="https://chrome.dev/carousel/horizontal/3d/">3d carousel</a> demo has an example of this.
+  </p>
+  
+  <p>
+    If you want all of the items to be accessible, the best practices would be:
+  </p>
+
+  <ul>
+    <li>Use a <code>&lt;ul&gt;</code> element to represent the content as a numbered list.</li>
+    <li>Don't use interactivity, leave all content in the accessibility tree.</li>
+  </ul>
+
+  <h3>Examples</h3>
+  
+  <h4>Multiple items where only current is accessible</h4>
+  
+  <div class="carousel cards itemized tabpanels" role="region" aria-label="List of items">
+    <div>
+      <div class="item" role="tabpanel">
+        <a href="#">Item 1</a>
+      </div>
+    </div>
+    <div>
+      <div class="item" role="tabpanel">
+        <a href="#">Item 2</a>
+      </div>
+    </div>
+    <div>
+      <div class="item" role="tabpanel">
+        <a href="#">Item 3</a>
+      </div>
+    </div>
+    <div>
+      <div class="item" role="tabpanel">
+        <a href="#">Item 4</a>
+      </div>
+    </div>
+    <div>
+      <div class="item" role="tabpanel">
+        <a href="#">Item 5</a>
+      </div>
+    </div>
+    <div>
+      <div class="item" role="tabpanel">
+        <a href="#">Item 6</a>
+      </div>
+    </div>
+    <div>
+      <div class="item" role="tabpanel">
+        <a href="#">Item 7</a>
+      </div>
+    </div>
+    <div>
+      <div class="item" role="tabpanel">
+        <a href="#">Item 8</a>
+      </div>
+    </div>
+    <div>
+      <div class="item" role="tabpanel">
+        <a href="#">Item 9</a>
+      </div>
+    </div>
+    <div>
+      <div class="item" role="tabpanel">
+        <a href="#">Item 10</a>
+      </div>
+    </div>
+    <div>
+      <div class="item" role="tabpanel">
+        <a href="#">Item 11</a>
+      </div>
+    </div>
+    <div>
+      <div class="item" role="tabpanel">
+        <a href="#">Item 12</a>
+      </div>
+    </div>
+    <div>
+      <div class="item" role="tabpanel">
+        <a href="#">Item 13</a>
+      </div>
+    </div>
+    <div>
+      <div class="item" role="tabpanel">
+        <a href="#">Item 14</a>
+      </div>
+    </div>
+    <div>
+      <div class="item" role="tabpanel">
+        <a href="#">Item 15</a>
+      </div>
+    </div>
+    <div>
+      <div class="item" role="tabpanel">
+        <a href="#">Item 16</a>
+      </div>
+    </div>
+  </div>
+
+  <h4>Multiple accessible items with a marker per item</h4>
+
+  <ul class="carousel cards itemized">
+    <li class="item">
+      <a href="#">Item 1</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 2</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 3</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 4</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 5</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 6</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 7</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 8</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 9</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 10</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 11</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 12</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 13</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 14</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 15</a>
+    </li>
+    <li class="item">
+      <a href="#">Item 16</a>
+    </li>
+  </ul>
+
+</body>
+</html>
