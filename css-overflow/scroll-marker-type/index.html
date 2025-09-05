@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll marker group type</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 2rem 10%;
+      }
+
+      /* Slides using tab scroll markers */
+      .slides {
+        scroll-marker-group: after tabs;
+        overflow: auto;
+        aspect-ratio: 16 / 9;
+        border: 1px solid gray;
+        position: relative;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        display: flex;
+        flex-direction: row;
+        
+        &::scroll-marker-group {
+          white-space: nowrap;
+          height: 1.5rem;
+          padding: 0.25rem;
+          overflow: auto;
+          text-align: center;
+        }
+
+        & > * {
+          display: inline-block;
+          box-sizing: border-box;
+          min-height: 100%;
+          min-width: 100%;
+          padding: 2%;
+          scroll-snap-align: center;
+
+          &::scroll-marker {
+            content: "";
+            border-radius: 50%;
+            border: 1px solid #444;
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            margin: 0 0.1rem;
+          }
+          &::scroll-marker:target-current {
+            background: SelectedItem;
+          }
+        }
+      }
+
+      /* Table of contents using link markers */
+      .toc {
+        overflow: auto;
+        height: 50vh;
+        scroll-marker-group: before links;
+        counter-reset: --section;
+        padding-left: 200px;
+        
+        &::scroll-marker-group {
+          position: absolute;
+          width: 200px;
+        }
+
+        & h3 {
+          counter-increment: --section;
+
+          &::scroll-marker {
+            font-size: 1rem;
+            display: block;
+            content: counter(--section) ". " attr(data-label);
+          }
+          &::scroll-marker:target-current {
+            color: ActiveText;
+          }
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Scroll marker group type</h1>
+    <p>
+      By setting the scroll-marker-group type you can switch between tabs and links.
+      The two examples below show use cases where you would want to use one or the other.
+    </p>
+    <h2>Tabs</h2>
+    
+    <div class="slides">
+      <div>
+        <h3>Introduction</h3>
+        <p>Slides should follow the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/tabs/">tabs pattern</a>.</p>
+      </div>
+      <div>
+        <h3>Focus</h3>
+        <p>There are a number of implicit focus behaviors:</p>
+        <ul>
+          <li>Only the active slide marker is a tab focus stop.</li>
+          <li>Pressing up/down/left/right will move focus between markers and scroll between slides.</li>
+          <li>
+            The marker is a <a href="https://html.spec.whatwg.org/#focus-navigation-scope-owner">focus navigation scope owner</a> for its contents.
+            This means focus will move from the tab to its contents and vice versa.
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h3>Accessibility roles and behaviors</h3>
+        <p>
+          Tabs implicitly implement the expected tab semantics.
+          In particular,
+        </p>
+        <ul>
+          <li>The scroll marker group is a <code>role=tablist</code> containing <code>role=tab</code> elements</li>
+          <li>The minimum role of the contents is <code>role=tabpanel</code></li>
+          <li>Only the active tabpanel is in the accessibility tree.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Conclusion</h3>
+        <p>
+          In summary, these implicit behaviors aim to align with the expectations of a <a href="https://www.w3.org/WAI/ARIA/apg/patterns/carousel/examples/carousel-2-tablist/">carousel with markers</a>.
+        </p>
+      </div>
+    </div>
+    
+    <h2>Links</h2>
+    
+    <div class="toc">
+
+      <h3 data-label="Introduction">Introduction</h3>
+      <p>
+        When using scroll markers as navigational markers to scroll to particular content,
+        it should use the links mode to behave as a <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/navigation_role">navigation landmark</a>.
+      </p>
+      <p>Lorem ipsum</p>
+      <p>Lorem ipsum</p>
+      <p>Lorem ipsum</p>
+      <p>Lorem ipsum</p>
+      <p>Lorem ipsum</p>
+      <p>Lorem ipsum</p>
+      <p>Lorem ipsum</p>
+      <p>Lorem ipsum</p>
+
+      <h3 data-label="Focus">Focus Behavior</h3>
+      <p>
+        The focus behaves just as a list of links that occur before the content. In particular:
+      </p>
+      <ul>
+        <li>All markers are tab stops.</li>
+        <li>Arrow keys do not move between markers, they scroll the page as usual.</li>
+        <li>
+          Pressing enter to activate a scroll marker will, like following an anchor link,
+          scroll to its target element and
+          set the <a href="https://html.spec.whatwg.org/#sequential-focus-navigation-starting-point">sequential focus navigation starting point</a> to the target
+          meaning that subsequent tab presses will move focus starting from that content.
+        </li>
+      </ul>
+      <h3 data-label="Roles">Roles</h3>
+      <p>
+        The scroll marker group will have <code>role=navigation</code>
+        and each scroll marker will have <code>role=link</code>.
+      </p>
+      <p>
+        No other elements get default roles.
+      </p>
+      <p>Lorem ipsum</p>
+      <p>Lorem ipsum</p>
+      <p>Lorem ipsum</p>
+      <p>Lorem ipsum</p>
+      <p>Lorem ipsum</p>
+      <p>Lorem ipsum</p>
+      <p>Lorem ipsum</p>
+      <p>Lorem ipsum</p>
+    </div>
+  </body>
+</html>
