@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Swipe to eraser</title>
+    <style>
+      .item-overscroll-parent {
+        overflow-x: auto;
+        overflow-y: clip;
+        overscroll-behavior-x: contain;
+        position: relative;
+        scrollbar-width: none;
+        scroll-snap-type: x mandatory;
+        width: 100%;
+        height: 3rem;
+        white-space: nowrap;
+      }
+      .item {
+        box-sizing: border-box;
+        width: 100%;
+        scroll-snap-align: center;
+        padding: 0.5rem;
+        /* Broken? */
+        scroll-initial-target: auto;
+        white-space: auto;
+        display: inline-block;
+      }
+      .item-overscroll {
+        width: 100%;
+        height: 100%;
+        background: red;
+        scroll-snap-align: center;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Todo list</h1>
+    <div class="list">
+      <div class="item-overscroll-parent">
+        <div class="item-overscroll"></div>
+        <div class="item">Item 1</div>
+      </div>
+    </div>
+  </body>
+  <script>
+    function setupItem(node) {
+      node.scrollLeft = node.scrollWidth;
+      let active = false;
+      node.addEventListener('scrollsnapchange', (evt) => {
+        if (active && evt.snapTargetInline.classList.contains('item-overscroll')) {
+          // TODO: A smooth view transition? */
+          node.remove();
+        }
+        active = true;
+      });
+    }
+    
+    const baseItem = document.querySelector('.item-overscroll-parent');
+    setupItem(baseItem);
+    for (let i = 1; i < 40; ++i) {
+      const item = baseItem.cloneNode(true);
+      baseItem.parentElement.appendChild(item);
+      item.querySelector('.item').textContent = `Item ${i + 1}`;
+      setupItem(item);
+    }
+  </script>
+</html>
