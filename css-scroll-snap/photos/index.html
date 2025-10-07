@@ -40,8 +40,11 @@
         }
 
         & .dismiss {
-          height: 50%;
+          height: 20%;
           margin-top: 50%;
+          position: relative;
+          /* Align with scroller */
+          left: 30%;
           scroll-snap-align: start center;
         }
         
@@ -50,7 +53,7 @@
           background: white;
           height: 100%;
           width: 100%;
-          margin: 0 30%;
+          margin: 30% 30% 0 30%;
           /* Broken? */
           scroll-initial-target: auto;
           scroll-snap-align: center;
