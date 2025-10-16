@@ -14,7 +14,7 @@
       .slides {
         scroll-marker-group: after tabs;
         overflow: auto;
-        overscroll-behavior: contain;
+        overscroll-behavior-x: contain;
         aspect-ratio: 16 / 9;
         border: 1px solid gray;
         position: relative;
@@ -28,7 +28,7 @@
           height: 1.5rem;
           padding: 0.25rem;
           overflow: auto;
-          overscroll-behavior: contain;
+          overscroll-behavior-x: contain;
           text-align: center;
         }
 
@@ -58,7 +58,6 @@
       /* Table of contents using link markers */
       .toc {
         overflow: auto;
-        overscroll-behavior: contain;
         height: 50vh;
         scroll-marker-group: before links;
         counter-reset: --section;
