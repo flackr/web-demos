@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Test methods of scrolling into view</title>
+    <style>
+      .spacer {
+        height: 150vh;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Scroll into view tests</h1>
+    <p>There are a few methods of scrolling into view:</p>
+    <ul>
+      <li><button id="focus">Focusing an element</button></li>
+      <li><button id="focus-no-scroll">Focusing an element without scrolling</button>, then type.</li>
+      <li><a href="#anchor">Linking to an element</a></li>
+      <li>Following a <a href="scrollIntoView.html">link to a page will scroll the frame into view</a>.</li>
+      <li><button id="scrollIntoView">Calling scrollIntoView</button></li>
+    </ul>
+    <div class="spacer">
+      <p>Reserved space to ensure that the targets are not initially in view</p>
+    </div>
+    <h1>Targets</h1>
+    <p>Targets of above scroll calls:</p>
+    Input: <input id="text"><br>
+    <div id="anchor">Anchor / scrollIntoView target</div>
+  </body>
+  <script>
+    document.getElementById('focus').addEventListener('click', () => {
+      document.getElementById('text').focus();
+    });
+    document.getElementById('focus-no-scroll').addEventListener('click', () => {
+      document.getElementById('text').focus({preventScroll: true});
+    });
+    document.getElementById('scrollIntoView').addEventListener('click', () => {
+      document.getElementById('anchor').scrollIntoView();
+    });
+  </script>
+</html>
