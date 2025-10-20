@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Demonstration of overscroll-behavior: none</title>
+    <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+      }
+      .scroller {
+        overflow: auto;
+        height: 100%;
+        overscroll-behavior: none;
+        position: relative;
+      }
+      .spacer {
+        height: calc(100% + 1px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scroller">
+      <div class="spacer">
+        This is a non-root scroller with overscroll-behavior: none. This prevents scrolling over this frame from propagating up to the ancestor frame.
+      </div>
+    </div>
+  </body>
+</html>
