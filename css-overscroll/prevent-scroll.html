@@ -10,7 +10,9 @@
       .scroller {
         overflow: auto;
         height: 100%;
+        /* Prevent scroll chaining past this scroller. */
         overscroll-behavior: none;
+        scrollbar-width: none;
         position: relative;
       }
       .spacer {
