@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bottom Sheet Use Cases & Demo</title>
+    <!-- Load Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind to use Inter font and enable JIT mode for custom classes -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+        /* Custom class for clickable terms */
+        .term-link {
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-decoration-style: dashed;
+            cursor: pointer;
+            transition: color 0.15s ease-in-out;
+        }
+        .term-link:hover {
+            color: #1d4ed8; /* Blue-700 on hover */
+        }
+
+        /* Ensure smooth scrolling within the content area for longer definitions */
+        #sheet-content {
+            padding-bottom: 2rem; /* Extra space at the bottom for aesthetic scrolling */
+        }
+        
+        #bottom-sheet-scroller {
+            overflow: auto;
+            pointer-events: none;
+            scrollbar-width: none;
+            scroll-snap-type: y mandatory;
+            timeline-scope: --bottom-sheet-visible, --bottom-sheet-peek;
+        }
+        #bottom-sheet-start {
+            scroll-snap-align: start;
+        }
+        @keyframes hide {
+            to { pointer-events: none; }
+        }
+        #bottom-sheet-peek {
+            position: absolute;
+            width: 100%;
+            /* Peek height */
+            height: 30vh;
+            scroll-snap-align: end;
+            animation: hide auto both linear;
+            animation-range: entry;
+            animation-timeline: --bottom-sheet-visible;
+            view-timeline: --bottom-sheet-peek;
+            pointer-events: auto;
+        }
+        #bottom-sheet {
+            pointer-events: auto;
+            position: relative;
+            scroll-snap-align: end;       
+            height: 90vh;
+            view-timeline: --bottom-sheet-visible;
+        }
+        #sheet-content {
+            overflow-y: auto;
+        }
+        @keyframes fade-in {
+            from { opacity: 0; pointer-events: none; }
+        }
+        #backdrop {
+            position: sticky;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            pointer-events: auto;
+            animation: fade-in auto both linear;
+            animation-range: entry;
+            animation-timeline: --bottom-sheet-peek;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Main Content Area -->
+    <div class="container mx-auto p-4 md:p-8 max-w-3xl">
+        <header class="mb-8">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-2">Bottom Sheet Use Cases</h1>
+            <p class="text-xl text-indigo-600">A guide to transient mobile components</p>
+        </header>
+
+        <article class="prose max-w-none text-gray-700 space-y-6">
+
+            <p class="text-lg leading-relaxed">
+                In modern mobile design, managing screen real estate effectively is crucial. One of the most ubiquitous and effective tools for presenting contextual information or actions is the <span class="term-link text-indigo-500 font-semibold" data-term="Bottom Sheets">Bottom Sheet</span>.
+            </p>
+
+            <p class="text-lg leading-relaxed">
+                Unlike a traditional <span class="term-link text-indigo-500 font-semibold" data-term="Modal">Modal</span>, which often centers content and blocks a large portion of the view, a bottom sheet slides gracefully from the bottom edge of the viewport. This placement is strategically chosen because it is easily reachable by a user's thumb, enhancing usability on large smartphones.
+            </p>
+
+            <h2 class="text-2xl font-bold text-gray-800 pt-4">Types of Bottom Sheets</h2>
+
+            <p class="text-lg leading-relaxed">
+                Bottom sheets generally fall into two categories: Modal and <span class="term-link text-indigo-500 font-semibold" data-term="Standard Sheet">Standard Sheet</span>. The Modal type overlays the main content with a dark, semi-transparent backdrop and must be dismissed before the user can interact with the underlying content again. The Standard type is often used for <span class="term-link text-indigo-500 font-semibold" data-term="Persistent UI">Persistent UI</span> elements, like a media player control strip, allowing simultaneous interaction with both the sheet and the app behind it.
+                
+            </p>
+
+            <h2 class="text-2xl font-bold text-gray-800 pt-4">Key Use Cases</h2>
+            <ul class="list-disc list-inside space-y-2 pl-4">
+                <li><b>Action Menu:</b> Presenting a list of contextual actions (e.g., Share, Save, Edit) for a selected item.</li>
+                <li><b>Feature Explainer:</b> Briefly introducing a new feature without forcing a full screen takeover.</li>
+                <li><b>Settings Drawer:</b> Providing quick access to common settings or filters.</li>
+            </ul>
+
+            <p class="text-lg leading-relaxed">
+                To see how different elements are defined in this article, click on the highlighted terms above.
+            </p>
+        </article>
+
+        <!-- Placeholder space to prevent content from being hidden by the sheet -->
+        <div class="h-32 md:h-48"></div>
+    </div>
+
+
+    <!-- 
+    ======================================
+    BOTTOM SHEET COMPONENT AND BACKDROP
+    ======================================
+    -->
+
+
+    <div id="bottom-sheet-scroller" class="fixed inset-0">
+        <!-- Backdrop (for Modal Sheet) - initially hidden -->
+        <div id="bottom-sheet-start"></div>
+        <div id="backdrop" class="bg-gray-900 bg-opacity-50 backdrop" onclick="closeSheet()"></div>
+        <!-- Bottom Sheet Container -->
+        <div id="bottom-sheet" class="bg-white shadow-2xl rounded-t-3xl flex flex-col">
+            <div id="bottom-sheet-peek"></div>
+
+            <!-- Handle (for aesthetic touch-to-drag indicator) -->
+            <div class="relative flex justify-center mb-4 pt-6">
+                <div class="w-10 h-1.5 bg-gray-300 rounded-full"></div>
+            </div>
+
+            <!-- Header with Close Button -->
+            <div class="relative flex justify-between items-start mb-4 px-6">
+                <h3 id="sheet-title" class="text-2xl font-extrabold text-gray-800">Term Details</h3>
+                <!-- Close button implementation -->
+                <button onclick="closeSheet()" aria-label="Close Bottom Sheet" class="p-2 rounded-full text-gray-500 hover:bg-red-100 hover:text-red-600 transition duration-150 shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Content Area (The actual descriptive content) -->
+            <div id="sheet-content" class="text-gray-600 leading-relaxed space-y-4 flex-1 p-6">
+                <p>Click on a highlighted term in the article above to see its definition here.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA STORE (Updated with <b> tags and Image URLs) ---
+        const termDetails = {
+            "Bottom Sheets": {
+                title: "Bottom Sheet: A Contextual Overlay",
+                description: "A <b>Bottom Sheet</b> is a user interface component that slides up from the bottom of a mobile screen, presenting users with a set of actions or contextual information related to the content they are currently viewing. They are essential for modern design because they leverage the <b>'thumb zone'</b>—the area of the screen easily reachable by a user's thumb—making interaction effortless on large devices. A key design principle is that they offer a transient, focused experience without taking over the entire screen like a full-page view, maintaining context with the content behind the sheet. They are typically used for short, task-oriented flows like sharing options, filtering results, or showing complex details about a selected item, like in this example. Their moderate interruptive nature makes them suitable for non-critical tasks.",
+                imageUrl: "https://placehold.co/400x200/4f46e5/ffffff?text=Bottom+Sheet+Example"
+            },
+            "Modal": {
+                title: "Modal Dialog: Interruptive Focus",
+                description: "A <b>Modal</b>, or modal dialog, is a superimposed window that appears over the primary content, effectively blocking interaction with the content behind it until the modal is explicitly dismissed. They are reserved for <b>critical user interruptions</b>, such as requiring input for a critical decision (e.g., confirming a deletion), displaying error messages that demand immediate attention, or collecting necessary form information where background context is not needed. Modals enforce a strong sense of focus. Design-wise, they often center on the screen and use a strong, opaque backdrop (<b>scrim</b>) to emphasize the shift in focus, setting them distinctly apart from bottom sheets which are contextually anchored to the bottom edge.",
+                imageUrl: "https://placehold.co/400x200/dc2626/ffffff?text=Modal+Dialog+Example"
+            },
+            "Standard Sheet": {
+                title: "Standard Bottom Sheet (Persistent)",
+                description: "The <b>Standard Bottom Sheet</b>, often called a Persistent Sheet, differs fundamentally from the Modal Bottom Sheet because it does not use a scrim (backdrop) and allows users to continue interacting with the content behind it. These are designed for <b>continuous, always-available functionality</b>. Excellent real-world examples include the controls for a music or podcast player that remains docked at the bottom of the screen, or a map legend that needs to be accessible while navigating the map. Its persistence means it's part of the application's overall layout and flow, not an interruptive event, providing utility without blocking interaction with the main view.",
+                imageUrl: "https://placehold.co/400x200/059669/ffffff?text=Standard+Sheet+Example"
+            },
+            "Persistent UI": {
+                title: "Persistent UI: Always-Available Elements",
+                description: "<b>Persistent UI</b> refers to user interface components that <b>remain visible and generally in the same location</b> across different views or states of an application. The goal is to provide constant access to core functionality or navigation. Examples include global navigation bars (like the tab bar at the bottom of many mobile apps), application headers, and standard (persistent) bottom sheets. Effective Persistent UI reduces <b>cognitive load</b> by ensuring the user always knows where to find key controls, thus improving navigational efficiency and overall user experience. It ensures high-frequency actions or navigation paths are always within reach.",
+                imageUrl: "https://placehold.co/400x200/f59e0b/ffffff?text=Persistent+UI+Example"
+            }
+        };
+
+        // --- DOM Elements ---
+        const sheetScroller = document.getElementById('bottom-sheet-scroller');
+        const sheetStart = document.getElementById('bottom-sheet-start');
+        const sheetPeek = document.getElementById('bottom-sheet-peek');
+        const sheet = document.getElementById('bottom-sheet');
+        const backdrop = document.getElementById('backdrop');
+        const sheetTitle = document.getElementById('sheet-title');
+        const sheetContent = document.getElementById('sheet-content');
+        const termLinks = document.querySelectorAll('.term-link');
+
+        // --- Core Functions ---
+
+        /**
+         * Opens the bottom sheet and populates it with term details.
+         * @param {string} termKey - The key corresponding to the term in the termDetails object.
+         */
+        function openSheet(termKey) {
+            const detail = termDetails[termKey];
+            if (!detail) {
+                console.error(`Term details not found for key: ${termKey}`);
+                return;
+            }
+
+            // 1. Create the image HTML using the placeholder URL
+            const imageHtml = `
+                <img src="${detail.imageUrl}" 
+                     alt="Illustration of ${termKey}" 
+                     class="w-full h-auto rounded-xl shadow-lg mb-4 object-cover" 
+                     onerror="this.onerror=null; this.src='https://placehold.co/400x200/cccccc/000000?text=Image+Unavailable';" />
+            `;
+
+            // 2. Populate content (Image + Description)
+            sheetTitle.textContent = detail.title;
+            // Use innerHTML to inject both the image and the descriptive content, which now uses <b> tags
+            sheetContent.innerHTML = imageHtml + `<p>${detail.description}</p>`;
+            sheet.scrollTo(0, 0);
+
+            // Slide sheet up to peek position.
+            sheetPeek.scrollIntoView({behavior: 'smooth', block: 'end'});
+        }
+
+        /**
+         * Closes the bottom sheet.
+         */
+        window.closeSheet = function() { // Attach to window for onclick in HTML
+            // Slide sheet down
+            sheetStart.scrollIntoView({behavior: 'smooth'});
+        }
+
+        // --- Event Listeners ---
+        
+        // Add click listener to all term links
+        termLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                const term = e.target.getAttribute('data-term');
+                if (term) {
+                    openSheet(term);
+                }
+            });
+        });
+        
+        // Initial setup for the sheet (just in case the HTML state is wrong)
+        window.onload = function() {
+            closeSheet();
+        }
+
+    </script>
+
+</body>
+</html>
