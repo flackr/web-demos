@@ -29,13 +29,25 @@
         #sheet-content {
             padding-bottom: 2rem; /* Extra space at the bottom for aesthetic scrolling */
         }
-        
+        @keyframes show {
+            /* Workaround for https://bugs.webkit.org/show_bug.cgi?id=183870 */
+            to { pointer-events: auto; }
+        }
         #bottom-sheet-scroller {
             overflow: auto;
             pointer-events: none;
             scrollbar-width: none;
             scroll-snap-type: y mandatory;
             timeline-scope: --bottom-sheet-visible, --bottom-sheet-peek;
+            animation: show 10000s both linear paused;
+        }
+        @supports (view-timeline: --foo) {
+            #bottom-sheet-scroller {
+                animation-range: entry;
+                animation-duration: auto;
+                animation-play-state: running;
+                animation-timeline: --bottom-sheet-peek;
+            }
         }
         #bottom-sheet-start {
             scroll-snap-align: start;
@@ -221,6 +233,7 @@
             const viewtimelines = [
                 { scroller: sheetScroller, animation: backdrop, subject: sheetPeek },
                 { scroller: sheetScroller, animation: sheetPeek, subject: sheet },
+                { scroller: sheetScroller, animation: sheetScroller, subject: sheetPeek },
             ];
             for (const { scroller, animation, subject } of viewtimelines) {
                 let animationObj = animation.getAnimations()[0];
