@@ -88,7 +88,7 @@
 .scroll-marker {
   appearance: none;
   display: inline-block;
-  content: "" / attr(data-label);
+  content: "";
   border-radius: 50%;
   box-sizing: border-box;
   width: 16px;

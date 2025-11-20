@@ -26,6 +26,7 @@
   scroll-behavior: smooth;
   scrollbar-width: none;
   scroll-marker-group: after;
+  scroll-marker-group: after tabs;
   background: lightgray;
   container-type: size;
   
@@ -98,7 +99,7 @@
   
   &::scroll-marker {
     display: inline-block;
-    content: "" / attr(data-label);
+    content: "" / attr(title);
     border-radius: 50%;
     box-sizing: border-box;
     width: 16px;
