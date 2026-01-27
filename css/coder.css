@@ -1,0 +1,18 @@
+
+.code textarea, textarea.code {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 6px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  border: 1px solid #475569;
+  outline: none;
+  white-space: pre;
+  overflow: auto;
+}
+
+iframe {
+  flex: 1;
+}

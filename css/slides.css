@@ -1,0 +1,99 @@
+@keyframes shrink {
+  0% { transform: scale(0.9); }
+  50% { transform: scale(1); }
+  100% { transform: scale(0.9); }
+}
+
+.slideshow {
+  position: relative;
+  background: #ddd;
+
+  & > .scroller {
+    height: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    position: relative;
+    container-type: size;
+    display: flex;
+    scroll-marker-group: after;
+    scroll-marker-group: after tabs;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+
+    &::scroll-marker-group {
+      position: absolute;
+      position-area: right;
+      padding: 0.25rem 0.45rem;
+      border: 0.125rem solid #555;
+      border-radius: 0.75rem;
+      interpolate-size: allow-keywords;
+      overflow: hidden auto;
+      font-size: 1.5rem;
+      scroll-behavior: smooth;
+      max-height: 60%;
+      width: 1rem;
+      right: 1rem;
+      transition: width 100ms;
+    }
+    &::scroll-marker-group:focus-within {
+      width: auto;
+    }
+    & > div {
+      box-sizing: border-box;
+      contain: size;
+      min-width: 100cqw;
+      min-height: 100cqh;
+      width: 100cqw;
+      height: 100cqh;
+
+      &::scroll-marker {
+        background-image: url('../images/bullet.svg');
+        background-position: left baseline;
+        background-repeat: no-repeat;
+        background-size: 1rem;
+        content: attr(title);
+        display: block;
+        margin: 0.25rem 0;
+        
+        padding-left: 1.5rem;
+        white-space: nowrap;
+      }
+      &::scroll-marker:target-current {
+        background-image: url('../images/bullet-current.svg');
+      }
+      &::scroll-marker:focus-visible {
+        background-image: url('../images/bullet-focus.svg');
+      }
+
+      & > div {
+        animation: shrink linear;
+        animation-timeline: view(x);
+
+        background: white;
+        box-shadow: 0.5rem 0.5rem 1rem rgba(0, 0, 0, 0.25);
+
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        display: grid;
+        padding: 1.5rem;
+        scroll-snap-align: center;
+        grid-template-rows: minmax(min-content, 1fr) 10fr;
+        grid-template-columns: 1fr 1fr;
+        
+        & > h1,h2,h3 {
+          grid-row: 1;
+          grid-column: 1 / -1;
+        }
+        & > * {
+          grid-row: 2;
+          display: flex;
+          flex-direction: column;
+          padding: 0.5rem;
+        }
+        
+      }
+    }
+  }
+}
