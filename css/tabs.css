@@ -27,6 +27,7 @@
     overflow: auto;
 
     &::scroll-marker {
+      box-sizing: border-box;
       border: 1px solid #475569;
       border-bottom: 0px;
       background: #ccc;

@@ -4,6 +4,30 @@
   100% { transform: scale(0.9); }
 }
 
+:root {
+  --primary: #3b82f6;
+  --secondary: #1e293b;
+  --accent: #f59e0b;
+  --bg: #f8fafc;
+  --text: #334155;
+  --danger: #ef4444;
+}
+body {
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+h1 { font-size: 3.5rem; color: var(--secondary); margin-bottom: 1rem; }
+h2 { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
+p { font-size: 1.15rem; line-height: 1.6; max-width: 800px; margin-bottom: 1.5rem; }
+
+.demo-container {
+  border: 2px dashed var(--primary);
+  border-radius: 8px;
+  padding: 1rem;
+  overflow: hidden;
+  position: relative;
+}
+
 .slideshow {
   position: relative;
   background: #ddd;
@@ -22,9 +46,12 @@
     scrollbar-width: none;
 
     &::scroll-marker-group {
+      display: block;
       position: absolute;
+      z-index: 1;
       position-area: right;
       padding: 0.25rem 0.45rem;
+      background: rgba(255, 255, 255, 0.8);
       border: 0.125rem solid #555;
       border-radius: 0.75rem;
       interpolate-size: allow-keywords;
@@ -33,11 +60,16 @@
       scroll-behavior: smooth;
       max-height: 60%;
       width: 1rem;
-      right: 1rem;
-      transition: width 100ms;
+      right: 0.25rem;
+      transition: width 100ms, opacity 100ms;
+      opacity: 0.4;
     }
     &::scroll-marker-group:focus-within {
       width: auto;
+      opacity: 1;
+    }
+    &::scroll-marker-group:hover {
+      opacity: 1;
     }
     & > div {
       box-sizing: border-box;
@@ -46,6 +78,11 @@
       min-height: 100cqh;
       width: 100cqw;
       height: 100cqh;
+      scroll-snap-align: center;
+      scroll-snap-stop: always;
+
+      /* Don't render far away slides */
+      content-visibility: auto;
 
       &::scroll-marker {
         background-image: url('../images/bullet.svg');
@@ -77,12 +114,12 @@
         width: 100%;
         height: 100%;
         display: grid;
-        padding: 1.5rem;
-        scroll-snap-align: center;
+        padding: 3rem;
         grid-template-rows: minmax(min-content, 1fr) 10fr;
-        grid-template-columns: 1fr 1fr;
+        grid--auto-columns: 1fr;
         
-        & > h1,h2,h3 {
+        & > h1,h2,h3,h4 {
+          margin-top: 0;
           grid-row: 1;
           grid-column: 1 / -1;
         }
@@ -91,8 +128,8 @@
           display: flex;
           flex-direction: column;
           padding: 0.5rem;
+          contain: size;
         }
-        
       }
     }
   }

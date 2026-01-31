@@ -1,8 +1,8 @@
 (() => {
-  const unindent = (textarea) => {
+  const unindent = function() {
     let firstLine = 0;
     let firstText = 0;
-    const text = textarea.value;
+    const text = this.value;
     while (firstText < text.length) {
       if (![' ', '\n'].includes(text[firstText])) {
         break;
@@ -16,8 +16,8 @@
     while (lastLine > firstText && [' ', '\n'].includes(text[lastLine - 1])) {
       lastLine--;
     }
-    textarea.value = text.slice(firstLine, lastLine);
-    indent(textarea, firstLine - firstText, 0, textarea.value.length);
+    this.value = text.slice(firstLine, lastLine);
+    indent(this, firstLine - firstText, 0, this.value.length);
   }
   const findLineStart = (text, pos) => {
     while (pos > 0 && text[pos - 1] !== '\n') {
@@ -92,7 +92,8 @@
   let codeAreas = document.querySelectorAll('.code textarea, textarea.code');
   for (const textarea of codeAreas) {
     // Remove extra indentation in source.
-    unindent(textarea);
+    textarea.unindent = unindent;
+    textarea.unindent();
     // Helper indentation functions
     textarea.addEventListener('keydown', (e) => {
       if (e.key === 'Tab') {
