@@ -24,6 +24,15 @@ html, body {
   font-size: 1.5rem; font-weight: bold;
   border-radius: 4px; border: 2px solid rgba(255,255,255,0.3);
 }
+.resizable {
+  overflow: hidden;
+  resize: both;
+  display: flex;
+  width: 80%;
+  height: 80%;
+  padding-bottom: 15px;
+  border: 2px dashed var(--primary);
+}
 </style>
 </head>
 <body>
@@ -432,11 +441,51 @@ html, body {
   </div>
 </div></div>
 
+<div class="slide" title="Case Study: Crosswordle"><div>
+  <h2>Case Study: Crosswordle</h2>
+  <div>
+    <div class="resizable">
+      <iframe src="https://crosswordle.serializer.ca/"></iframe>
+    </div>
+  </div>
+</div></div>
+
 <div class="slide" title="Case Study: Slides"><div>
   <h2>Case Study: Slides</h2>
   <div>
     <p>This presentation itself uses grid to produce the single or two-column slide layout.</p>
-    <p>Have a look in dev tools!</p>
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+    </div>
+    <div class="live-edit">
+      <style>
+        .slideshow > .scroller > div > div {
+          display: grid;
+          padding: 3rem;
+          grid-template-rows: minmax(min-content, 1fr) 10fr;
+          grid-auto-columns: 1fr;
+
+          & > h1,h2,h3,h4 {
+            grid-row: 1;
+            grid-column: 1 / -1;
+          }
+          & > * {
+            grid-row: 2;
+            display: flex;
+            flex-direction: column;
+            padding: 0.5rem;
+
+            /* Span the whole grid if only child. */
+            &:only-child {
+              grid-row: 1 / -1;
+              grid-column: 1 / -1;
+              align-self: center;
+              justify-self: center;
+            }
+          }
+        }
+      </style>
+    </div>
   </div>
 </div></div>
 

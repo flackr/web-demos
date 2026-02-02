@@ -44,7 +44,9 @@
       if (types.css) {
         code += `<style>\n${types.css.value}\n</style>\n`;
       }
-      code += `${types.html.value}\n`;
+      if (types.html) {
+        code += `${types.html.value}\n`;
+      }
       if (isiframe) {
         // Append script.
         if (types.js) {
@@ -78,24 +80,26 @@
     // Find existing content
     if (!isiframe) {
       let css = example.querySelector('style');
-      if (css) {
+      if (css && types.css) {
         types.css.value = trimEmptyLines(css.textContent);
       }
       let script = example.querySelector('script');
-      if (script) {
+      if (script && types.js) {
         types.js.value = trimEmptyLines(script.textContent);
       }
-      let html = ``;
-      let child = css.nextSibling;
-      while (child != script) {
-        if (child.nodeType === Node.ELEMENT_NODE) {
-          html += child.outerHTML;
-        } else {
-          html += child.textContent;
+      if (types.html) {
+        let html = ``;
+        let child = css.nextSibling;
+        while (child != script) {
+          if (child.nodeType === Node.ELEMENT_NODE) {
+            html += child.outerHTML;
+          } else {
+            html += child.textContent;
+          }
+          child = child.nextSibling;
         }
-        child = child.nextSibling;
+        types.html.value = trimEmptyLines(html);
       }
-      types.html.value = trimEmptyLines(html);
     } else {
       update();
     }
