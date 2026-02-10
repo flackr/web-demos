@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Checkbox Arrows - Multiple Tags</title>
+    <style>
+        /* Basic page styling */
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: #333;
+            line-height: 1.6;
+            height: 100vh;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Header & Controls Area --- */
+        .controls-header {
+            flex-shrink: 0; /* Keep this section from shrinking */
+            margin-bottom: 1.5rem;
+        }
+
+        .controls-header h1 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .interactive-controls {
+            background: #f0f4f8;
+            padding: 1.5rem 2rem;
+            border-radius: 8px;
+            border: 1px solid #d9e2ec;
+        }
+
+        .interactive-controls p {
+            margin-top: 0;
+            font-weight: 600;
+        }
+
+        /* Checkbox Group Styling */
+        .checkbox-group {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .control-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        /* Hover effect on the label itself */
+        .control-label:hover {
+            border-color: #ff3366; /* Match hover arrow color */
+            color: #ff3366;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        /* Checked state styling for the label */
+        .control-label:has(input:checked) {
+            border-color: #0056b3;
+            background-color: #f0f7ff;
+            color: #0056b3;
+        }
+
+        .control-label input[type="checkbox"] {
+            cursor: pointer;
+            width: 1.2rem;
+            height: 1.2rem;
+            accent-color: #0056b3;
+        }
+
+        /* --- Scrollable Content Area --- */
+        .scrollable-content {
+            flex-grow: 1; /* Let this container fill remaining space */
+            overflow-y: auto; /* Enable scrolling */
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        @position-try --point-up {
+            position-area: bottom center;
+            justify-self: anchor-center;
+            rotate: -90deg;
+        }
+
+        /* The Base Arrow (Hidden by default) */
+        h2, p, button, input {
+            anchor-name: --parent;
+            anchor-scope: --parent;
+
+            &::before {
+                content: "➔";
+                position: absolute;
+                position-anchor: --parent;
+                position-area: top center;
+                position-visibility: no-overflow;
+                rotate: 90deg;
+                justify-self: anchor-center;
+                position-try-fallbacks: --point-up;
+                font-size: 48px;
+                opacity: 0;
+                transition: opacity 0.2s ease, color 0.2s ease;
+                pointer-events: none;
+            }
+        }
+
+        /* --- THE CSS MAGIC: :has() for Hover and Checked States --- */
+        
+        /* 1. CHECKED STATE: Turn Blue when the checkbox is actually checked */
+        body:has(#check-h2:checked) h2::before,
+        body:has(#check-p:checked) p::before,
+        body:has(#check-btn:checked) button::before,
+        body:has(#check-input:checked) input::before {
+            opacity: 1;
+            color: #0056b3; /* Checked color */
+        }
+
+        /* 2. HOVER STATE: Turn Pink when hovering the label */
+        body:has(#label-h2:hover, #label-h2:focus-within) h2::before,
+        body:has(#label-p:hover, #label-p:focus-within) p::before,
+        body:has(#label-btn:hover, #label-btn:focus-within) button::before,
+        body:has(#label-input:hover, #label-input:focus-within) input::before {
+            opacity: 1;
+            color: #ff3366; /* Hover color */
+        }
+
+        /* Minor styling to make the elements look decent */
+        h2 { margin-top: 0; margin-bottom: 0.5rem; }
+        p { margin-top: 0; }
+        
+        button {
+            padding: 0.5rem 1rem;
+            background: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        /* Give specific classes to the inputs inside targets so they don't get confused 
+           with the checkboxes in the controls */
+        .target-input {
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            width: 200px;
+        }
+
+        .demo-section {
+            margin-bottom: 3rem;
+            padding: 1rem;
+            background: #fafafa;
+            border-radius: 8px;
+        }
+
+        /* Add extra space at the bottom to demonstrate scrolling */
+        .spacer {
+            height: 300px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="controls-header">
+        <h1>HTML Tag Finder</h1>
+        
+        <div class="interactive-controls">
+            <p>Hover to preview (pink), or check the box to lock the arrows (blue):</p>
+            <div class="checkbox-group">
+                <label class="control-label" id="label-h2">
+                    <input type="checkbox" id="check-h2"> &lt;h2&gt;
+                </label>
+                
+                <label class="control-label" id="label-p">
+                    <input type="checkbox" id="check-p"> &lt;p&gt;
+                </label>
+                
+                <label class="control-label" id="label-btn">
+                    <input type="checkbox" id="check-btn"> &lt;button&gt;
+                </label>
+                
+                <label class="control-label" id="label-input">
+                    <input type="checkbox" id="check-input"> &lt;input&gt;
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="scrollable-content">            
+        <div class="demo-section">
+            <h2>First Section Heading</h2>
+        
+            <p>This is the first paragraph. Scroll down and try toggling the checkboxes above to see the arrows follow you.</p>
+        
+            <input type="text" class="target-input" placeholder="First input field...">
+        </div>
+
+        <div class="demo-section">
+            <h2>Second Section Heading</h2>
+        
+            <p>Here is another paragraph. It's completely separate from the first one, but shares the same HTML tag.</p>
+        
+            <button>Primary Action</button>
+
+            <button style="background: #28a745;">Secondary Action</button>
+        </div>
+
+        <div class="demo-section">
+            <h2>Third Section</h2>
+
+            <p>And a final paragraph just to show that the selector finds every single one of them down the page.</p>
+        
+            <input type="text" class="target-input" placeholder="Another input field...">
+        </div>
+        
+        <div class="spacer">
+            <p style="text-align: center; color: #888; font-style: italic; margin-top: 2rem;">
+                (Scroll further to test fixed controls)
+            </p>
+        </div>
+
+    </div>
+
+</body>
+</html>
