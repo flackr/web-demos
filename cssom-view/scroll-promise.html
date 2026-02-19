@@ -5,12 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scroll promise test</title>
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
         body {
-            height: 10000px;
             margin: 0;
             font-family: sans-serif;
-            background: linear-gradient(to bottom, #ffcccc, #ffffff, #ccccff);
             position: relative;
+        }
+
+        .scroller {
+            position: absolute;
+            inset: 0;
+            overflow: auto;
+        }
+
+        .spacer {
+            height: 10000px;
+            position: relative;
+            background: linear-gradient(to bottom, #ffcccc, #ffffff, #ccccff);
         }
 
         /* Container for the fixed overlay */
@@ -117,6 +131,15 @@
 </head>
 <body>
 
+    <div id="scroller" class="scroller">
+        <div class="spacer">
+            <!-- Page Content -->
+            <div class="marker top-marker">TOP (Press 's' or Click Jump)</div>
+            <div class="marker middle-marker">MIDDLE POINT</div>
+            <div class="marker bottom-marker">BOTTOM</div>
+        </div>
+    </div>
+
     <!-- Fixed Overlay -->
     <div id="scroll-tracker-box">
         <div class="offset">
@@ -126,33 +149,28 @@
         <div id="activescrolls"></div>
     </div>
 
-    <!-- Page Content -->
-    <div class="marker top-marker">TOP (Press 's' or Click Jump)</div>
-    <div class="marker middle-marker">MIDDLE POINT</div>
-    <div class="marker bottom-marker">BOTTOM</div>
 
     <script>
         const scrollText = document.getElementById('scroll-text');
         const jumpBtn = document.getElementById('jump-btn');
 
         // 1. Update text on scroll
-        window.addEventListener('scroll', () => {
-            scrollText.innerText = `Scroll Y: ${Math.round(window.scrollY)}px`;
+        scroller.addEventListener('scroll', () => {
+            scrollText.innerText = `Scroll Y: ${Math.round(scroller.scrollTop)}px`;
         });
         
         let last = 'up';
 
         // 2. The Shared Logic Function
         async function triggerSmartScroll() {
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            const currentScroll = window.scrollY;
+            const maxScroll = scroller.scrollHeight - scroller.clientHeight;
 
-            let scrollAmount = document.documentElement.scrollHeight;
+            let scrollAmount = scroller.scrollHeight;
             if (last == 'down') {
                 scrollAmount = -scrollAmount;
             }
 
-            let promise = window.scrollBy({
+            let promise = scroller.scrollBy({
                 top: scrollAmount,
                 behavior: 'smooth'
             });
