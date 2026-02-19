@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll promise test</title>
+    <style>
+        body {
+            height: 10000px;
+            margin: 0;
+            font-family: sans-serif;
+            background: linear-gradient(to bottom, #ffcccc, #ffffff, #ccccff);
+            position: relative;
+        }
+
+        /* Container for the fixed overlay */
+        #scroll-tracker-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.85);
+            color: #00ff00;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border: 1px solid #333;
+            
+            > .offset {
+                /* Flexbox to align text and button */
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+
+        /* The Button Styling */
+        #jump-btn {
+            background-color: #00ff00;
+            color: black;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: monospace;
+            transition: background 0.2s;
+        }
+
+        #jump-btn:hover {
+            background-color: #ccffcc;
+        }
+
+        #jump-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Page Markers */
+        .marker {
+            padding: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        
+        .top-marker { position: absolute; top: 0; }
+        
+        .middle-marker {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            border-top: 2px dashed red;
+            color: red;
+        }
+        
+        @keyframes scrollstart {
+            0% {
+                opacity: 0;
+                transform: scale(0.7);
+            }
+            30% {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes scrollpromiseresolved {
+            70% {
+                opacity: 0;
+            }
+            100% {
+                height: 0;
+                opacity: 0;
+            }
+        }
+        
+        .indicator {
+            color: #00ff00;
+            overflow: clip;
+            height: 1.5em;
+        }
+        
+        .indicator span {
+            animation: scrollstart 500ms;
+        }
+        
+        .indicator.done {
+            color: red;
+            animation: scrollpromiseresolved 2s;
+        }
+
+        .bottom-marker { position: absolute; bottom: 0; padding-bottom: 50px; }
+    </style>
+</head>
+<body>
+
+    <!-- Fixed Overlay -->
+    <div id="scroll-tracker-box">
+        <div class="offset">
+            <span id="scroll-text">Scroll Y: 0px</span>
+            <button id="jump-btn">JUMP</button>
+        </div>
+        <div id="activescrolls"></div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="marker top-marker">TOP (Press 's' or Click Jump)</div>
+    <div class="marker middle-marker">MIDDLE POINT</div>
+    <div class="marker bottom-marker">BOTTOM</div>
+
+    <script>
+        const scrollText = document.getElementById('scroll-text');
+        const jumpBtn = document.getElementById('jump-btn');
+
+        // 1. Update text on scroll
+        window.addEventListener('scroll', () => {
+            scrollText.innerText = `Scroll Y: ${Math.round(window.scrollY)}px`;
+        });
+        
+        let last = 'up';
+
+        // 2. The Shared Logic Function
+        async function triggerSmartScroll() {
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const currentScroll = window.scrollY;
+
+            let scrollAmount = document.documentElement.scrollHeight;
+            if (last == 'down') {
+                scrollAmount = -scrollAmount;
+            }
+
+            let promise = window.scrollBy({
+                top: scrollAmount,
+                behavior: 'smooth'
+            });
+            
+            if (promise) {
+                const dir = scrollAmount > 0 ? 'down' : 'up';
+                last = dir;
+                let indicator = document.createElement('div');
+                indicator.classList.add('indicator');
+                indicator.innerHTML = `<span>Scroll ${dir}</span>`;
+                activescrolls.appendChild(indicator);
+                await promise;
+                console.log('scroll promise resolved');
+                indicator.classList.add('done');
+                await indicator.getAnimations()[0].finished;
+                indicator.remove();
+            }
+        }
+
+        // 3. Event Listener: Key Press
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 's' || event.key === 'S') {
+                triggerSmartScroll();
+            }
+        });
+
+        // 4. Event Listener: Button Click
+        jumpBtn.addEventListener('click', () => {
+            triggerSmartScroll();
+        });
+    </script>
+</body>
+</html>
