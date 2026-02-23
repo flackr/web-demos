@@ -77,9 +77,13 @@
         #bottom-sheet {
             pointer-events: auto;
             position: relative;
-            scroll-snap-align: end;       
             height: 90vh;
             view-timeline: --bottom-sheet-visible;
+        }
+        #bottom-sheet-snap {
+            position: absolute;
+            scroll-snap-align: end;
+            height: 90vh;
         }
         #sheet-content {
             overflow-y: auto;
@@ -160,9 +164,10 @@
         <div id="bottom-sheet-start"></div>
         <div id="backdrop" class="bg-gray-900 bg-opacity-50 backdrop" onclick="closeSheet()"></div>
         <!-- Bottom Sheet Container -->
-        <div id="bottom-sheet" class="bg-white shadow-2xl rounded-t-3xl flex flex-col">
+        <div id="bottom-sheet-snap">
             <div id="bottom-sheet-peek"></div>
-
+        </div>
+        <div id="bottom-sheet" class="bg-white shadow-2xl rounded-t-3xl flex flex-col">
             <!-- Handle (for aesthetic touch-to-drag indicator) -->
             <div class="relative flex justify-center mb-4 pt-6">
                 <div class="w-10 h-1.5 bg-gray-300 rounded-full"></div>
@@ -250,6 +255,10 @@
         }
         
         // --- Core Functions ---
+        const ANIMATION_OPTIONS = {
+            easing: 'linear(0, 0.07474, 0.23073, 0.40286, 0.55955, 0.68858, 0.78804, 0.86101, 0.91236, 0.94715, 0.96986, 0.98411, 0.99265, 0.99749, 1, 1.00114, 1.0015, 1.00147, 1.00126, 1.001, 1.00075, 1.00054, 1.00037, 1.00025, 1.00016)',
+            duration: 400
+        };
 
         /**
          * Opens the bottom sheet and populates it with term details.
@@ -276,16 +285,20 @@
             sheetContent.innerHTML = imageHtml + `<p>${detail.description}</p>`;
             sheet.scrollTo(0, 0);
 
-            // Slide sheet up to peek position.
-            sheetPeek.scrollIntoView({behavior: 'smooth', block: 'end'});
+            // Slide sheet up to peek position using a custom easing curve.
+            sheetPeek.scrollIntoView({behavior: 'instant', block: 'end'});
+            sheet.animate([{transform: `translateY(${sheetPeek.offsetHeight}px)`, offset: 0}], ANIMATION_OPTIONS);
         }
 
         /**
          * Closes the bottom sheet.
          */
         window.closeSheet = function() { // Attach to window for onclick in HTML
+            const y1 = sheetScroller.scrollTop;
             // Slide sheet down
-            sheetStart.scrollIntoView({behavior: 'smooth'});
+            sheetStart.scrollIntoView({behavior: 'instant'});
+            const y2 = sheetScroller.scrollTop;
+            sheet.animate([{transform: `translateY(${y2 - y1}px)`, offset: 0}], ANIMATION_OPTIONS);
         }
 
         // --- Event Listeners ---
