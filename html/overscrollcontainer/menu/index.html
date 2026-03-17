@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aesthetic Side Menu Example</title>
+  <link rel="stylesheet" href="../../../css/tw.css">
+  <!-- Load Google Font 'Inter' -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Should be on container. */
+      overscroll-behavior-x: contain;
+    }
+    html, body {
+      margin: 0;
+      height: 100%;
+    }
+    /* Base font */
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    #container {
+      position: relative;
+      height: 100%;        
+    }
+    
+    #flex {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    #side-menu {
+      display: block;
+      width: min(95vw, 30rem);
+      height: 100vh;
+      overflow-y: auto; /* Allow menu to scroll if content is long */
+      scroll-behavior: smooth;
+      right: 100%;
+    }
+
+    #main-content {
+      flex: 1;
+      overflow-y: auto; /* Allow main content to scroll vertically */
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+  <!-- 
+    The container wraps both the menu and the main content, enabling
+    horizontal scroll-snapping between them.
+  -->
+  <div id="container" overscrollcontainer="overlay">
+
+    <!-- 
+      Side Menu
+    -->
+    <nav id="side-menu" class="bg-white shadow-lg z-50 p-6 flex flex-col">
+      <!-- Menu Header with Close Button -->
+      <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-bold text-gray-900">Menu</h2>
+          <button id="close-menu-btn" command="toggle-overscroll" commandfor="side-menu" class="p-1 rounded-full text-gray-500 hover:bg-gray-200 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500" aria-label="Close menu">
+              <!-- X Icon SVG -->
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+      </div>
+
+      <!-- User Profile Section -->
+      <div class="mb-6">
+          <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <img src="https://placehold.co/40x40/E2E8F0/334155?text=A" alt="User Avatar" class="w-10 h-10 rounded-full border-2 border-white shadow-sm">
+              <div>
+                  <p class="font-semibold text-gray-900">Alex Johnson</p>
+                  <p class="text-sm text-gray-500">alex.johnson@example.com</p>
+              </div>
+          </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <ul class="flex-1 space-y-2">
+          <li>
+              <a href="#" class="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 font-medium">
+                  <!-- Dashboard Icon -->
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                  <span>Dashboard</span>
+              </a>
+          </li>
+          <li>
+              <a href="#" class="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 font-medium">
+                  <!-- Profile Icon -->
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                  <span>My Profile</span>
+              </a>
+          </li>
+          <li>
+              <a href="#" class="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 font-medium">
+                  <!-- Settings Icon -->
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.096 2.573-1.066z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                  <span>Settings</span>
+              </a>
+          </li>
+      </ul>
+
+      <!-- Logout Button -->
+      <div class="mt-auto">
+          <a href="#" class="flex items-center gap-3 p-3 rounded-lg text-red-500 hover:bg-red-50 font-medium">
+              <!-- Logout Icon -->
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+              <span>Logout</span>
+          </a>
+      </div>
+    </nav>
+    
+    <div id="flex">
+    <!-- Header Bar -->
+    <!-- The 'sticky' and 'z-30' classes ensure this stays on top of the backdrop -->
+    <header class="relative top-0 bg-white/80 backdrop-blur-md shadow-sm z-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center h-16 gap-4">
+          <!-- Menu Toggle Button -->
+          <button id="open-menu-btn" command="toggle-overscroll" commandfor="side-menu" class="p-2 rounded-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" aria-label="Open menu">
+            <!-- Hamburger Icon SVG -->
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </button>
+          <h1 class="text-xl font-semibold text-gray-900">Web Menu Design</h1>
+        </div>
+      </div>
+    </header>
+
+    <!-- 
+      Main Page Content
+      This is now the second "page" in the scroll container.
+    -->
+    <div id="main-content">
+      <!-- Article Content -->
+      <main class="max-w-3xl mx-auto p-6 lg:p-8">
+        <article class="prose lg:prose-lg bg-white p-8 rounded-lg shadow-md">
+          <h1 class="text-3xl font-bold mb-4">The Role of the Side Menu in Modern Web Design</h1>
+          <p class="mb-4 text-lg text-gray-600">
+            A side menu, often called a "navigation drawer" or "hamburger menu," is a common UI pattern used to house navigation and other actions without cluttering the main interface. Click the (☰) icon in the top-left corner to see it in action.
+          </p>
+          <p class="mb-4 text-lg text-indigo-600 font-medium">
+            Try swiping right on the main content area (or scrolling horizontally) to reveal the menu!
+          </p>
+
+          <h2 class="text-2xl font-semibold mt-8 mb-3">1. User Profile & Account Management</h2>
+          <p class="mb-4 text-gray-700">
+            One of the most common use cases for a side menu is to provide a dedicated space for user-specific information. As you can see in this example, the menu features a prominent section for the user's profile.
+          </p>
+          <ul class="list-disc list-inside mb-4 text-gray-700">
+            <li><strong>Visual Identity:</strong> It shows the user's avatar and name, confirming who is logged in.</li>
+            <li><strong>Account Access:</strong> It serves as a natural entry point to a more detailed "My Profile" page where users can manage their details.</li>
+          </ul>
+
+          <h2 class_name="text-2xl font-semibold mt-8 mb-3">2. Primary Navigation & Settings</h2>
+          <p class="mb-4 text-gray-700">
+            The menu is the perfect place to list primary navigation links that might not fit in a top header, especially on mobile devices. It keeps the main content area clean and focused.
+          </p>
+          <p class="mb-4 text-gray-700">
+            In our menu, you'll find links for "Dashboard" and "Settings." This pattern separates core application areas from the content you're currently viewing, providing clear and organized navigation.
+          </spp>
+          <p class="mb-4 text-gray-700">
+            In our menu, you'll find links for "Dashboard" and "Settings." This pattern separates core application areas from the content you're currently viewing, providing clear and organized navigation.
+          </p>
+
+          <h2 class="text-2xl font-semibold mt-8 mb-3">3. Secondary Actions</h2>
+          <p class="mb-4 text-gray-700">
+            Finally, the menu provides a logical, out-of-the-way home for important but less-frequently-used actions. The "Logout" button is a classic example. It needs to be accessible but shouldn't be competing for attention on the main screen. Placing it at the bottom of the menu is a standard and highly intuitive design choice.
+          </p>
+        </article>
+
+        <!-- Extra content to make page scrollable -->
+        <div class="h-96"></div>
+      </main>
+      </div>
+    </div>
+
+  </div> <!-- End of #container -->
+
+</body>
+</html>
