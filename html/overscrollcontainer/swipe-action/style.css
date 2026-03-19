@@ -1,0 +1,249 @@
+/* Color Palette & Variables */
+:root {
+    --bg-color: #f6f8fc;
+    --surface-color: #ffffff;
+    --text-main: #202124;
+    --text-muted: #5f6368;
+    --border-color: #e0e0e0;
+    --primary-color: #0b57d0;
+    --unread-bg: #f2f6fc;
+}
+
+/* Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text-main);
+    background-color: var(--surface-color);
+    overflow: hidden; /* Prevents whole-page scrolling, handles scroll inside the list */
+}
+
+/* Full Viewport App Container */
+.app-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Top Header */
+.app-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    gap: 16px;
+    background-color: var(--surface-color);
+    border-bottom: 1px solid transparent; /* Prevents visual jumping if added later */
+}
+
+.search-bar {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-color);
+    border-radius: 24px;
+    padding: 10px 16px;
+    gap: 8px;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-bar:focus-within {
+    background-color: #ffffff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.search-bar input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 16px;
+    width: 100%;
+    color: var(--text-main);
+}
+
+.search-bar input::placeholder {
+    color: var(--text-muted);
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+}
+
+/* Avatars */
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: 500;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.profile-avatar { background-color: #e91e63; cursor: pointer; }
+.sender-avatar { width: 44px; height: 44px; font-size: 18px; }
+
+/* Avatar Colors */
+.sender-avatar.bg-blue { background-color: #1976d2; }
+.sender-avatar.bg-purple { background-color: #7b1fa2; }
+.sender-avatar.bg-green { background-color: #388e3c; }
+.sender-avatar.bg-red { background-color: #d32f2f; }
+.sender-avatar.bg-orange { background-color: #f57c00; }
+.sender-avatar.bg-teal { background-color: #00796b; }
+.sender-avatar.bg-dark { background-color: #212121; }
+.sender-avatar.bg-gray { background-color: #757575; }
+.img-avatar { object-fit: cover; }
+
+/* Category Tabs */
+.tabs {
+    display: flex;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--surface-color);
+}
+
+.tab {
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.tab.active {
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--primary-color);
+}
+
+/* Email List & Layout */
+.email-list {
+    flex: 1;
+    overflow-y: auto;
+    /* Adding a subtle padding bottom so the last item isn't blocked by the FAB */
+    padding-bottom: 80px; 
+}
+
+.email-item {
+    display: flex;
+    padding: 16px;
+    position: relative;
+    gap: 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f3f4;
+    transition: background-color 0.15s ease;
+}
+
+.email-item:hover { background-color: #f8f9fa; }
+
+/* Unread State Modifiers */
+.email-item.unread {
+    background-color: var(--unread-bg);
+}
+
+.email-item.unread .sender,
+.email-item.unread .subject {
+    font-weight: 700;
+    color: #000;
+}
+
+.email-item.unread .time {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Typography & Truncation */
+.email-content {
+    flex: 1;
+    min-width: 0; /* Critical for truncation in flexbox */
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.email-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.sender {
+    font-size: 16px;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.time {
+    font-size: 12px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+.subject {
+    font-size: 14px;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.snippet {
+    font-size: 14px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Floating Action Button */
+.fab {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
+    background-color: #c2e7ff;
+    color: #001d35;
+    border: none;
+    font-size: 24px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: box-shadow 0.2s, transform 0.2s;
+    z-index: 10;
+}
+
+.fab:hover {
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.app-container {
+    overscroll-behavior-x: contain;
+}
+
+.swipe {
+    width: 300%;
+    height: 100%;
+    left: -100%;
+    background: linear-gradient(90deg, red, transparent, transparent, red);
+}
