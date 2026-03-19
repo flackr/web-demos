@@ -71,7 +71,7 @@
                 animation-duration: auto;
                 animation-play-state: running;
                 animation-timeline: --bottom-sheet-visible;
-            }            
+            }
         }
 
         #bottom-sheet {
@@ -85,8 +85,21 @@
             scroll-snap-align: end;
             height: 90vh;
         }
+        @keyframes scrollable-when-open {
+            from { overflow-y: hidden; }
+        }
         #sheet-content {
             overflow-y: auto;
+            scrollbar-gutter: stable;
+            animation: scrollable-when-open 10000s both linear paused;
+        }
+        @supports (view-timeline: --foo) {
+            #sheet-content {
+                animation-range: entry;
+                animation-duration: auto;
+                animation-play-state: running;
+                animation-timeline: --bottom-sheet-visible;
+            }            
         }
         @keyframes fade-in {
             from { opacity: 0; pointer-events: none; }
@@ -239,6 +252,7 @@
                 { scroller: sheetScroller, animation: backdrop, subject: sheetPeek },
                 { scroller: sheetScroller, animation: sheetPeek, subject: sheet },
                 { scroller: sheetScroller, animation: sheetScroller, subject: sheetPeek },
+                { scroller: sheetScroller, animation: sheetContent, subject: sheet },
             ];
             for (const { scroller, animation, subject } of viewtimelines) {
                 let animationObj = animation.getAnimations()[0];
