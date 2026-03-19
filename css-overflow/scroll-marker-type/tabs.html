@@ -32,9 +32,12 @@
           &::scroll-marker-group {
             white-space: nowrap;
             height: var(--tab-height);
-            overscroll-behavior-x: contain;
             border-bottom: 1px solid var(--border-color);
             box-sizing: border-box;
+            overflow-x: auto;
+            overscroll-behavior-x: contain;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
           }
 
           & > * {
