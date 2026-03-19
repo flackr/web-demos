@@ -18,7 +18,6 @@
 
         border-radius: 10px;
         border: 1px solid var(--border-color);
-        max-height: 80vh;
 
         & > .scroller {
           scroll-marker-group: before tabs;
@@ -49,8 +48,17 @@
             padding: 2%;
             scroll-snap-align: center;
             scroll-snap-stop: always;
-            overflow: auto;
-            max-height: 80vh;
+            container-type: scroll-state;
+
+            & > .content {
+              contain: size;
+            }
+
+            @container scroll-state(snapped: x) {
+              & > .content {
+                contain: none;
+              }
+            }
 
             &::scroll-marker {
               content: attr(title);
@@ -86,71 +94,46 @@
     <div role="region" class="tabs">
       <div class="scroller" aria-live="polite">
         <div title="Introduction">
-          <h3>Introduction</h3>
-          <p>Slides should follow the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/tabs/">tabs pattern</a>.</p>
+          <div class="content">
+            <h3>Introduction</h3>
+            <p>Slides should follow the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/tabs/">tabs pattern</a>.</p>
+          </div>
         </div>
         <div title="Focus">
-          <h3>Focus</h3>
-          <p>There are a number of implicit focus behaviors:</p>
-          <ul>
-            <li>Only the active slide marker is a tab focus stop.</li>
-            <li>Pressing up/down/left/right will move focus between markers and scroll between slides.</li>
-            <li>
-              The marker is a <a href="https://html.spec.whatwg.org/#focus-navigation-scope-owner">focus navigation scope owner</a> for its contents.
-              This means focus will move from the tab to its contents and vice versa.
-            </li>
-          </ul>
+          <div class="content">
+            <h3>Focus</h3>
+            <p>There are a number of implicit focus behaviors:</p>
+            <ul>
+              <li>Only the active slide marker is a tab focus stop.</li>
+              <li>Pressing up/down/left/right will move focus between markers and scroll between slides.</li>
+              <li>
+                The marker is a <a href="https://html.spec.whatwg.org/#focus-navigation-scope-owner">focus navigation scope owner</a> for its contents.
+                This means focus will move from the tab to its contents and vice versa.
+              </li>
+            </ul>
+          </div>
         </div>
         <div title="Roles">
-          <h3>Accessibility roles and behaviors</h3>
-          <p>
-            Tabs implicitly implement the expected tab semantics.
-            In particular,
-          </p>
-          <ul>
-            <li>The scroll marker group is a <code>role=tablist</code> containing <code>role=tab</code> elements</li>
-            <li>The minimum role of the contents is <code>role=tabpanel</code></li>
-            <li>Only the active tabpanel is in the accessibility tree.</li>
-          </ul>
-        </div>
-        <div title="Scrolling content">
-          <h3>Scrolling content</h3>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
-          <p>You can have scrolling content in tabs</p>
+          <div class="content">
+            <h3>Accessibility roles and behaviors</h3>
+            <p>
+              Tabs implicitly implement the expected tab semantics.
+              In particular,
+            </p>
+            <ul>
+              <li>The scroll marker group is a <code>role=tablist</code> containing <code>role=tab</code> elements</li>
+              <li>The minimum role of the contents is <code>role=tabpanel</code></li>
+              <li>Only the active tabpanel is in the accessibility tree.</li>
+            </ul>
+          </div>
         </div>
         <div title="Summary">
-          <h3>Conclusion</h3>
-          <p>
-            In summary, these implicit behaviors aim to align with the expectations of a <a href="https://www.w3.org/WAI/ARIA/apg/patterns/carousel/examples/carousel-2-tablist/">carousel with markers</a>.
-          </p>
+          <div class="content">
+            <h3>Conclusion</h3>
+            <p>
+              In summary, these implicit behaviors aim to align with the expectations of a <a href="https://www.w3.org/WAI/ARIA/apg/patterns/carousel/examples/carousel-2-tablist/">carousel with markers</a>.
+            </p>
+          </div>
         </div>
       </div>
     </div>
