@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<style>
+#outer { position: relative; overflow: hidden; height: 100px; }
+#inner { position: relative; overflow-x: hidden; overflow-y: clip; width: 100px; }
+#spacer { height: 100px; }
+#sticky { width: 100px; height: 100px; position: sticky; bottom: 0; right: 0; background: green; }
+</style>
+<div id=outer>
+  <div id=inner>
+    <div id=spacer></div>
+    <div id=sticky></div>
+  </div>
+</div>
+<script>
+if (window.stickyPerAxis = sticky.offsetTop == 0) {
+  document.documentElement.classList.add('sticky-per-axis-supported');
+}
+</script>
+
+<!-- Example use -->
+<style>
+.sticky-per-axis-supported {
+  & .supported {
+    display: block;
+  }
+  & .not-supported {
+    display: none;
+  }
+}
+.supported {
+  display: none;
+  background: #cfc;
+}
+
+.not-supported {
+  background: #fcc;
+}
+</style>
+<div class=supported>
+  Sticky per axis supported.
+</div>
+<div class=not-supported>
+  Sticky per axis not supported.
+</div>
