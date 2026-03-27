@@ -36,7 +36,6 @@
           margin-bottom: 0;
           scrollbar-width: none;
           scroll-snap-type: y mandatory;
-          overscroll-behavior: contain;
 
           contain: layout;
           &::backdrop {
@@ -54,6 +53,7 @@
           height: 1px;
           width: 100%;
           bottom: 200%;
+          overscroll-behavior: none;
         }
         #bottom-sheet {
           pointer-events: auto;
