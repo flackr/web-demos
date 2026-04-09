@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      #container {
+        width: 300px;
+        height: 300px;
+        background: white;
+        font-size: 64px;
+        line-height: 300px;
+        text-align: center;
+      }
+      #up, #down, #left, #right {
+        color: white;
+        width: 100%;
+        height: 100%;
+      }
+      #up::before, #down::before, #left::before, #right::before, #container::before {
+        content: "#" attr(id);
+      }
+      #up {
+        top: -100%;
+        background: red;
+      }
+      #left {
+        left: -100%;
+        background: green;
+      }
+      #right {
+        left: 100%;
+        background: blue;
+      }
+      #down {
+        top: 100%;
+        background: rebeccapurple;
+      }
+      #log {
+        white-space: pre;
+        &::before {
+          content: "Events:";
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container" overscrollcontainer>
+      <div id="up" overscrollarea></div>
+      <div id="down" overscrollarea></div>
+      <div id="left" overscrollarea></div>
+      <div id="right" overscrollarea></div>
+    </div>
+    <div id="log"></div>
+  </body>
+  <script>
+    const container = document.getElementById("container");
+    const log = document.getElementById("log");
+    for (const eventType of ['overscrollstart', 'overscrollend', 'overscrollcancel']) {
+      container.addEventListener(eventType, (evt) => {
+        const overscrollTarget = evt.overscrollTarget ? ` overscrollTarget = #${evt.overscrollTarget.id}` : '';
+        const details = `${evt.type}${overscrollTarget}`;
+        log.textContent += `\n${details}`;
+      });
+    }
+  </script>
+</html>
