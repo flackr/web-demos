@@ -54,10 +54,19 @@
   <script>
     const container = document.getElementById("container");
     const log = document.getElementById("log");
-    for (const eventType of ['overscrollstart', 'overscrollend', 'overscrollcancel']) {
+    for (const eventType of ['overscrollstart', 'overscrollchanging', 'overscrollend', 'overscrollcancel']) {
       container.addEventListener(eventType, (evt) => {
-        const overscrollTarget = evt.overscrollTarget ? ` overscrollTarget = #${evt.overscrollTarget.id}` : '';
-        const details = `${evt.type}${overscrollTarget}`;
+        function attr(attrName) {
+          const value = evt[attrName];
+          if (value === true) return ` ${attrName}=true`;
+          if (value === false) return ` ${attrName}=false`;
+          if (typeof value === 'string') return ` ${attrName}="${value}"`;
+          if (typeof value === 'number') return ` ${attrName}=${value}`;
+          if (value instanceof Element) return ` ${attrName}=#${value.id}`;
+          return '';
+        }
+        
+        const details = `${evt.type}${attr('overscrollTarget')}${attr('overscrolling')}`;
         log.textContent += `\n${details}`;
       });
     }
