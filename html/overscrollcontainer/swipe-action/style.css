@@ -242,6 +242,7 @@ body {
 }
 
 .delete, .toggle-read {
+    border: 0;
     width: 100%;
     height: 100%;
 }

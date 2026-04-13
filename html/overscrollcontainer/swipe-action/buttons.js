@@ -1,6 +1,8 @@
 let actions = document.querySelector('#actions');
 
 function addOverscrollArea(container, area) {
+  // Shouldn't need to set commandForElement, it should be the implicit target.
+  area.commandForElement = area;
   container.appendChild(area);
 }
 
@@ -8,8 +10,14 @@ for (const email of document.querySelectorAll('.email-item')) {
   for (const area of actions.content.children) {
     addOverscrollArea(email, area.cloneNode(true));
   }
+  let overscrolling = false;
+  email.addEventListener('overscrollchanging', (evt) => {
+    overscrolling = evt.overscrolling;
+  });
   email.addEventListener('overscrollend', (evt) => {
     console.log(evt);
+    if (!overscrolling)
+      return;
     const command = evt.overscrollTarget.dataset.command;
     if (command == 'delete')
       email.remove();
@@ -18,6 +26,6 @@ for (const email of document.querySelectorAll('.email-item')) {
     else
       throw new Error(`Unsupported command: ${command}`);
     // Should have a better way to unscroll the overscroll area.
-    email.firstElementChild.scrollIntoView({block: 'nearest', inline: 'nearest'});
+      evt.overscrollTarget.click();
   });
 }
