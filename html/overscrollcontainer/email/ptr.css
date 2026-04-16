@@ -1,0 +1,103 @@
+#pull-to-refresh {
+  --ptr-space: 150px;
+  container-type: scroll-state;
+  bottom: calc(100% + 20px);
+  width: 100%;
+  left: 0;
+  padding: 20px 0;
+  z-index: 1;
+  
+  &::before {
+    content: "";
+    display: block;
+    height: var(--ptr-space);
+  }
+  
+  & > .ptr-icon {
+      margin: 0 auto;
+  }
+}
+
+/* Base Container (The Circular Pill) */
+.ptr-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666666;
+  position: sticky;
+  bottom: calc(100% - 64px);
+  overflow: hidden;
+}
+
+/* --- Elements Setup --- */
+
+.ptr-arrow {
+  /* Smooth transform for rotating and scaling */
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+}
+
+.ptr-spinner {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: rotate 2s linear infinite;
+}
+
+.ptr-spinner .path {
+  stroke: #007aff; /* iOS blue, change to your brand color */
+  stroke-linecap: round;
+  animation: dash 1.5s ease-in-out infinite;
+}
+
+/* --- The 3 Visual States --- */
+
+/* State 1: Pulling (User is dragging down, but hasn't passed the threshold) */
+.ptr-icon.pulling .ptr-arrow {
+  transform: rotate(0deg) scale(1);
+  
+  @container scroll-state(snapped: y) {
+     transform: rotate(180deg) scale(1); /* Arrow points up */
+  }
+}
+
+/* State 3: Refreshing (User released, actively loading data) */
+.ptr-icon.refreshing .ptr-arrow {
+  opacity: 0;
+  transform: scale(0.5); /* Arrow shrinks away */
+}
+
+.ptr-icon.refreshing .ptr-spinner {
+  opacity: 1;
+  transform: scale(1); /* Spinner pops in */
+}
+
+/* --- Keyframe Animations for Spinner --- */
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}

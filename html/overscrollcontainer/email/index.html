@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-Screen Email Demo</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="ptr.css">
+    <script src="buttons.js" defer></script>
+</head>
+<body>
+    <template id="actions">
+        <button class="delete" data-command="delete" command="toggle-overscroll"></button>
+        <button class="toggle-read" data-command="toggle" command="toggle-overscroll"></button>
+    </template>
+    <div class="app-container">
+        <header class="app-header">
+            <button class="icon-btn menu-btn" aria-label="Menu">☰</button>
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text" placeholder="Search in emails">
+            </div>
+            <button id="refresh-btn" class="refresh-btn" type="button" aria-label="Refresh data" command="toggle-overscroll" commandfor="pull-to-refresh">
+                <svg class="refresh-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
+                    <polyline points="21 3 21 8 16 8"></polyline>
+                </svg>
+            </button>
+            <div class="avatar profile-avatar">JD</div>
+        </header>
+
+        <div class="tabs">
+            <span class="tab active">Primary</span>
+            <span class="tab">Promotions</span>
+            <span class="tab">Social</span>
+        </div>
+
+        <main class="email-list" overscrollcontainer="overlay">
+            <div id="pull-to-refresh">
+                <div class="ptr-icon pulling" id="refresh-indicator">
+                    
+                    <!-- Downward Arrow -->
+                    <svg class="ptr-arrow" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="4" x2="12" y2="20"></line>
+                        <polyline points="18 14 12 20 6 14"></polyline>
+                    </svg>
+
+                    <!-- Loading Spinner -->
+                    <svg class="ptr-spinner" viewBox="0 0 50 50">
+                        <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+                    </svg>
+                    
+                </div>
+            </div>
+            
+            <article class="email-item unread" overscrollcontainer>
+                <div class="avatar sender-avatar bg-blue">A</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Acme Corp</span>
+                        <span class="time">10:42 AM</span>
+                    </div>
+                    <div class="subject">Your upcoming invoice is ready</div>
+                    <div class="snippet">Hi John, please find attached the invoice for your recent subscription renewal. If you have any questions...</div>
+                </div>
+            </article>
+
+            <article class="email-item unread" overscrollcontainer>
+                <div class="avatar sender-avatar bg-red">G</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">GitHub</span>
+                        <span class="time">9:15 AM</span>
+                    </div>
+                    <div class="subject">[GitHub] A third-party OAuth application was added</span>
+                    <div class="snippet">Hey there, we wanted to let you know that a new application was authorized to access your account...</div>
+                </div>
+            </article>
+
+            <article class="email-item unread" overscrollcontainer>
+                <div class="avatar sender-avatar bg-green">S</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Slack</span>
+                        <span class="time">8:30 AM</span>
+                    </div>
+                    <div class="subject">Unread messages in #project-alpha</div>
+                    <div class="snippet">You have 14 new messages waiting for you in the #project-alpha channel. Catch up on the latest...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-purple">S</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Sarah Jenkins</span>
+                        <span class="time">Yesterday</span>
+                    </div>
+                    <div class="subject">Project Launch Notes</div>
+                    <div class="snippet">Great work on the launch everyone! Let's regroup on Monday to discuss the phase 2 rollout strategy...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <img src="https://i.pravatar.cc/100?img=33" alt="Alex" class="avatar sender-avatar img-avatar">
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Alex Mercer</span>
+                        <span class="time">Yesterday</span>
+                    </div>
+                    <div class="subject">Coffee next week?</div>
+                    <div class="snippet">Hey! It's been a while. Are you free for a quick coffee catch-up sometime next Tuesday? Let me know...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-orange">A</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Amazon.com</span>
+                        <span class="time">Mar 17</span>
+                    </div>
+                    <div class="subject">Your Amazon order has shipped!</div>
+                    <div class="snippet">Good news! Your order containing "Wireless Noise Cancelling Headphones" has shipped and is on its way...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-dark">N</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Netflix</span>
+                        <span class="time">Mar 17</span>
+                    </div>
+                    <div class="subject">New sign-in to your account</div>
+                    <div class="snippet">We noticed a new sign-in to your Netflix account from a device we don't recognize. If this was you...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-blue">L</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">LinkedIn</span>
+                        <span class="time">Mar 16</span>
+                    </div>
+                    <div class="subject">You appeared in 12 searches this week</div>
+                    <div class="snippet">See who is looking at your profile. Your experience in frontend development is getting noticed...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-teal">M</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Medium Daily Digest</span>
+                        <span class="time">Mar 16</span>
+                    </div>
+                    <div class="subject">5 stories for you today</div>
+                    <div class="snippet">The future of CSS: What's new in 2026. Plus 4 more stories recommended by our editors...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-green">D</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Dribbble</span>
+                        <span class="time">Mar 15</span>
+                    </div>
+                    <div class="subject">Top design inspiration this week</div>
+                    <div class="snippet">Check out the top trending shots from the community. See what leading designers are creating today...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-dark">S</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Spotify</span>
+                        <span class="time">Mar 15</span>
+                    </div>
+                    <div class="subject">New release from your favorite artist</div>
+                    <div class="snippet">The wait is over! Listen to the brand new album out today. Click here to open the app and start streaming...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-blue">U</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Uber Receipts</span>
+                        <span class="time">Mar 14</span>
+                    </div>
+                    <div class="subject">Your Tuesday morning trip with Uber</div>
+                    <div class="snippet">Total: $14.52. Thanks for riding with Uber. Here is your receipt for your ride to the downtown office...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-green">D</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Duolingo</span>
+                        <span class="time">Mar 14</span>
+                    </div>
+                    <div class="subject">Don't lose your 45-day streak!</div>
+                    <div class="snippet">Hi Duo learner, it takes 5 minutes a day to learn a language. Practice now to keep your streak alive...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-blue">Z</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Zoom</span>
+                        <span class="time">Mar 13</span>
+                    </div>
+                    <div class="subject">Your meeting is starting soon</div>
+                    <div class="snippet">Weekly Sync is scheduled to begin in 15 minutes. Click the link below to join the waiting room...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-blue">P</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">PayPal</span>
+                        <span class="time">Mar 13</span>
+                    </div>
+                    <div class="subject">Receipt for your payment to Steam</div>
+                    <div class="snippet">You sent a payment of $29.99 USD to Steam Games. This transaction will appear on your statement...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-red">A</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Airbnb</span>
+                        <span class="time">Mar 12</span>
+                    </div>
+                    <div class="subject">Rate your recent stay in Toronto</div>
+                    <div class="snippet">How was your trip? Take a minute to leave a review for your host so they can improve future stays...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-blue">D</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Dropbox</span>
+                        <span class="time">Mar 11</span>
+                    </div>
+                    <div class="subject">Your Dropbox is almost full</div>
+                    <div class="snippet">You're using 95% of your available space. Upgrade to Dropbox Plus today for 2TB of secure cloud storage...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <img src="https://i.pravatar.cc/100?img=47" alt="Emily" class="avatar sender-avatar img-avatar">
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Emily Chen</span>
+                        <span class="time">Mar 11</span>
+                    </div>
+                    <div class="subject">Q3 Marketing Budget</div>
+                    <div class="snippet">Attached is the revised budget for the upcoming quarter. Let me know if you need any adjustments before Friday...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-dark">F</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Figma</span>
+                        <span class="time">Mar 10</span>
+                    </div>
+                    <div class="subject">2 new comments on Web App UI</div>
+                    <div class="snippet">David left a comment: "Can we increase the padding on these buttons?" Click to reply in Figma...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-gray">A</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Apple</span>
+                        <span class="time">Mar 10</span>
+                    </div>
+                    <div class="subject">Your receipt from Apple</div>
+                    <div class="snippet">iCloud+ with 50GB Storage. Billed to Visa .... $0.99. You can manage your subscriptions in settings...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-orange">S</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Strava</span>
+                        <span class="time">Mar 09</span>
+                    </div>
+                    <div class="subject">Kudos on your morning run!</div>
+                    <div class="snippet">Mark and 3 others gave you kudos for "Morning 5K". Keep up the great work and smash those goals...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-purple">D</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Discord</span>
+                        <span class="time">Mar 09</span>
+                    </div>
+                    <div class="subject">Missed messages from Front-End Devs</div>
+                    <div class="snippet">While you were away, there was a lot of activity in the #css-help channel. Jump back in to join the conversation...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <img src="https://i.pravatar.cc/100?img=11" alt="Robert" class="avatar sender-avatar img-avatar">
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Robert Williams</span>
+                        <span class="time">Mar 08</span>
+                    </div>
+                    <div class="subject">Re: Feedback on the new prototype</div>
+                    <div class="snippet">Thanks for sending this over. I've taken a look and I think we're moving in the right direction. A few notes...</div>
+                </div>
+            </article>
+
+            <article class="email-item" overscrollcontainer>
+                <div class="avatar sender-avatar bg-blue">W</div>
+                <div class="email-content">
+                    <div class="email-header">
+                        <span class="sender">Webflow</span>
+                        <span class="time">Mar 07</span>
+                    </div>
+                    <div class="subject">Welcome to Webflow!</div>
+                    <div class="snippet">We're so glad you're here. To get started, we recommend checking out Webflow University for some quick tutorials...</div>
+                </div>
+            </article>
+
+        </main>
+        
+        <button class="fab" aria-label="Compose">✎</button>
+    </div>
+</body>
+</html>

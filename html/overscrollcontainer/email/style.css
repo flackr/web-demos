@@ -256,3 +256,77 @@ body {
     left: 100%;
     background: linear-gradient(90deg, rgba(0,127,0,0.5), green);
 }
+
+/* Base Button Styles */
+.refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333333;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 9999px; /* Pill shape */
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+/* Hover and Active States */
+.refresh-btn:hover {
+  background-color: #f9f9f9;
+  border-color: #d0d0d0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.refresh-btn:active {
+  background-color: #f0f0f0;
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+/* Focus State for Accessibility */
+.refresh-btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3);
+  border-color: #007aff;
+}
+
+/* Icon Setup */
+.refresh-icon {
+  width: 16px;
+  height: 16px;
+  color: #666666;
+  transition: color 0.2s ease;
+}
+
+.refresh-btn:hover .refresh-icon {
+  color: #333333;
+}
+
+/* --- Loading State --- */
+
+/* When the .is-loading class is applied */
+.refresh-btn.is-loading {
+  pointer-events: none; /* Prevent double-clicks */
+  opacity: 0.8;
+}
+
+.refresh-btn.is-loading .refresh-icon {
+  color: #007aff; /* Optional: change color while loading */
+  animation: spin-icon 1s linear infinite;
+}
+
+/* Keyframe for the spinning icon */
+@keyframes spin-icon {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

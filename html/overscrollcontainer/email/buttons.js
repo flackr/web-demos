@@ -29,3 +29,18 @@ for (const email of document.querySelectorAll('.email-item')) {
       evt.overscrollTarget.click();
   });
 }
+
+function setupPullToRefresh() {
+  const pullArea = document.querySelector('main');
+  const icon = document.querySelector('#pull-to-refresh .ptr-icon');
+  pullArea.addEventListener('overscrollend', (evt) => {
+    if (!evt.overscrolling)
+      return;
+    icon.classList.add('refreshing');
+    setTimeout(() => {
+      icon.classList.remove('refreshing');
+      document.getElementById('refresh-btn').click();
+    }, 2000);
+  });
+}
+setupPullToRefresh();
