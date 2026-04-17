@@ -49,6 +49,7 @@ p { font-size: 1.15rem; line-height: 1.6; max-width: 800px; margin-bottom: 1.5re
       display: block;
       position: absolute;
       z-index: 1;
+      position-anchor: auto;
       position-area: right;
       padding: 0.25rem 0.45rem;
       background: rgba(255, 255, 255, 0.8);
