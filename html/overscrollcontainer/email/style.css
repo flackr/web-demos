@@ -7,6 +7,7 @@
     --border-color: #e0e0e0;
     --primary-color: #0b57d0;
     --unread-bg: #f2f6fc;
+    overscroll-behavior-x: contain;
 }
 
 /* Reset */
@@ -133,6 +134,7 @@ body {
 .email-list {
     flex: 1;
     overflow-y: auto;
+    position: relative;
     /* Adding a subtle padding bottom so the last item isn't blocked by the FAB */
     padding-bottom: 80px; 
 }
@@ -237,10 +239,6 @@ body {
     transform: translateY(-2px);
 }
 
-.app-container {
-    overscroll-behavior-x: contain;
-}
-
 .delete, .toggle-read {
     border: 0;
     width: 100%;
@@ -329,4 +327,76 @@ body {
   to {
     transform: rotate(360deg);
   }
+}
+
+/* --- Slide-in Menu Base --- */
+.side-menu {
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    display: block;
+    background-color: var(--surface-color);
+    box-shadow: 4px 0 16px rgba(0,0,0,0.2);
+    z-index: 100; /* Stays above everything */
+    
+    display: flex;
+    flex-direction: column;
+    scroll-behavior: smooth;
+}
+
+/* --- Menu Internal Styling --- */
+.menu-header {
+    padding: 20px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.menu-list {
+    list-style: none;
+    padding: 12px 0;
+    overflow-y: auto;
+}
+
+.menu-item {
+    padding: 14px 24px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    color: var(--text-main);
+    transition: background-color 0.15s ease;
+}
+
+.menu-item:hover {
+    background-color: #f1f3f4;
+}
+
+/* Styled similarly to Gmail's active folder state */
+.menu-item.active {
+    background-color: #e8f0fe;
+    color: var(--primary-color);
+    font-weight: 500;
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+    margin-right: 8px; /* Leaves space for the rounded corner */
+}
+
+.badge {
+    margin-left: auto;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.menu-divider {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 12px 0;
 }

@@ -13,9 +13,32 @@
         <button class="delete" data-command="delete" command="toggle-overscroll"></button>
         <button class="toggle-read" data-command="toggle" command="toggle-overscroll"></button>
     </template>
-    <div class="app-container">
+    <div class="app-container" overscrollcontainer="overlay">
+        <!-- The slide-in menu panel -->
+        <nav class="side-menu" id="sideMenu">
+            <div class="menu-header">
+                <h2>MailApp</h2>
+                <button class="icon-btn close-btn" id="closeMenuBtn" aria-label="Close menu" command="toggle-overscroll" commandfor="sideMenu">✕</button>
+            </div>
+            
+            <ul class="menu-list">
+                <li class="menu-item active">
+                    <span class="menu-icon">📥</span> Inbox 
+                    <span class="badge">24</span>
+                </li>
+                <li class="menu-item"><span class="menu-icon">⭐</span> Starred</li>
+                <li class="menu-item"><span class="menu-icon">⏱️</span> Snoozed</li>
+                <li class="menu-item"><span class="menu-icon">▶️</span> Sent</li>
+                <li class="menu-item"><span class="menu-icon">📄</span> Drafts</li>
+                
+                <hr class="menu-divider">
+                
+                <li class="menu-item"><span class="menu-icon">⚙️</span> Settings</li>
+                <li class="menu-item"><span class="menu-icon">❓</span> Help & Feedback</li>
+            </ul>
+        </nav>
         <header class="app-header">
-            <button class="icon-btn menu-btn" aria-label="Menu">☰</button>
+            <button class="icon-btn menu-btn" aria-label="Menu" command="toggle-overscroll" commandfor="sideMenu">☰</button>
             <div class="search-bar">
                 <span class="search-icon">🔍</span>
                 <input type="text" placeholder="Search in emails">
