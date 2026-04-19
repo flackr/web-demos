@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Swiping into overscroll areas</title>
+<link rel="stylesheet" href="../../../css/slides.css">
+<link rel="stylesheet" href="../../../css/coder.css">
+<link rel="stylesheet" href="../../../css/tabs.css">
+<script src="../../../js/slides.js" defer></script>
+<script src="../../../js/live-preview.js" defer></script>
+<script src="../../../js/coder.js" defer></script>
+<style>
+html, body {
+  margin: 0;
+  height: 100%;
+}
+.slideshow {
+  height: 100%;
+}
+.grid-item {
+  background: var(--primary); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; font-weight: bold;
+  border-radius: 4px; border: 2px solid rgba(255,255,255,0.3);
+}
+.resizable {
+  overflow: hidden;
+  resize: both;
+  display: flex;
+  width: 80%;
+  height: 80%;
+  padding-bottom: 15px;
+  border: 2px dashed var(--primary);
+}
+.flex-across {
+  display: flex;
+  & > * {
+    width: 1px;
+    flex: 1;
+  }
+}
+.flex {
+  flex: 1;
+}
+</style>
+</head>
+<body>
+<div class="slideshow" role="region">
+<div class="scroller">
+
+<div class="slide" title="Title"><div>
+  <div style="text-align: center">
+    <h1>Swiping into overscroll areas</h1>
+    <p>A simple declarative way to create swipable areas.</p>
+    <p>-flackr, vmpstr</p>
+  </div>
+</div></div>
+
+<div class="slide" title="Background"><div>
+  <h2>What are overscroll areas?</h2>
+  <div>
+    <p>Examples of apps and sites</p>
+  </div>
+</div></div>
+
+<div class="slide" title="What is swiping?"><div>
+  <h2>What is swiping?</h2>
+  <div>
+    <p>
+      Swiping should allow the user to drag or fling some content with their finger.
+    </p>
+    <div class="live code tabs">
+      <textarea title="HTML"></textarea>
+      <textarea title="CSS"></textarea>
+    </div>
+  </div>
+  <div id="demo-swiping" class="live-edit demo-container">
+    <style>
+      #demo-swiping {
+        .container {
+          overflow: auto;
+          scrollbar-width: none;
+          width: 100%;
+          height: 100%;
+          position: relative;
+
+          &::before {
+            position: absolute;
+            content: "";
+            width: 200%;
+            height: 200%;
+          }
+        }
+        .subject {
+          position: absolute;
+          top: 80%;
+          left: 80%;
+          width: 40%;
+          height: 40%;
+          background: green;
+        }
+      }
+    </style>
+    <div class="container">
+      <div class="subject"></div>
+    </div>
+    <script>
+      {
+        const scroller = document.querySelector('#demo-swiping .container');
+        scroller.scrollTo(
+          (scroller.scrollWidth - scroller.clientWidth) / 2,
+          (scroller.scrollHeight - scroller.clientHeight) / 2);
+      }
+    </script>
+  </div>
+</div></div>
+
+<div class="slide" title="Interaction with scrolling"><div>
+  <h2 class="span">How does it interact with scrolling?</h2>
+  <div>
+    <p>
+      Users swipe to scroll content, so we need to ensure they can still scroll before swiping.
+    </p>
+    <div class="live code tabs">
+      <textarea title="HTML"></textarea>
+      <textarea title="CSS"></textarea>
+    </div>
+  </div>
+  <div id="demo-swipe-scroll" class="live-edit demo-container">
+    <style>
+      #demo-swipe-scroll {
+        .container {
+          overflow: auto;
+          scrollbar-width: none;
+          width: 100%;
+          height: 100%;
+          position: relative;
+
+          &::before {
+            position: absolute;
+            content: "";
+            width: 200%;
+            height: 200%;
+          }
+        }
+        .subject {
+          position: absolute;
+          top: 80%;
+          left: 80%;
+          width: 40%;
+          height: 40%;
+          border: 5px solid black;
+          overflow: auto;
+          
+        }
+      }
+    </style>
+    <div class="container">
+      <div class="subject">
+        <h1>Scrolling</h1>
+
+        <p>What if the swipable area has some scrollable content in it?</p>
+  
+        <p>
+          The user still needs to be able to scroll that content,
+          so we shouldn't immediately consume those swipes to perform
+          the swipe action.
+        </p>
+
+        <p>
+          We should scroll as much as possible,
+          and then if the user tries to swipe again they can engage the swipe.
+        </p>
+
+        <p>
+          Does this sound familiar? This is how scroll chaining works.
+        </p>
+      </div>
+    </div>
+    <script>
+      {
+        const scroller = document.querySelector('#demo-swipe-scroll .container');
+        scroller.scrollTo(
+          (scroller.scrollWidth - scroller.clientWidth) / 2,
+          (scroller.scrollHeight - scroller.clientHeight) / 2);
+      }
+    </script>
+  </div>
+</div></div>
+
+<div class="slide" title="Interaction with scrolling ancestors"><div>
+  <h2 class="span">What about outside scrollers?</h2>
+  <div>
+    <p>
+      You should be able to scroll the outer content after you reach the swipe limit.
+    </p>
+    <div class="live code tabs">
+      <textarea title="HTML"></textarea>
+      <textarea title="CSS"></textarea>
+    </div>
+  </div>
+  <div id="demo-scroll-ancestor" class="live-edit demo-container">
+    <style>
+      #demo-scroll-ancestor {
+        .container {
+          container-type: size;
+          overflow: auto;
+          width: 100%;
+          height: 100%;
+          position: relative;
+        }
+        .switch {
+          overflow: auto;
+          scroll-snap-type: y mandatory;
+          margin: 0 auto;
+          scrollbar-width: none;
+          width: 20cqw;
+          height: 35cqw;
+          background-color: lightgray;
+          transition: background-color 200ms;
+          box-sizing: border-box;
+          border-radius: 10cqw;
+          --padding: 6px;
+          --space: calc(15cqw - var(--padding) + 2px);
+          padding: var(--padding);
+          position: relative;
+          
+          &.active {
+            background-color: limegreen;
+          }
+
+          &::after {
+            content: "";
+            display: block;
+            height: var(--space);
+          }
+          & .toggle {
+            border-radius: 50%;
+            background: white;
+
+            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.4);
+            margin-top: var(--space);
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            scroll-snap-align: end;
+            &::before {
+              content: "";
+              height: 1px;
+              display: block;
+              scroll-snap-align: start;
+            }
+          }
+        }
+      }
+    </style>
+    <div class="container">
+      <h1>Scrolling outside of swipable area</h1>
+      <p>What if a swipable area is inside of some scrolling content.</p>
+      <p>Consider this swipable toggle.</p>
+      <div class="switch">
+        <div class="toggle"></div>
+      </div>
+      <p>
+        It should swipe first, but if it is already fully swiped
+        then you should be able to scroll the content.
+      </p>
+      <p>The natural way to handle this is to chain
+        to the ancestor scroller when you swipe beyond the range of the swipable area.</p>
+      <p>
+        I hope all of this has convinced you that swipable areas
+        function intuitively as scrollers.
+      </p>
+    </div>
+    <script>
+      {
+        const toggle = document.querySelector('#demo-scroll-ancestor .switch');
+        toggle.addEventListener('scrollsnapchanging', (evt) => {
+          toggle.classList.toggle('active');
+        });
+      }
+    </script>
+  </div>
+</div></div>
+
+<div class="slide" title="Overscroll Attributes"><div>
+  <h2 class="span">overscroll* attributes</h2>
+  <div>
+    <p>
+      The <code>overscrollcontainer</code> property declares an element to be a container of overscroll areas.
+      It has two modes: non-overlay (the default) and overlay.</p>
+    
+    <div class="live code tabs">
+      <textarea title="HTML"></textarea>
+      <textarea title="CSS"></textarea>
+    </div>
+  </div>
+  <div class="live-edit demo-container" id="demo-attributes">
+    <style>
+      #demo-attributes {
+        .container {
+          border: 4px solid gray;
+          padding: 8px;
+        }
+        .menu {
+          box-sizing: border-box;
+          width: 60%;
+          left: -60%;
+          height: 100%;
+          padding: 8px;
+          background: rgba(230, 230, 230, 0.8);
+          backdrop-filter: blur(5px);
+          box-shadow: 5px 0 5px rgba(0, 0, 0, 0.4);
+        }
+      }
+    </style>
+    <p>Non-overlay:</p>
+    <div class="container" overscrollcontainer>
+      <div class="menu" overscrollarea>
+        <h2>Menu content</h2>
+        <ul>
+          <li><a href="#">Link 1</a></li>
+          <li><a href="#">Link 2</a></li>
+        </ul>
+      </div>
+      <h1>Content</h1>
+      <p>Main content area</p>
+    </div>
+    <p>Overlay:</p>
+    <div class="container" overscrollcontainer="overlay">
+      <div class="menu" overscrollarea>
+        <h2>Menu content</h2>
+        <ul>
+          <li><a href="#">Link 1</a></li>
+          <li><a href="#">Link 2</a></li>
+        </ul>
+      </div>
+      <h1>Content</h1>
+      <p>Main content area</p>
+    </div>
+  </div>
+</div></div>
+
+<div class="slide" title="toggle-overscroll command"><div>
+  <h2 class="span">toggle-overscroll command</h2>
+  <div>
+    <p>Use the <code>toggle-overscroll</code> command to open/close an overscroll area.</p>
+    <div class="live code tabs">
+      <textarea title="HTML"></textarea>
+      <textarea title="CSS"></textarea>
+    </div>
+  </div>
+  <div class="live-edit demo-container" id="demo-command">
+    <style>
+      #demo-command {
+        .container {
+          border: 4px solid gray;
+          padding: 8px;
+        }
+        .menu {
+          box-sizing: border-box;
+          width: 60%;
+          left: -60%;
+          height: 100%;
+          padding: 8px;
+          background: rgba(230, 230, 230, 0.8);
+          backdrop-filter: blur(5px);
+          box-shadow: 5px 0 5px rgba(0, 0, 0, 0.4);
+
+          /* This determines the overscroll area's scroll into view behavior*/
+          scroll-behavior: auto;
+          & button {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+          }
+        }
+        button {
+          border-radius: .5rem;
+          padding: 0.5rem;
+          &:hover {
+            background-color: rgb(229 231 235 / 1);
+          }
+          svg {
+            width: 1.5rem;
+            height: 1.5rem;
+          }
+        }
+      }
+    </style>
+    <div class="container" overscrollcontainer>
+      <div id="menu2" class="menu">
+        <button command="toggle-overscroll" commandfor="menu2" aria-label="Close menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <h2>Menu content</h2>
+        <ul>
+          <li><a href="#">Link 1</a></li>
+          <li><a href="#">Link 2</a></li>
+        </ul>
+      </div>
+      <div class="header">
+        <button command="toggle-overscroll" commandfor="menu2" aria-label="Open menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+      </div>
+      <h1>Content</h1>
+      <p>Main content area</p>
+    </div>
+  </div>
+</div></div>
+
+<div class="slide" title="Overscroll Events"><div>
+  <h2 class="span">overscroll* events</h2>
+  <div>
+    <p>
+      <code>overscrollstart</code>, <code>overscrollchanging</code>, <code>overscrollend</code> and <code>overscrollcancel</code>
+      are dispatched to the scroll container, identifying the area and whether it is currently in the overscrolled state or not.
+    </p>
+        
+    <div class="live code tabs">
+      <textarea title="HTML"></textarea>
+      <textarea title="CSS"></textarea>
+    </div>
+  </div>
+  <div class="live-edit demo-container" id="demo-events">
+    <style>
+      #demo-events {
+        .container {
+          border: 4px solid gray;
+          padding: 8px;
+          height: 100%;
+        }
+        .area {
+          box-sizing: border-box;
+          width: 100%;
+          top: -60%;
+          height: 60%;
+          padding: 8px;
+          background: yellow;
+        }
+      }
+      .eventlog {
+        position: absolute;
+        top: 20%;
+        right: 16px;
+        bottom: 20%;
+        width: 45%;
+        background: rgba(255, 255, 255, 0.8);
+        border: 2px solid black;
+        border-radius: 32px;
+        padding: 8px;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        & .events {
+          white-space: pre-wrap;
+          overflow: auto;
+          flex: 1;
+        }
+      }
+    </style>
+    <div class="eventlog">
+      <h2>Events</h2>
+      <div class="events"></div>
+    </div>
+    <div class="container" overscrollcontainer>
+      <div class="area" overscrollarea>
+        <h2>Overscroll area</h2>
+      </div>
+      <h1>Main content area</h1>
+    </div>
+    <script>
+      {
+        const eventLog = document.querySelector('#demo-events .events');
+        const container = document.querySelector('#demo-events .container');
+        const logattrs = ['target', 'overscrollTarget', 'overscrolling'];
+        for (const eventType of ['overscrollstart', 'overscrollchanging', 'overscrollend', 'overscrollcancel']) {
+          container.addEventListener(eventType, (evt) => {
+            function logattr(attrName) {
+              const value = evt[attrName];
+              if (value === true) return ` ${attrName}=true`;
+              if (value === false) return ` ${attrName}=false`;
+              if (typeof value === 'string') return ` ${attrName}="${value}"`;
+              if (typeof value === 'number') return ` ${attrName}=${value}`;
+              if (value instanceof Element) return ` ${attrName}=${value.tagName}.${value.className}`;
+              return '';
+            }
+            console.log(evt);
+            const details = `${evt.type}\n  ${logattrs.map(logattr).join('\n  ')}}\n`;
+            eventLog.textContent += `\n${details}`;
+            eventLog.scrollTop = eventLog.scrollHeight;
+          });
+        }
+      }
+    </script>
+  </div>
+</div></div>
+
+<div class="slide" title="Multiple directions?"><div>
+  <h2 class="span">Overscrolling in all directions?</h2>
+  <div>
+    <p>You can overscroll in any of the directions.</p>
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+      <textarea title="HTML"></textarea>
+    </div>
+  </div>
+  <div id="demo-multiple-directions" class="live-edit demo-container">
+    <style>
+      #demo-multiple-directions {
+        
+      }
+    </style>
+    <div></div>
+  </div>
+</div></div>
+
+<div class="slide" title="Multiple areas?"><div>
+  <h2 class="span">What happens when you have multiple areas?</h2>
+  <div>
+    <p>They chain!</p>
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+      <textarea title="HTML"></textarea>
+    </div>
+  </div>
+  <div id="demo-multiple" class="live-edit demo-container">
+    <style>
+      #demo-multiple {
+        
+      }
+    </style>
+    <div></div>
+  </div>
+</div></div>
+
+<div class="slide" title="Under development"><div>
+  <h2>Under development</h2>
+  <div>
+    <p>We've shown what works so far, but there is still a lot to be figured out and developed.</p>
+  </div>
+</div></div>
+
+<div class="slide" title="Swipe quickly"><div>
+  <h2 class="span">Swipe shouldn't slow to the snap point</h2>
+  <div>
+    <p>
+      When snapping to the last snap area, we shouldn't slow down.
+      It should be treated the same as flinging to the end of a scroller.
+    </p>
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+      <textarea title="HTML"></textarea>
+    </div>
+  </div>
+  <div id="demo-swipe-dismiss" class="live-edit demo-container">
+    <style>
+      #demo-swipe-dismiss {
+        
+      }
+    </style>
+    <div></div>
+  </div>
+</div></div>
+
+<div class="slide" title="Backdrop"><div>
+  <h2 class="span">Many use cases need a backdrop</h2>
+  <div>
+    <p>
+      The <code>dialog</code> element provides a <code>::backdrop</code> pseudo-element for this purpose.
+      Perhaps a <code>dialog</code> overcroll-area is the right way to accomplish this?
+    </p>
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+      <textarea title="HTML"></textarea>
+    </div>
+  </div>
+  <div id="demo-backdrop" class="live-edit demo-container">
+    <style>
+      #demo-backdrop {
+        
+      }
+    </style>
+    <div></div>
+  </div>
+</div></div>
+
+<div class="slide" title="Automatic area activation"><div>
+  <h2 class="span">Automatic area activation?</h2>
+  <div>
+    <p>
+      If the overscroll area is a dialog (e.g. menu with a backdrop),
+      or is a button (e.g. pull-to-refresh),
+      perhaps it should perform its activation behavior on coming into view.
+    </p>
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+      <textarea title="HTML"></textarea>
+    </div>
+  </div>
+  <div id="demo-activation" class="live-edit demo-container">
+    <style>
+      #demo-activation {
+        
+      }
+    </style>
+    <div></div>
+  </div>
+</div></div>
+
+<div class="slide" title="Auto dismissal"><div>
+  <h2 class="span">Auto dismissal</h2>
+  <div>
+    <p>
+      When you click outside - it feels as though you should dismiss / close the area.
+    </p>
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+      <textarea title="HTML"></textarea>
+    </div>
+  </div>
+  <div id="demo-auto-dismiss" class="live-edit demo-container">
+    <style>
+      #demo-auto-dismiss {
+        
+      }
+    </style>
+    <div></div>
+  </div>
+</div></div>
+
+<div class="slide" title="Inerting"><div>
+  <h2 class="span">Inerting / focus management</h2>
+  <div>
+    <p>
+      It is surprising to tab into the area when not open.
+      It may also be surprising to tab out of it when it is open, unless this auto dismisses the area.
+    </p>
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+      <textarea title="HTML"></textarea>
+      <textarea title="JS"></textarea>
+    </div>
+  </div>
+  <div id="demo-inert" class="live-edit demo-container">
+    <style>
+      #demo-inert {
+        
+      }
+    </style>
+    <div></div>
+  </div>
+</div></div>
+
+<div class="slide" title="Accessibility"><div>
+  <h2>Accessibility</h2>
+  <div>
+    <p>How should people activate overscroll areas without touch?</p>
+  </div>
+</div></div>
+
+<div class="slide" title="Name?"><div>
+  <h2>What's in a name?</h2>
+  <div>
+    <p>It's currently implemented as overscroll, but is there a better term?</p>
+    <ol>
+      <li>
+        <h3>overscrollcontainer</h3>
+        <p>
+          As discussed, swiping needs to be part of the scroll chain,
+          and having these activated after over-scrolling an area feels natural.
+        </p>
+      </li>
+      <li>
+        <h3>swipecontainer</h3>
+        <p>
+          Swipable areas has been suggested as a name.
+          This maps to the most common gesture used to activate them.
+        </p>
+      </li>
+      <li>
+        <h3>Something else?</h3>
+      </li>
+    </ol>
+    <p>We welcome suggestions.</p>
+  </div>
+</div></div>
+
+<div class="slide" title="Which scrolling actions?"><div>
+  <h2>Which scrolling actions?</h2>
+  <div>
+    <p>Overscroll activates on scroll-related actions, which ones should it include?</p>
+    <ul>
+      <li>touch swipes</li>
+      <li>touchpad</li>
+      <li>mousewheel?</li>
+      <li>keyboard?</li>
+    </ul>
+  </div>
+</div></div>
+
+<div class="slide" title="Demos"><div>
+  <h2>Demos</h2>
+  <div>
+    <p><a href="https://flackr.github.io/web-demos/html/overscrollcontainer/">https://flackr.github.io/web-demos/html/overscrollcontainer/</a></p>
+    <div class="flex flex-across">
+      <iframe src="https://flackr.github.io/web-demos/html/overscrollcontainer/menu/"></iframe>
+      <iframe src="https://flackr.github.io/web-demos/html/overscrollcontainer/bottom-sheet/"></iframe>
+      <iframe src="https://flackr.github.io/web-demos/html/overscrollcontainer/email/"></iframe>
+    </div>
+  </div>
+</div></div>
+
+<div class="slide" title="Discussion"><div>
+  <h2>Questions / Suggestions / Ideas?</h2>
+  <div>
+    <ul>
+      <li><code>overscrollcontainer</code>, <code>overscrollarea</code>, and <code>toggle-overscroll</code> commands.</li>
+      <li><code>overscrollstart</code>, <code>overscrollchanging</code>, <code>overscrollend</code>, and <code>overscrollcancel</code> events</li>
+      <li>Chains through multiple areas.</li>
+      <li>Specifying how far you have to scroll to snap?</li>
+      <li>Setting up a backdrop?</li>
+      <li>Auto activation of dialogs, buttons, etc?</li>
+      <li>Auto dismissal?</li>
+      <li>Accessibility, inerting, and focus managment?</li>
+      <li>Name suggestions?</li>
+      <li>Which scrolling actions?</li>
+    </ul>
+  </div>
+</div></div>
+
+<!-- Blank slide template.
+<div class="slide" title="Blank"><div>
+  <h2>Blank</h2>
+  <div>
+    <p>Blank.</p>
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+      <textarea title="HTML"></textarea>
+    </div>
+  </div>
+  <div class="live-edit demo-container">
+    <style>
+    </style>
+  </div>
+</div></div>
+-->
+
+</div>
+</div>
+</body>
+</html>
