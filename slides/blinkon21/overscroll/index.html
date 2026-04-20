@@ -46,6 +46,16 @@ html, body {
 .demo-container {
   justify-content: center;
 }
+#disclaimer {
+  border: 5px solid darkred;
+  background: pink;
+  width: 70%;
+  margin: 0 auto;
+
+  &.supported {
+    display: none;
+  }
+}
 </style>
 </head>
 <body>
@@ -57,8 +67,18 @@ html, body {
     <h1>Swiping into overscroll areas</h1>
     <p>A simple declarative way to create swipable areas.</p>
     <p>-flackr, vmpstr</p>
+    <div id="disclaimer">
+      These slides are showing a prototype of overscrollcontainers.
+      This feature requires a recent Chrome Canary version
+      with experimental web platform features enabled.
+    </div>
   </div>
 </div></div>
+<script>
+if (window.onoverscrollstart !== undefined) {
+  document.querySelector('#disclaimer').classList.add('supported');
+}
+</script>
 
 <div class="slide" title="Background"><div>
   <h2>What are overscroll areas?</h2>
