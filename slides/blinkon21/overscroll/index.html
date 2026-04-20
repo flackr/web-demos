@@ -43,6 +43,9 @@ html, body {
 .flex {
   flex: 1;
 }
+.demo-container {
+  justify-content: center;
+}
 </style>
 </head>
 <body>
@@ -509,29 +512,102 @@ html, body {
   <div id="demo-multiple-directions" class="live-edit demo-container">
     <style>
       #demo-multiple-directions {
-        
+        .container {
+          width: 300px;
+          height: 300px;
+          border: 4px solid gray;
+          position: relative;
+          align-self: center;
+        }
+        .area {
+          left: -100%;
+          top: -100%;
+          width: 300%;
+          height: 300%;
+          background: lightgray;
+        }
+        .content {
+          box-sizing: border-box;
+          contain: layout;
+          position: relative;
+          height: 100%;
+          padding: 16px;
+          background: white;
+          box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.4);
+        }
       }
     </style>
-    <div></div>
+    <div class="container" overscrollcontainer>
+      <div class="area" overscrollarea></div>
+      <div class="content">
+        <h1>Content</h1>
+        <p>Main content area</p>
+      </div>
+    </div>
   </div>
 </div></div>
 
 <div class="slide" title="Multiple areas?"><div>
   <h2 class="span">What happens when you have multiple areas?</h2>
   <div>
-    <p>They chain!</p>
+    <p>They chain, try changing them all to the same side.</p>
     <div class="live code tabs">
-      <textarea title="CSS"></textarea>
       <textarea title="HTML"></textarea>
+      <textarea title="CSS"></textarea>
     </div>
   </div>
   <div id="demo-multiple" class="live-edit demo-container">
     <style>
       #demo-multiple {
-        
+        .container {
+          width: 60%;
+          height: 60%;
+          margin: 0 auto;
+          outline: 4px solid gray;
+          position: relative;
+          counter-reset: --area;
+        }
+        .area {
+          width: 100%;
+          height: 100%;
+          color: white;
+          text-align: center;
+          font-size: 48px;
+          font-weight: bold;
+          display: grid;
+          align-items: center;
+
+          &::before {
+            counter-increment: --area;
+            content: counter(--area);
+          }
+        }
+        .red { background-color: red; }
+        .green { background-color: green; }
+        .blue { background-color: blue; }
+        .purple { background-color: rebeccapurple; }
+        .left {
+          left: -100%;
+        }
+        .right {
+          left: 100%;
+        }
+        .up {
+          top: -100%;
+        }
+        .down {
+          top: 100%;
+        }
       }
     </style>
-    <div></div>
+    <div class="container" overscrollcontainer>
+      <div class="red area up" overscrollarea></div>
+      <div class="green area left" overscrollarea></div>
+      <div class="blue area right" overscrollarea></div>
+      <div class="purple area down" overscrollarea></div>
+      <h1>Content</h1>
+      <p>Main content area</p>
+    </div>
   </div>
 </div></div>
 
@@ -550,17 +626,59 @@ html, body {
       It should be treated the same as flinging to the end of a scroller.
     </p>
     <div class="live code tabs">
-      <textarea title="CSS"></textarea>
       <textarea title="HTML"></textarea>
+      <textarea title="CSS"></textarea>
     </div>
   </div>
   <div id="demo-swipe-dismiss" class="live-edit demo-container">
     <style>
       #demo-swipe-dismiss {
-        
+        .container {
+          width: 60%;
+          height: 60%;
+          margin: 0 auto;
+          border: 4px solid gray;
+          position: relative;
+        }
+        ul {
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+        }
+        li {
+          padding: 8px;
+          position: relative;
+          & .dismiss {
+            height: 100%;
+            width: 100%;
+            left: -100%;
+            background: url('../../../icons/trash.svg') no-repeat right, red;
+            background-size: contain;
+          }
+        }
       }
     </style>
-    <div></div>
+    <div class="container">
+      <h2>Todo:</h2>
+      <ul>
+        <li overscrollcontainer>
+          <div class="dismiss" overscrollarea></div>
+          Finish presentation
+        </li>
+        <li overscrollcontainer>
+          <div class="dismiss" overscrollarea></div>
+          Drink some water
+        </li>
+        <li overscrollcontainer>
+          <div class="dismiss" overscrollarea></div>
+          Take a break
+        </li>
+        <li overscrollcontainer>
+          <div class="dismiss" overscrollarea></div>
+          Fix swipe physics
+        </li>
+      </ul>
+    </div>
   </div>
 </div></div>
 
@@ -572,17 +690,56 @@ html, body {
       Perhaps a <code>dialog</code> overcroll-area is the right way to accomplish this?
     </p>
     <div class="live code tabs">
-      <textarea title="CSS"></textarea>
       <textarea title="HTML"></textarea>
+      <textarea title="CSS"></textarea>
     </div>
   </div>
   <div id="demo-backdrop" class="live-edit demo-container">
     <style>
+      @keyframes backdrop-exit-animation {
+        from { opacity: 0; pointer-events: none; }
+      }
       #demo-backdrop {
-        
+        timeline-scope: --menu;
+        .backdrop {
+          animation: backdrop-exit-animation linear both;
+          animation-range: exit;
+          animation-timeline: --menu;
+          appearance: none;
+          position: absolute;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.3);
+        }
+        .menu {
+          box-sizing: border-box;
+          width: 60%;
+          left: -60%;
+          height: 100%;
+          padding: 8px;
+          background: lightgray;
+          box-shadow: 5px 0 5px rgba(0, 0, 0, 0.4);
+          view-timeline: --menu x;
+          scroll-behavior: smooth;
+          z-index: 1;
+        }
+        .container {
+          border: 4px solid gray;
+          padding: 8px;
+        }
       }
     </style>
-    <div></div>
+    <div class="container" overscrollcontainer="overlay">
+      <div class="backdrop"></div>
+      <div id="menu-with-backdrop" class="menu" overscrollarea>
+        <h2>Menu content</h2>
+        <ul>
+          <li><a href="#">Link 1</a></li>
+          <li><a href="#">Link 2</a></li>
+        </ul>
+      </div>
+      <h1>Content</h1>
+      <p>Main content area</p>
+    </div>
   </div>
 </div></div>
 
@@ -595,17 +752,67 @@ html, body {
       perhaps it should perform its activation behavior on coming into view.
     </p>
     <div class="live code tabs">
-      <textarea title="CSS"></textarea>
       <textarea title="HTML"></textarea>
+      <textarea title="CSS"></textarea>
     </div>
   </div>
   <div id="demo-activation" class="live-edit demo-container">
     <style>
       #demo-activation {
-        
+        .container {
+          width: 60%;
+          height: 60%;
+          margin: 0 auto;
+          border: 4px solid gray;
+          position: relative;
+        }
+        ul {
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+        }
+        li {
+          padding: 8px;
+          position: relative;
+          & .delete {
+            height: 100%;
+            width: 100%;
+            left: -100%;
+            background: url('../../../icons/trash.svg') no-repeat right, red;
+            background-size: contain;
+          }
+        }
+        .p2r {
+          bottom: 100%;
+          width: 20%;
+          height: 20%;
+          left: 40%;
+          border-radius: 50%;
+        }
       }
     </style>
-    <div></div>
+    <div class="container" overscrollcontainer>
+      <button class="p2r" overscrollarea>Refresh</button>
+      <h2>Todo:</h2>
+      <ul>
+        <li overscrollcontainer>
+          <button class="delete" overscrollarea></button>
+          Finish presentation
+        </li>
+        <li overscrollcontainer>
+          <button class="delete" overscrollarea></button>
+          Drink some water
+        </li>
+        <li overscrollcontainer>
+          <button class="delete" overscrollarea></button>
+          Take a break
+        </li>
+        <li overscrollcontainer>
+          <button class="delete" overscrollarea></button>
+          Fix swipe physics
+        </li>
+      </ul>
+    </div>
   </div>
 </div></div>
 
@@ -616,17 +823,57 @@ html, body {
       When you click outside - it feels as though you should dismiss / close the area.
     </p>
     <div class="live code tabs">
-      <textarea title="CSS"></textarea>
       <textarea title="HTML"></textarea>
+      <textarea title="CSS"></textarea>
     </div>
   </div>
   <div id="demo-auto-dismiss" class="live-edit demo-container">
     <style>
+      @keyframes backdrop-exit-animation {
+        from { opacity: 0; pointer-events: none; }
+      }
       #demo-auto-dismiss {
-        
+        timeline-scope: --menu;
+        .backdrop {
+          animation: backdrop-exit-animation linear both;
+          animation-range: exit;
+          animation-timeline: --menu;
+          appearance: none;
+          position: absolute;
+          inset: 0;
+          border: 0;
+          background: rgba(0, 0, 0, 0.3);
+        }
+        .menu {
+          box-sizing: border-box;
+          width: 60%;
+          left: -60%;
+          height: 100%;
+          padding: 8px;
+          background: lightgray;
+          box-shadow: 5px 0 5px rgba(0, 0, 0, 0.4);
+          view-timeline: --menu x;
+          scroll-behavior: smooth;
+          z-index: 1;
+        }
+        .container {
+          border: 4px solid gray;
+          padding: 8px;
+        }
       }
     </style>
-    <div></div>
+    <div class="container" overscrollcontainer="overlay">
+      <button class="backdrop" command="toggle-overscroll" commandfor="menu-with-auto-dismiss"></button>
+      <div id="menu-with-auto-dismiss" class="menu">
+        <h2>Menu content</h2>
+        <ul>
+          <li><a href="#">Link 1</a></li>
+          <li><a href="#">Link 2</a></li>
+        </ul>
+      </div>
+      <h1>Content</h1>
+      <p>Main content area</p>
+    </div>
   </div>
 </div></div>
 
@@ -638,18 +885,77 @@ html, body {
       It may also be surprising to tab out of it when it is open, unless this auto dismisses the area.
     </p>
     <div class="live code tabs">
-      <textarea title="CSS"></textarea>
       <textarea title="HTML"></textarea>
-      <textarea title="JS"></textarea>
+      <textarea title="CSS"></textarea>
     </div>
   </div>
   <div id="demo-inert" class="live-edit demo-container">
     <style>
       #demo-inert {
-        
+        *:focus {
+          outline: 3px solid blue;
+        }
+        .container {
+          border: 4px solid gray;
+          padding: 8px;
+        }
+        .menu {
+          box-sizing: border-box;
+          width: 60%;
+          left: -60%;
+          height: 100%;
+          padding: 8px;
+          background: rgba(230, 230, 230, 0.8);
+          backdrop-filter: blur(5px);
+          box-shadow: 5px 0 5px rgba(0, 0, 0, 0.4);
+
+          scroll-behavior: smooth;
+          & button {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+          }
+        }
+        button {
+          border-radius: .5rem;
+          padding: 0.5rem;
+          &:hover {
+            background-color: rgb(229 231 235 / 1);
+          }
+          svg {
+            width: 1.5rem;
+            height: 1.5rem;
+          }
+        }
+        textarea {width: 100%;}
       }
     </style>
-    <div></div>
+    <div class="container" overscrollcontainer>
+      <div id="menu3" class="menu">
+        <button command="toggle-overscroll" commandfor="menu3" aria-label="Close menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <h2>Menu content</h2>
+        <ul>
+          <li><a href="#">Link 1</a></li>
+          <li><a href="#">Link 2</a></li>
+        </ul>
+      </div>
+      <div class="header">
+        <button command="toggle-overscroll" commandfor="menu3" aria-label="Open menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+      </div>
+      <h1>Focus management</h1>
+      <p>
+        Try clicking around in the content,
+        then tabbing / shift-tabbing.
+      </p>
+      <ul>
+        <li><a href="#">Link 1</a></li>
+        <li><a href="#">Link 2</a></li>
+      </ul>
+    </div>
   </div>
 </div></div>
 
@@ -657,6 +963,11 @@ html, body {
   <h2>Accessibility</h2>
   <div>
     <p>How should people activate overscroll areas without touch?</p>
+    <ul>
+      <li>Require a <code>&lt;button&gt;</code>?</li>
+      <li>Automatically create an <code>aria-action</code> for the scroll container?</li>
+      <li>In some applications, swipe actions are shortcuts for actions that are also directly exposed in other ways, e.g. select and delete.</li>
+    </ul>
   </div>
 </div></div>
 
