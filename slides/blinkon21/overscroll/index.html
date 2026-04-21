@@ -814,11 +814,27 @@ if (window.onoverscrollstart !== undefined) {
           height: 20%;
           left: 40%;
           border-radius: 50%;
+          position: relative;
+          overflow: clip;
+          padding: 0;
+          container-type: scroll-state;
+          & > div {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-items: center;
+            font-size: 1rem;
+            @container scroll-state(snapped: y) {
+              background: green;
+              color: white;
+            }
+          }
         }
       }
     </style>
     <div class="container" overscrollcontainer>
-      <button class="p2r" overscrollarea>Refresh</button>
+      <button class="p2r" overscrollarea><div><span>Refresh</span></div></button>
       <h2>Todo:</h2>
       <ul>
         <li overscrollcontainer>
