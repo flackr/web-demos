@@ -1,0 +1,64 @@
+<!DOCTYPE>
+<html>
+  <head>
+    <style>
+      .scroller {
+        width: 300px;
+        height: 200px;
+        border: 3px solid black;
+        overflow: auto;
+        position: relative;
+        
+        &.vertical.snap {
+          scroll-snap-type: y mandatory;
+        }
+
+        &.horizontal.snap {
+          scroll-snap-type: x mandatory;
+        }
+
+        .item {
+          height: 100%;
+          background-color: #cfc;
+          
+          .snap & {
+            scroll-snap-align: center;
+          }
+          
+          .snap-stop & {
+            scroll-snap-stop: always;
+          }
+          
+          &:nth-child(even) {
+            background-color: #ccf;
+          }
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Scroll snap physics tests</h1>
+    <p>Some tests of various scroll containers.</p>
+    <h2>Vertical no snap</h2>
+    <div class="scroller vertical">
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+    </div>
+    <h2>Vertical snap</h2>
+    <div class="scroller vertical snap">
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>      
+    </div>
+    <h2>Vertical scroll-snap-stop</h2>
+    <div class="scroller vertical snap snap-stop">
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>      
+    </div>
+  </body>
+</html>
