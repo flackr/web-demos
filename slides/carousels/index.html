@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carousels</title>
+<link rel="stylesheet" href="../../css/slides.css">
+<link rel="stylesheet" href="../../css/coder.css">
+<link rel="stylesheet" href="../../css/tabs.css">
+<script src="../../js/slides.js" defer></script>
+<script src="../../js/live-preview.js" defer></script>
+<script src="../../js/coder.js" defer></script>
+<style>
+html, body {
+  margin: 0;
+  height: 100%;
+}
+.slideshow {
+  height: 100%;
+}
+.grid-item {
+  background: var(--primary); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; font-weight: bold;
+  border-radius: 4px; border: 2px solid rgba(255,255,255,0.3);
+}
+.resizable {
+  overflow: hidden;
+  resize: both;
+  display: flex;
+  width: 80%;
+  height: 80%;
+  padding-bottom: 15px;
+  border: 2px dashed var(--primary);
+}
+.flex-across {
+  display: flex;
+  & > * {
+    width: 1px;
+    flex: 1;
+  }
+}
+.flex {
+  flex: 1;
+}
+.demo-container {
+  justify-content: center;
+}
+#disclaimer {
+  border: 5px solid darkred;
+  background: pink;
+  width: 70%;
+  margin: 0 auto;
+}
+
+@supports(scroll-marker-group: after) {
+  #disclaimer {
+    display: none;
+  }
+}
+</style>
+</head>
+<body>
+<div class="slideshow" role="region">
+<div class="scroller">
+
+<div class="slide" title="Title"><div>
+  <div style="text-align: center">
+    <h1>Carousels</h1>
+    <p>A tour</p>
+    <p>-flackr</p>
+    <div id="disclaimer">
+      These slides are showing prototypes of scroll-buttons and scroll-markers.
+      This browser does not support this feature. See <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/::scroll-marker#browser_compatibility">MDN</a> for compatible browsers.
+    </div>
+  </div>
+</div></div>
+<script>
+if (window.onoverscrollstart !== undefined) {
+  document.querySelector('#disclaimer').classList.add('supported');
+}
+</script>
+
+<div class="slide" title="Background"><div>
+  <h2>What are carousels?</h2>
+  <div>
+    <p>
+      Carousels are a common design pattern used on the web and in mobile applications.
+      <a href="https://open-ui.org/components/carousel.research/">OpenUI</a> has catalogued a wide range of designs and styles for carousels.
+    </p>
+    <p>Carousels typically have one or more of the following:</p>
+    <ul>
+      <li>Snapping to a particular page.</li>
+      <li>Each page may contain one or multiple items.</li>
+      <li>Next / previous buttons to switch pages.</li>
+      <li>Page markers / shortcuts.</li>
+    </ul>
+  </div>
+  <div>
+    <iframe src="https://open-ui.org/components/carousel.research/"></iframe>
+  </div>
+</div></div>
+
+<div class="slide" title="CSS Carousels"><div>
+  <h2>CSS Carousels</h2>
+  <div>
+    <p>
+      The core features of carousels are broken down
+      into a number of features that can be combined to create different experiences.
+    </p>
+    <ul>
+      <li>Scroll buttons</li>
+      <li>Scroll markers</li>
+      <li>Stylable fragmentation</li>
+    </ul>
+    <p>
+      Because it is controllable via CSS, you can even switch between a carousel
+      and non-carousel style presentation depending on device form factor.
+    </p>
+  </div>
+</div></div>
+
+<div class="slide" title="Scroll buttons"><div>
+  <h2 class="span">Scroll buttons</h2>
+  <div>
+    <p>
+      <code>::scroll-button(&lt;direction&gt;)</code> can be styled to create a button which scrolls one page at a time:
+    </p>
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+      <textarea title="HTML"></textarea>
+    </div>
+  </div>
+  <div id="demo-scroll-buttons" class="live-edit demo-container">
+    <style>
+      #demo-scroll-buttons {
+        .scroller {
+          overflow: auto;
+          height: 100%;
+          position: relative;
+
+          &::scroll-button(*) {
+            position: absolute;
+            position-anchor: auto;
+          }
+          
+          &::scroll-button(down) {
+            content: "Read more...";
+            position-area: end center;
+          }
+        }
+      }
+    </style>
+    <div class="scroller">
+      <h3>Scroll buttons</h1>
+
+      <p>
+        The <code>::scroll-button( &lt;scroll-button-direction&gt; )</code> pseudo-elements
+        are generated on scroll containers when their computed content value is not none.
+        They generate boxes as if they were immediately preceding siblings of their originating element,
+        with content as specified by content.
+      </p>
+      
+      <h3>Directions</h3>
+
+      <p>
+        Scroll buttons take a direction as an argument.
+      </p>
+      
+      <h4>Physical directions</h4>
+      <ul>
+        <li>up</li>
+        <li>right</li>
+        <li>down</li>
+        <li>left</li>
+      </ul>
+
+      <h4>Logical directions</h4>
+      <ul>
+        <li>block-start</li>
+        <li>inline-end</li>
+        <li>block-end</li>
+        <li>inline-start</li>
+      </ul>
+      
+      <h4>Smart directions</h4>
+      <ul>
+        <li>prev</li>
+        <li>next</li>
+      </ul>
+
+      <p>
+        Selects either the block-start or inline-start <code>::scroll-button()</code>,
+        whichever's axis has more "scrollable pages" in the originating element
+      </p>
+
+      <h3>Common styling</h3>
+
+      <p>
+        Common styles can be set using the <code>*</code> direction. E.g.
+      </p>
+
+      <code>
+        ::scroll-button(*) {
+          border-radius: 8px;
+        }
+      </code>
+      
+      <h3>What if you can't scroll anymore?</h3>
+      
+      <p>
+        When you reach the maximum possible scroll position,
+        accounting for mandatory snapping,
+        the scroll button becomes disabled.
+      </p>
+      
+      <p>
+        The style of the disabled button
+        can be customized using the <code>:disabled</code> pseudo-class. E.g.
+      </p>
+      
+      <code>
+        ::scroll-button(*):disabled {
+          opacity: 0.5;
+        }
+      </code>
+      
+      <h3>How far does it scroll</h3>
+
+      <p>
+        One "page" of content.
+      </p>
+      
+      <p>
+        We use the same distance as pressing page up / down or the spacebar,
+        which is generally 87.5% of the optimal viewing region,
+        but also applies a maximum overlap between pages of 40px.
+      </p>
+      
+      <h3>Optimal viewing region? What's that?</h3>
+      
+      <p>
+        The optimal viewing region is the region used as the target region for placing things in view of the user,
+        This can be adjusted with the scroll-padding property. E.g.
+      </p>
+      
+      <code>
+        .scroller {
+          scroll-padding-top: 40px; /* Top 40px is not viewable due to sticky header. */
+        }
+      </code>
+    </div>
+  </div>
+</div></div>
+
+<div class="slide" title="Scroll markers"><div>
+  <h2>Scroll markers</h2>
+  <div>
+    <p>
+      <code>::scroll-marker</code> creates a navigational shortcut to the establishing element
+      in the <code>::scroll-marker-group</code> of its ancestor scroll container.
+    </p>
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+      <textarea title="HTML"></textarea>
+    </div>
+  </div>
+  <div id="demo-scroll-marker" class="live-edit demo-container">
+    <style>
+      #demo-scroll-marker {
+        container-type: size;
+
+        .scroller {
+          overflow: auto;
+          height: 100%;
+          padding-left: 20%;
+          position: relative;
+          scroll-marker-group: after links;
+          
+          &::scroll-marker-group {
+            position: absolute;
+            position-anchor: auto;
+            position-area: top left;
+            width: 18cqw;
+            padding: 8px;
+            margin: 1cqw;
+            background: rgba(255, 255, 255, 0.8);
+            border: 3px solid black;
+            border-radius: 8px;
+            box-sizing: border-box;
+          }
+          
+          section {
+            padding: 2rem 0;
+
+            &::scroll-marker {
+              content: attr(title);
+              display: block;
+            }
+            &::scroll-marker:target-current {
+              color: ActiveText;
+            }
+        }
+      }
+    </style>
+    <div class="scroller">
+      <section title="Introduction">
+        <h3>Scroll markers</h3>
+        <p>
+          A scroll marker is any element or pseudo-element with a scroll target.
+        </p>
+      </section>
+      <section title="Creation">
+        <h3>Creating scroll markers</h3>
+        <p>
+          A <a href="https://www.w3.org/TR/css-overflow-5/#scroll-marker-pseudo"><code>::scroll-marker</code> pseudo-element</a> with a non-none content style,
+          creates a scroll marker pseudo-element,
+          whose generated box is contained by the nearest ancestor scroller's
+          <code>::scroll-marker-group</code> pseudo-element.
+        </p>
+      </section>
+      <section title="Scroll marker group">
+        <h3>Containing the scroll markers</h3>
+        <p>
+          The <a href="https://www.w3.org/TR/css-overflow-5/#scroll-marker-group-property"><code>scroll-marker-group</code> property</a> on a scrolling container
+          determines whether the <code>::scroll-marker-group</code> pseudo-element
+          creates a box and whether it is before or after its own box.
+        </p>
+        <p>
+          I.e. the following scroller creates a <code>::scroll-marker-group</code>
+          pseudo-element whose box immediately follows the scroller.
+        </p>
+        <code>
+          .scroller {
+            scroll-marker-group: after;
+          }
+        </code>
+      </section>
+      <section title="Types">
+        <h3>Scroll marker group types</h3>
+        <p>
+          In addition to specifying the box tree location,
+          the <a href="https://drafts.csswg.org/css-overflow-5/#scroll-marker-group-property"><code>scroll-marker-group</code> property</a>
+          also specifies the behavior of the scroll marker group. E.g.
+        </p>
+        <code>
+          .scroller { scroll-marker-group: [ before | after ] [links | tabs ] ;}
+        </code>
+        <h4>Behaviors</h4>
+        <ul>
+          <li>
+            <h5>links</h5>
+            <p>
+              Links are treated as a list of links.
+              Each link is a tab stop, and all content is accessible regardless of which link is current.
+            </p>
+          </li>
+          <li>
+            <h5>tabs</h5>
+            <p>
+              Tabs are treated as independently activatable sections.
+              All content outside of the current tab is considered <code>inert</code> until current.
+              Tabs can be switched between using the arrow keys once one is selected.
+            </p>
+          </li>
+        </ul>
+      </section>
+      <section title="Marking progress">
+        <h3>Marking progress</h3>
+        <p>
+          Within a <code>::scroll-marker-group</code>,
+          exactly one <code>::scroll-marker</code> matches <code>:target-current</code>.
+          This is the <a href="https://www.w3.org/TR/css-overflow-5/#active-scroll-marker">current scroll marker</a>.
+        </p>
+        <p>
+          The particular position at which a scroll marker is considered to current,
+          is when the target of that scroll marker is more than half-way to its aligned position.
+        </p>
+        <p>
+          This results in the active scroll marker switching halfway between sections.
+          See the <a href="https://www.w3.org/TR/css-overflow-5/#example-d2ca6884">example algorithm</a> in the spec for how this is defined.
+        </p>
+      </section>
+    </div>
+  </div>
+</div></div>
+
+<div class="slide" title="Fragmentation"><div>
+  <h2>Using fragmentation</h2>
+  <div>
+    <p>What if you want to create shortcuts to pages?</p>
+    
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+      <textarea title="HTML"></textarea>
+    </div>
+  </div>
+  <div class="live-edit demo-container" id="demo-fragmentation">
+    <style>
+      #demo-fragmentation {
+        justify-content: start;
+
+        .scroller {
+          columns: 1;
+          counter-reset: --page;
+          overflow: auto;
+          resize: both;
+          border: 1px solid black;
+          scroll-snap-type: x mandatory;
+          scroll-marker-group: after links;
+          width: 50%;
+          height: 50%;
+          
+          &::scroll-marker-group {
+            position: absolute;
+            position-anchor: auto;
+            position-area: end center;
+            margin: 8px;
+            padding: 4px;
+            border: 2px solid gray;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+          }
+          
+          &::column {
+            scroll-snap-align: center;
+          }
+          
+          &::column::scroll-marker {
+            counter-increment: --page;
+            content: counter(--page);
+            border-radius: 50%;
+            margin: 0 4px;
+          }
+          
+          &::column::scroll-marker:target-current {
+            color: ActiveText;
+          }
+          
+          & > .padding {
+            padding: 2rem 2rem 3rem 2rem;
+          }
+        }
+      }
+    </style>
+    <div class="scroller">
+      <div class="padding">
+        <h3>Automatic pagination</h3>
+        <p>What happens if you don't know how many markers you need?</p>
+        <p>This is where the beauty of using css comes into play.</p>
+        <h3>Columns</h3>
+        <p>
+          The <code>columns</code> property will split the content
+          in the block direction when it would overflow the container.
+        </p>
+        <p>
+          The value specifies the number of columns or width of a column,
+          however if there is only 1 column than that column is the full size.
+        </p>
+        <p>
+          When there are more columns than fit in the current scrollport,
+          they continue to lay out in the inline direction,
+          creating scrollable overflow for a scrolling container.
+        </p>
+        <h3>Styling columns</h3>
+        <p>
+          Now that we have a mechanism for creating scrollable paginated content,
+          we just need to create scroll markers for it.
+          The <code>::column</code> pseudo-element allows applying limited styling
+          supporting the creation of scroll markers and setting snap alignment.
+          E.g.
+        </p>
+        <code>
+          ::column {
+            scroll-snap-align: center;
+          }
+        </code>
+        <h3>Creating scroll markers</h3>
+        <p>
+          We can also create scroll markers for columns using much the same mechanism:
+        </p>
+        <code>
+          ::column::scroll-marker {
+            content: "Page";
+          }
+        </code>
+        <h3>Counting</h3>
+        <p>
+          Using CSS counters, we can even number these columns:
+        </p>
+        <code>
+          ::column::scroll-marker {
+            counter-increment: page;
+            content: counter(--page);
+          }
+        </code>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<div class="slide" title="Making the CSS Carousel"><div>
+  <h2>Putting it all together</h2>
+  <div>
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+      <textarea title="HTML"></textarea>
+    </div>
+  </div>
+  <div class="live-edit demo-container" id="demo-css-carousel">
+    <style>
+      #demo-css-carousel {
+        justify-content: start;
+
+        .wrapper {
+          contain: layout;
+          overflow: hidden;
+          position: relative;
+          resize: both;
+          width: 50%;
+          height: 50%;
+          border: 1px solid gray;
+        }
+
+        :focus {
+          outline: 2px solid blue;
+        }
+
+        ul {
+          /* Paginate */
+          columns: 1;
+
+          /* Scrolling behavior. */
+          overflow: auto;
+          overscroll-behavior-x: none;
+          scroll-behavior: smooth;
+          scrollbar-width: none;
+          scroll-snap-type: x mandatory;
+          
+          /* Reset list styles */
+          list-style-type: none;
+          
+          /* Styles and layout */
+          box-sizing: border-box;
+          padding: 10px;
+          position: relative;
+          height: calc(100% - 90px);
+          scroll-padding: 10px;
+          counter-reset: item page;
+          text-align: center;
+        }
+
+        ul::column {
+          scroll-snap-align: center;
+        }
+
+        ul li {
+          display: inline-block;
+          aspect-ratio: 2 / 3;
+          height: 100%;
+          position: relative;
+          background: #ddd;
+          border: 1px solid #aaa;
+
+          &:focus {
+            outline: 2px solid blue;
+          }
+
+          /* Item label */
+          &::before {
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: x-large;
+            counter-increment: item;
+            content: "Item " counter(item);
+          }
+        }
+
+        /* Scroll marker area */
+        ul {
+          scroll-marker-group: after tabs;
+        }
+
+        ul::scroll-marker-group {
+          height: 45px;
+          width: 100%;
+          display: block;
+          scroll-behavior: smooth;
+          overflow-y: hidden;
+          overflow-x: auto;
+          position: relative;
+          scroll-snap-type: x mandatory;
+          scrollbar-width: none;
+          text-align: center;
+          white-space: nowrap;
+        }
+
+        /* Page markers */
+        ul::column::scroll-marker {
+          content: ' ' / 'Page';
+          display: inline-block;
+          width: 35px;
+          height: 35px;
+          border: 3px solid gray;
+          border-radius: 50%;
+          margin: 3px;
+          scroll-snap-align: center;
+        }
+
+        ul::column::scroll-marker:target-current {
+          background: blue;
+        }
+
+        ul::column::scroll-marker:focus {
+          outline: 2px solid blue;
+          outline-offset: 2px;
+        }
+
+        /* Scroll buttons */
+        /* scroll-button(*) seems to be matching the ::scroll-marker-group?? */
+        ul::scroll-button(*) {
+          
+          position: fixed;
+          appearance: none;
+          cursor: pointer;
+          font-size: 50px;
+          line-height: 50px;
+          text-align: center;
+          z-index: 1;
+          top: calc(50% - 25px);
+        }
+        ul::scroll-button(right) {
+          right: 15px;
+          content: '➡️' / 'Next page';
+        }
+        ul::scroll-button(left) {
+          left: 15px;
+          content: '⬅️' / 'Previous page';
+        }
+
+        ul {
+          &::scroll-button(right):focus, &::scroll-button(left):focus {
+            outline: 2px solid blue;
+          }
+        }
+      }
+    </style>
+    <div class="wrapper">
+      <ul class="carousel">
+        <li tabindex=0></li>
+        <li tabindex=0></li>
+        <li tabindex=0></li>
+        <li tabindex=0></li>
+        <li tabindex=0></li>
+        <li tabindex=0></li>
+        <li tabindex=0></li>
+        <li tabindex=0></li>
+        <li tabindex=0></li>
+        <li tabindex=0></li>
+        <li tabindex=0></li>
+        <li tabindex=0></li>
+        <li tabindex=0></li>
+        <li tabindex=0></li>
+        <li tabindex=0></li>
+        <li tabindex=0></li>
+      </ul>
+    </div>
+  </div>
+</div></div>
+
+<div class="slide" title="Tabs"><div>
+  <h2>Making a tabs UI</h2>
+  <div>
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+      <textarea title="HTML"></textarea>
+    </div>
+  </div>
+  <div class="live-edit demo-container" id="demo-css-tabs">
+    <style>
+      #demo-css-tabs {
+        /* Tabs using tab scroll markers */
+        .tabpanel-component {
+          --border-color: #aaa;
+          --tab-height: 2rem;
+          --selected-height: 0.25rem;
+
+          border-radius: 10px;
+          border: 1px solid var(--border-color);
+          max-height: 80vh;
+
+          & > .scroller {
+            scroll-marker-group: before tabs;
+            overflow: hidden;
+            position: relative;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            display: flex;
+            flex-direction: row;
+
+            
+            &::scroll-marker-group {
+              white-space: nowrap;
+              height: var(--tab-height);
+              border-bottom: 1px solid var(--border-color);
+              box-sizing: border-box;
+              overflow-x: auto;
+              overscroll-behavior-x: contain;
+              scrollbar-width: none;
+              scroll-behavior: smooth;
+            }
+
+            & > * {
+              display: inline-block;
+              box-sizing: border-box;
+              min-height: 100%;
+              min-width: 100%;
+              padding: 2%;
+              scroll-snap-align: center;
+              overflow: auto;
+
+              &::scroll-marker {
+                content: attr(title);
+                color: ButtonText;
+                display: inline-block;
+                height: var(--tab-height);
+                line-height: var(--tab-height);
+                position: relative;
+                text-decoration: none;
+                padding: 0 1rem;
+                padding-bottom: calc(var(--selected-height) - 1px);
+                border-bottom: 1px solid var(--border-color);
+                box-sizing: border-box;
+                opacity: 0.6;
+              }
+              &::scroll-marker:hover,
+              &::scroll-marker:target-current {
+                opacity: 1;
+              }
+              &::scroll-marker:target-current {
+                color: LinkText;
+                padding-bottom: 1px;
+                border-bottom: var(--selected-height) solid LinkText;
+              }
+            }
+          }
+        }
+      }
+    </style>
+    <div role="region" class="tabpanel-component">
+      <div class="scroller" aria-live="polite">
+        <div title="Introduction">
+          <h3>Introduction</h3>
+          <p>Slides should follow the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/tabs/">tabs pattern</a>.</p>
+        </div>
+        <div title="Focus">
+          <h3>Focus</h3>
+          <p>There are a number of implicit focus behaviors:</p>
+          <ul>
+            <li>Only the active slide marker is a tab focus stop.</li>
+            <li>Pressing up/down/left/right will move focus between markers and scroll between slides.</li>
+            <li>
+              The marker is a <a href="https://html.spec.whatwg.org/#focus-navigation-scope-owner">focus navigation scope owner</a> for its contents.
+              This means focus will move from the tab to its contents and vice versa.
+            </li>
+          </ul>
+        </div>
+        <div title="Roles">
+          <h3>Accessibility roles and behaviors</h3>
+          <p>
+            Tabs implicitly implement the expected tab semantics.
+            In particular,
+          </p>
+          <ul>
+            <li>The scroll marker group is a <code>role=tablist</code> containing <code>role=tab</code> elements</li>
+            <li>The minimum role of the contents is <code>role=tabpanel</code></li>
+            <li>Only the active tabpanel is in the accessibility tree.</li>
+          </ul>
+        </div>
+        <div title="Summary">
+          <h3>Conclusion</h3>
+          <p>
+            In summary, these implicit behaviors aim to align with the expectations of a <a href="https://www.w3.org/WAI/ARIA/apg/patterns/carousel/examples/carousel-2-tablist/">carousel with markers</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<div class="slide" title="HTML"><div>
+<h2>Not just CSS, HTML too.</h2>
+  <div>
+    <p>
+      The capabilities of scroll markers and scroll buttons are available for HTML elements as well.
+    </p>
+    <ul>
+      <li><a href="https://github.com/whatwg/html/issues/11847">page-* command</a></li>
+      <li><a href="https://drafts.csswg.org/css-overflow-5/#scroll-target-group">scroll-target-group containing &lt;a&gt; links</a></li>
+    </ul>
+    <p>
+      These capabilities give access to a similar set of features.
+    </p>
+  </div>
+</div></div>
+
+<div class="slide" title="Page invoker actions"><div>
+  <h2>page-* invoker actions</h2>
+  <div>
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+      <textarea title="HTML"></textarea>
+    </div>
+  </div>
+  <div class="live-edit demo-container" id="demo-page-invoker">
+    <style>
+      #demo-page-invoker {
+        .container {
+          height: 80%;
+          width: 80%;
+          resize: both;
+          display: flex;
+          flex-direction: column;
+          border: 1px solid black;
+          overflow: hidden;
+        }
+        .scroller {
+          overflow: auto;
+          flex: 1;
+        }
+      }
+    </style>
+    <div class="container">
+      <button command="page-down" commandfor="page-invoker-demo">Scroll down</button>
+      <div id="page-invoker-demo" class="scroller">
+        <h3>Page commands</h1>
+
+        <p>
+          The <code>page-&lt;direction&gt;</code> command
+          scrolls the targeted element by one page in the given direction.
+        </p>
+        
+        <h3>Directions</h3>
+
+        <p>
+          Scroll commands are suffixed with a direction.
+        </p>
+        
+        <h4>Physical directions</h4>
+        <ul>
+          <li>page-up</li>
+          <li>page-right</li>
+          <li>page-down</li>
+          <li>page-left</li>
+        </ul>
+
+        <h4>Logical directions</h4>
+        <ul>
+          <li>page-block-start</li>
+          <li>page-inline-end</li>
+          <li>page-block-end</li>
+          <li>page-inline-start</li>
+        </ul>
+
+        <h3>Result</h3>
+        
+        <p>
+          This allows the creation of pure HTML buttons for activating scrolls.
+        </p>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<div class="slide" title="Scroll target group"><div>
+  <h2>Using scroll-target-group</h2>
+  <div>
+    <p>
+      Add <code>scroll-target-group: auto;</code> to the <code>.toc</code> and style <code>a:target-current</code>.
+    </p>
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+      <textarea title="HTML"></textarea>
+    </div>
+  </div>
+  <div class="live-edit demo-container" id="demo-scroll-target-group">
+    <style>
+      #demo-scroll-target-group {
+        .container {
+          display: flex;
+          height: 100%;
+        }
+        .toc {
+          border: 2px solid black;
+          padding: 8px;
+          margin-right: 8px;
+        }
+        .scroller {
+          flex: 1;
+          overflow: auto;
+          height: 100%;
+        }
+        code {
+          white-space: pre-wrap;
+        }
+        h3 {
+          margin: 1rem 0;
+        }
+      }
+    </style>
+    <div class="container">
+      <div class="toc">
+        <ol>
+          <li><a href="#tg-intro">Introduction</a></li>
+          <li><a href="#tg-stg">scroll-target-group</a></li>
+          <li><a href="#tg-target-current">:target-current</a></li>
+          <li><a href="#tg-conclusion">Conclusion</a></li>
+        </ol>
+      </div>
+      <div class="scroller">
+        <h3 id="tg-intro">Introduction</h3>
+        <p>
+          This is a typical scrolling document that you might see.
+        </p>
+        <h3 id="tg-stg">scroll-target-group property</h3>
+        <p>
+          The <code>scroll-target-group</code> property can be set on an element that contains a collection of anchor link references.
+          E.g.
+        </p>
+        <code>&lt;style&gt;
+  nav {
+    scroll-target-group: auto;
+  }
+&lt;style&gt;
+&lt;nav&gt;
+  &lt;a href="#intro"&gt;Introduction&lt;/a&gt;
+&lt;/nav&gt;</code>
+        <h3 id="tg-target-current">Styling the current target</h3>
+        <p>
+          Once you have established a scroll-target-group,
+          the same algorithm that determines the current scroll marker also determines which link is current.
+        </p>
+        <p>
+          This link can then be styled with the <code>:target-current</code> pseudo-class:
+        </p>
+        <code>&lt;style&gt;
+  a:target-current {
+    color: ActiveText;
+  }
+&lt;style&gt;</code>
+        <h3 id="tg-conclusion">Conclusion</h3>
+        <p>
+          In conclusion, the scroll-target-group property is a simple progressive enhancement
+          that can be dropped into existing table of contents, and indicate progress to the user.
+        </p>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<div class="slide" title="Demos and articles"><div>
+  <h2>Demos and articles</h2>
+  <div>
+    <p>
+      There are a variety of sites with examples of how to use this
+      to create nice looking carousels.
+    </p>
+    <h3>Sites</h3>
+    <ul>
+      <li><a href="https://developer.chrome.com/blog/carousels-with-css">Carousels with CSS</a></li>
+      <li><a href="https://chrome.dev/carousel/">https://chrome.dev/carousel/</a></li>
+    </ul>
+    <h3>Demos</h3>
+    <ul>
+      <li><a href="https://flackr.github.io/web-demos/css-overflow/image-viewer/index.html">Image viewer</a></li>
+      <li><a href="https://flackr.github.io/web-demos/css-overflow/scroll-marker-type/tabs.html">Tabs</a></li>
+    </ul>
+    <h3>Videos</h3>
+    <ul>
+      <li><a href="https://www.youtube.com/watch?v=g03Yldh9Nkw">Kevin Powell: Learning how CSS-only carousels are going to work</a></li>
+      <li><a href="https://www.youtube.com/live/GjvgtwSOCao?si=hqqDt7ID__UIkfQ1&t=1947">Google I/O '25 Developer Keynote @32:27</a></li>
+      <li><a href="https://www.youtube.com/watch?v=HXIHpDnsizk">New CSS Scroll Features are Game Changers</a></li>
+    </ul>
+  </div>
+</div></div>
+
+<!-- Blank slide template.
+<div class="slide" title="Blank"><div>
+  <h2>Blank</h2>
+  <div>
+    <p>Blank.</p>
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+      <textarea title="HTML"></textarea>
+    </div>
+  </div>
+  <div class="live-edit demo-container">
+    <style>
+    </style>
+  </div>
+</div></div>
+-->
+
+</div>
+</div>
+</body>
+</html>
