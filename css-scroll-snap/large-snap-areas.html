@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Large snap area test</title>
+    <style>
+      :root:has(input[value=y]:checked) {
+        scroll-snap-type: y mandatory;
+      }
+      :root:has(input[value=both]:checked) {
+        scroll-snap-type: both mandatory;
+      }
+      html, body {
+        margin: 0;
+        font-family: sans-serif;
+      }
+      section {
+        display: grid;
+        align-items: center;
+        font-size: 6vw;
+        height: 160vh;
+        text-align: center;
+        --color1: #700;
+        --color2: #b50;
+        scroll-snap-align: center;
+        background: repeating-linear-gradient(
+              45deg,
+              var(--color1),
+              var(--color1) 30px,
+              var(--color2) 30px,
+              var(--color2) 60px
+            );
+        &:nth-child(odd) {
+          --color1: #070;
+          --color2: #5b0;          
+        }
+      }
+      h1 {
+        color: white;
+        text-shadow: 1px 1px 5px black;
+      }
+      input {
+        height: 6vw;
+        width: 6vw;
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <h1><input type="radio" name="snap" value="no"> No snap</h1>
+    </section>
+    <section>
+      <h1><input type="radio" name="snap" value="y" checked> Snap y</h1>
+    </section>
+    <section>
+      <h1><input type="radio" name="snap" value="both"> Snap both</h1>
+    </section>
+  </body>
+</html>
