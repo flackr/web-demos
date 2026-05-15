@@ -142,11 +142,15 @@ body {
 .email-item {
     display: flex;
     padding: 16px;
+    height: 89px;
+    min-height: 0;
     position: relative;
     gap: 16px;
     cursor: pointer;
     border-bottom: 1px solid #f1f3f4;
     transition: background-color 0.15s ease;
+    box-sizing: border-box;
+    overflow: clip;
 }
 
 .email-item:hover { background-color: #f8f9fa; }
@@ -241,18 +245,18 @@ body {
 
 .delete, .toggle-read {
     border: 0;
-    width: 100%;
-    height: 100%;
+    color: white;
+    padding: 16px;
+    line-height: 44px;
+    font-size: 32px;
 }
 
 .delete {
-    left: -100%;
-    background: linear-gradient(90deg, red, rgba(255,0,0,0.5));
+    background: red;
 }
 
 .toggle-read {
-    left: 100%;
-    background: linear-gradient(90deg, rgba(0,127,0,0.5), green);
+    background: green;
 }
 
 /* Base Button Styles */
@@ -317,6 +321,17 @@ body {
 .refresh-btn.is-loading .refresh-icon {
   color: #007aff; /* Optional: change color while loading */
   animation: spin-icon 1s linear infinite;
+}
+
+@keyframes delete-item {
+    to {
+        height: 0;
+        opacity: 0;
+        padding: 0;
+    }
+}
+.animate-deletion {
+    animation: delete-item 200ms;
 }
 
 /* Keyframe for the spinning icon */
@@ -399,4 +414,29 @@ body {
     border: none;
     border-top: 1px solid var(--border-color);
     margin: 12px 0;
+}
+
+.wrapper {
+    width: 200%;
+    height: 100%;
+    position: relative;
+}
+.wrapper > * {
+    position: sticky;
+    left: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    box-sizing: border-box;
+    text-align: inherit;
+}
+.wrapper.left {
+    right: 0;
+    text-align: left;
+    clip-path: inset(0 50% 0 0);
+}
+.wrapper.right {
+    left: 0;
+    text-align: right;
+    clip-path: inset(0 0 0 50%);
 }

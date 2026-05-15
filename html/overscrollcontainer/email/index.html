@@ -10,8 +10,8 @@
 </head>
 <body>
     <template id="actions">
-        <button class="delete" data-command="delete" command="toggle-overscroll"></button>
-        <button class="toggle-read" data-command="toggle" command="toggle-overscroll"></button>
+        <div class="wrapper left" data-command="delete"><button class="delete" command="toggle-overscroll">Delete</button></div>
+        <div class="wrapper right" data-command="toggle"><button class="toggle-read" command="toggle-overscroll">Toggle unread</button></div>
     </template>
     <div class="app-container" overscrollcontainer="overlay">
         <!-- The slide-in menu panel -->
