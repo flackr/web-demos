@@ -10,12 +10,12 @@
 </head>
 <body>
     <template id="actions">
-        <div class="wrapper left" data-command="delete"><button class="delete" command="toggle-overscroll">Delete</button></div>
-        <div class="wrapper right" data-command="toggle"><button class="toggle-read" command="toggle-overscroll">Toggle unread</button></div>
+        <div class="wrapper left" data-command="delete" overscrollarea><button class="delete" command="toggle-overscroll">Delete</button></div>
+        <div class="wrapper right" data-command="toggle" overscrollarea><button class="toggle-read" command="toggle-overscroll">Toggle unread</button></div>
     </template>
     <div class="app-container" overscrollcontainer="overlay">
         <!-- The slide-in menu panel -->
-        <nav class="side-menu" id="sideMenu">
+        <nav class="side-menu" id="sideMenu" overscrollarea>
             <div class="menu-header">
                 <h2>MailApp</h2>
                 <button class="icon-btn close-btn" id="closeMenuBtn" aria-label="Close menu" command="toggle-overscroll" commandfor="sideMenu">✕</button>
@@ -59,7 +59,7 @@
         </div>
 
         <main class="email-list" overscrollcontainer="overlay">
-            <div id="pull-to-refresh">
+            <div id="pull-to-refresh" overscrollarea>
                 <div class="ptr-icon pulling" id="refresh-indicator">
                     
                     <!-- Downward Arrow -->
