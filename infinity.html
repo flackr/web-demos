@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<style>
+body { margin: 0; }
+div {
+ width: calc(infinity * 1px);  
+  height: calc(infinity * 1px);
+  margin: 0;
+  padding: 0;
+}
+</style>
+<div></div>
+<script>
+const div = document.querySelector('div');
+
+div.textContent = `${div.offsetWidth.toLocaleString()} x ${div.offsetHeight.toLocaleString()} px`;
+</script>
