@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scroll-axis-lock demo</title>
+    <style>
+      :root {
+        scroll-axis-lock: none;
+      }
+      :root:has(#lock:checked) {
+        scroll-axis-lock: auto;
+      }
+      body {
+        height: 1000vh;
+        width: 1000vw;
+        --minor: rgba(0, 0, 0, 0.05);
+        --major: rgba(0, 0, 0, 0.4);
+        background: repeating-linear-gradient(0deg,
+              var(--major) 0px, var(--major) 1px, transparent 1px, transparent 20px,
+              var(--minor) 20px, var(--minor) 21px, transparent 21px, transparent 40px,
+              var(--minor) 40px, var(--minor) 41px, transparent 41px, transparent 60px,
+              var(--minor) 60px, var(--minor) 61px, transparent 61px, transparent 80px,
+              var(--minor) 80px, var(--minor) 81px, transparent 81px, transparent 100px),
+            repeating-linear-gradient(90deg,
+              var(--major) 0px, var(--major) 1px, transparent 1px, transparent 20px,
+              var(--minor) 20px, var(--minor) 21px, transparent 21px, transparent 40px,
+              var(--minor) 40px, var(--minor) 41px, transparent 41px, transparent 60px,
+              var(--minor) 60px, var(--minor) 61px, transparent 61px, transparent 80px,
+              var(--minor) 80px, var(--minor) 81px, transparent 81px, transparent 100px);
+      }
+      #monitor {
+        position: fixed;
+        top: 8px;
+        right: 8px;
+        background: white;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="monitor">
+      Angle: <span id="angle"></span><br>
+      <input type="checkbox" checked id="lock"> lock
+    </div>
+    
+  </body>
+  <script>
+    let start = [0, 0];
+    let last = start;
+    let ignoreReset = false;
+    function resetScroll() {
+      last = start = [
+        (document.scrollingElement.scrollWidth - document.scrollingElement.clientWidth) / 2,
+        (document.scrollingElement.scrollHeight - document.scrollingElement.clientHeight) / 2
+      ];      
+      window.scrollTo(start[0], start[1]);
+      ignoreReset = true;
+    }
+    let resetTimer = setTimeout(resetScroll, 0);;
+    window.addEventListener('scroll', () => {
+      if (ignoreReset) {
+        ignoreReset = false;
+        return;
+      }
+      let cur = [window.scrollX, window.scrollY];
+      const dx = cur[0] - last[0];
+      const dy = cur[1] - last[1];
+      last = cur;
+      const angleRad = Math.atan2(dy, dx);
+      const angle = (angleRad * 180 / Math.PI).toFixed(4) + `°`;
+      document.getElementById('angle').textContent = angle;
+      if (resetTimer) {
+        clearTimeout(resetTimer);
+      }
+      resetTimer = setTimeout(resetScroll, 5000);
+    });
+  </script>
+</html>
