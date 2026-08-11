@@ -2,32 +2,55 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>scroll-axis-lock demo</title>
     <style>
-      :root {
-        scroll-axis-lock: none;
+      html, body {
+        margin: 0;
       }
-      :root:has(#lock:checked) {
-        scroll-axis-lock: auto;
+      html:has(#subscroller:checked),
+      body:has(#subscroller:checked) {
+        width: 100%;
+        height: 100%;
+      }
+      html, .scroller {
+        scroll-axis-lock: none;
+        --bg: rgba(0, 255, 0, 0.02);
       }
       body {
-        height: 1000vh;
-        width: 1000vw;
+        margin: 0;
+      }
+      html:has(#lock:checked),
+      .scroller:has(#lock:checked) {
+        scroll-axis-lock: auto;
+        --bg: rgba(255, 0, 0, 0.02);
+      }
+      .scroller {
+        display: inline-block;
         --minor: rgba(0, 0, 0, 0.05);
         --major: rgba(0, 0, 0, 0.4);
         background: repeating-linear-gradient(0deg,
-              var(--major) 0px, var(--major) 1px, transparent 1px, transparent 20px,
-              var(--minor) 20px, var(--minor) 21px, transparent 21px, transparent 40px,
-              var(--minor) 40px, var(--minor) 41px, transparent 41px, transparent 60px,
-              var(--minor) 60px, var(--minor) 61px, transparent 61px, transparent 80px,
-              var(--minor) 80px, var(--minor) 81px, transparent 81px, transparent 100px),
+              var(--major) 0px, var(--major) 1px, var(--bg) 1px, var(--bg) 20px,
+              var(--minor) 20px, var(--minor) 21px, var(--bg) 21px, var(--bg) 40px,
+              var(--minor) 40px, var(--minor) 41px, var(--bg) 41px, var(--bg) 60px,
+              var(--minor) 60px, var(--minor) 61px, var(--bg) 61px, var(--bg) 80px,
+              var(--minor) 80px, var(--minor) 81px, var(--bg) 81px, var(--bg) 100px) local,
             repeating-linear-gradient(90deg,
-              var(--major) 0px, var(--major) 1px, transparent 1px, transparent 20px,
-              var(--minor) 20px, var(--minor) 21px, transparent 21px, transparent 40px,
-              var(--minor) 40px, var(--minor) 41px, transparent 41px, transparent 60px,
-              var(--minor) 60px, var(--minor) 61px, transparent 61px, transparent 80px,
-              var(--minor) 80px, var(--minor) 81px, transparent 81px, transparent 100px);
+              var(--major) 0px, var(--major) 1px, var(--bg) 1px, var(--bg) 20px,
+              var(--minor) 20px, var(--minor) 21px, var(--bg) 21px, var(--bg) 40px,
+              var(--minor) 40px, var(--minor) 41px, var(--bg) 41px, var(--bg) 60px,
+              var(--minor) 60px, var(--minor) 61px, var(--bg) 61px, var(--bg) 80px,
+              var(--minor) 80px, var(--minor) 81px, var(--bg) 81px, var(--bg) 100px) local;
+      }
+      .scroller:has(#subscroller:checked) {
+        overflow: auto;
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .area {
+        height: 10000vh;
+        width: 10000vw;
       }
       #monitor {
         position: fixed;
@@ -40,31 +63,37 @@
     </style>
   </head>
   <body>
-    <div id="monitor">
-      Angle: <span id="angle"></span><br>
-      <input type="checkbox" checked id="lock"> lock
-    </div>
-    
+    <div class="scroller">
+      <div id="monitor">
+        Angle: <span id="angle"></span><br>
+        <input type="checkbox" checked id="lock"> scroll-axis-lock<br>
+        <input type="checkbox" checked id="subscroller"> subscroller
+      </div>
+      <div class="area"></div>
   </body>
   <script>
     let start = [0, 0];
     let last = start;
     let ignoreReset = false;
     function resetScroll() {
+      const subscroller = document.getElementById('subscroller').checked;
+      const scroller = subscroller ? document.querySelector('.scroller') : document.scrollingElement;
       last = start = [
-        (document.scrollingElement.scrollWidth - document.scrollingElement.clientWidth) / 2,
-        (document.scrollingElement.scrollHeight - document.scrollingElement.clientHeight) / 2
+        (scroller.scrollWidth - scroller.clientWidth) / 2,
+        (scroller.scrollHeight - scroller.clientHeight) / 2
       ];      
-      window.scrollTo(start[0], start[1]);
+      scroller.scrollTo(start[0], start[1]);
       ignoreReset = true;
     }
-    let resetTimer = setTimeout(resetScroll, 0);;
-    window.addEventListener('scroll', () => {
+    let resetTimer = setTimeout(resetScroll, 0);
+    function onscroll(evt) {
       if (ignoreReset) {
         ignoreReset = false;
         return;
       }
-      let cur = [window.scrollX, window.scrollY];
+      const subscroller = document.getElementById('subscroller').checked;
+      const scroller = subscroller ? document.querySelector('.scroller') : document.scrollingElement;
+      let cur = [scroller.scrollLeft, scroller.scrollTop];
       const dx = cur[0] - last[0];
       const dy = cur[1] - last[1];
       last = cur;
@@ -75,6 +104,9 @@
         clearTimeout(resetTimer);
       }
       resetTimer = setTimeout(resetScroll, 5000);
-    });
+
+    }
+    window.addEventListener('scroll', onscroll);
+    document.querySelector('.scroller').addEventListener('scroll', onscroll);
   </script>
 </html>
