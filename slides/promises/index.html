@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Promises</title>
+<link rel="stylesheet" href="../../css/slides.css">
+<link rel="stylesheet" href="../../css/coder.css">
+<link rel="stylesheet" href="../../css/tabs.css">
+<script src="../../js/slides.js" defer></script>
+<script src="../../js/live-preview.js" defer></script>
+<script src="../../js/coder.js" defer></script>
+<style>
+html, body {
+  margin: 0;
+  height: 100%;
+}
+.slideshow {
+  height: 100%;
+}
+.grid-item {
+  background: var(--primary); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; font-weight: bold;
+  border-radius: 4px; border: 2px solid rgba(255,255,255,0.3);
+}
+.resizable {
+  overflow: hidden;
+  resize: both;
+  display: flex;
+  width: 80%;
+  height: 80%;
+  padding-bottom: 15px;
+  border: 2px dashed var(--primary);
+}
+.flex-across {
+  display: flex;
+  & > * {
+    width: 1px;
+    flex: 1;
+  }
+}
+.flex {
+  flex: 1;
+}
+iframe {
+  border: none;
+  width: 100%;
+  height: 100%;
+}
+</style>
+</head>
+<body>
+<div class="slideshow" role="region">
+<div class="scroller">
+
+<div class="slide" title="Title"><div>
+  <div style="text-align: center">
+    <h1>Promises</h1>
+    <p>promises.learned.then(questions)</p>
+    <p>-flackr</p>
+  </div>
+</div></div>
+
+<div class="slide" title="The Asynchronous Problem">
+  <div>
+    <h2 class="span">The Asynchronous Problem</h2>
+    
+    <div>
+      <p>
+        JavaScript is strictly single-threaded, meaning it can only execute one piece of code at a time. If a long-running task—like fetching data from a server—were executed synchronously, it would block the main thread and freeze the entire webpage.
+      </p>
+      <p>
+        To keep the user interface responsive, browsers use <strong>asynchronous</strong> APIs. The browser handles the heavy network lifting in the background and eventually notifies your JavaScript code when the operation is complete.
+      </p>
+    </div>
+    
+    <div>
+      <p>
+        For a long time, the only way to handle that notification was to pass a function—a <strong>callback</strong>. This worked for simple scripts, but created major headaches as applications grew more complex:
+      </p>
+      <ul>
+        <li><strong>Callback Hell:</strong> Running asynchronous tasks in sequence required nesting callbacks inside callbacks, leading to the infamous "Pyramid of Doom."</li>
+        <li><strong>Inversion of Control:</strong> You had to trust that the API you called would execute your callback at the right time, and exactly once.</li>
+        <li><strong>Brittle Error Handling:</strong> Tracking failures required tedious error checks at every single nested step, making <code>try/catch</code> nearly useless.</li>
+      </ul>
+    </div>
+    
+  </div>
+</div>
+
+<div class="slide" title="Callback Hell">
+  <div>
+    <h2 class="span">Callback Hell (The Pyramid of Doom)</h2>
+    
+    <div>
+      <p>
+        When you need to perform multiple asynchronous operations in a specific sequence, callbacks force you to nest each subsequent step inside the previous one's callback function.
+      </p>
+      <p>
+        This pattern causes code to grow horizontally rather than vertically. As the nesting deepens, the logic becomes incredibly difficult to read, track, and maintain.
+      </p>
+      <p>
+        Notice the <strong>error handling</strong>: you cannot use a single <code>try/catch</code> block. Instead, you are forced to manually check for and handle errors at every single level of the pyramid.
+      </p>
+    </div>
+    
+    <div>
+      <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto;"><code>
+getUser(userId, function(err, user) {
+  if (err) return handleError(err);
+
+  getPosts(user.id, function(err, posts) {
+    if (err) return handleError(err);
+
+    getComments(posts[0].id, function(err, comments) {
+      if (err) return handleError(err);
+
+      getAuthor(comments[0].authorId, function(err, author) {
+        if (err) return handleError(err);
+
+        console.log("Finally got the author:", author);
+      });
+    });
+  });
+});
+      </code></pre>
+    </div>
+    
+  </div>
+</div>
+
+<div class="slide" title="Callbacks in Browser APIs">
+  <div>
+    <h2 class="span">Callbacks in the Wild: Browser APIs</h2>
+    
+    <div>
+      <p>
+        Before Promises were standardized in ES6 (2015), the entire web platform was built around callbacks and event listeners. 
+      </p>
+      <p>
+        Any operation that didn't finish immediately—like waiting for a timer, asking for user location, or interacting with a local database—required passing a function to be executed later. 
+      </p>
+      <p>
+        This meant developers had to juggle constantly shifting conventions, as some APIs accepted callbacks as direct arguments, while others relied on attaching functions to event handlers.
+      </p>
+    </div>
+    
+    <div>
+      <h3>Built-in Callback Examples</h3>
+      <ul>
+        <li>
+          <strong>Timers (<code>setTimeout</code> / <code>setInterval</code>):</strong> The most fundamental examples of passing a callback function to be executed after a delay.
+        </li>
+        <li>
+          <strong><code>XMLHttpRequest</code>:</strong> Handled asynchronous networking by attaching functions to properties like <code>onload</code>, <code>onerror</code>, and <code>onreadystatechange</code>.
+        </li>
+        <li>
+          <strong>Geolocation API:</strong> <code>navigator.geolocation.getCurrentPosition()</code> takes a success callback and an error callback as its first and second arguments.
+        </li>
+        <li>
+          <strong>IndexedDB:</strong> A complex local database API that relies entirely on request objects and firing <code>onsuccess</code> or <code>onerror</code> events.
+        </li>
+        <li>
+          <strong>WebRTC:</strong> Early versions of methods like <code>RTCPeerConnection.createOffer()</code> required passing success and failure callbacks (though they have since been modernized to support Promises).
+        </li>
+      </ul>
+    </div>
+    
+  </div>
+</div>
+
+<div class="slide" title="Before Promises: Callbacks"><div>
+  <h2 class="span">Case Study: XMLHttpRequest</h2>
+  <div>
+    <p>
+      Using <code>XMLHttpRequest</code> required setting up event listeners for load and error states, which could quickly become nested and difficult to manage.
+    </p>
+    <div class="live code tabs">
+      <textarea title="JS">
+        function fetchSecret() {
+          output.textContent = 'Fetching...\n';
+
+          const xhr = new XMLHttpRequest();
+          xhr.open('GET', 'secrets.json');
+
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+              try {
+                const data = JSON.parse(xhr.responseText);
+                output.textContent += `Success! Secret: ${data.secret}\n`;
+              } catch (err) {
+                output.textContent += `Parse error: ${err.message}\n`;
+              }
+            } else {
+              output.textContent += `Request failed. Status: ${xhr.status}\n`;
+            }
+          };
+          
+          xhr.onerror = function() {
+            output.textContent += 'Network error occurred.\n';
+          };
+
+          xhr.send();
+        }
+
+        button.addEventListener('click', fetchSecret);
+      </textarea>
+      <textarea title="html">
+      <button id="button">Fetch Secret</button><br>
+      <code id="output"></code>
+      </textarea>
+      <textarea title="css">
+code {
+  white-space: pre-wrap;
+  display: block;
+  margin-top: 15px;
+  color: #333;
+}
+      </textarea>
+    </div>
+  </div>
+  <div class="demo-container">
+    <iframe class="live-edit"></iframe>    
+  </div>
+</div></div>
+
+<div class="slide" title="Introducing Promises">
+  <div>
+    <h2 class="span">Introducing Promises</h2>
+    
+    <div>
+      <p>
+        A <strong>Promise</strong> is an object representing the eventual completion (or failure) of an asynchronous operation, and its resulting value.
+      </p>
+      <p>
+        Instead of passing callbacks <em>into</em> an asynchronous function, the function returns a Promise object. You then attach your callbacks <em>to</em> that returned object.
+      </p>
+      <p>
+        This restores control to the developer. The Promise acts as a standard, reliable proxy for a value that is not necessarily known when the promise is created.
+      </p>
+    </div>
+    
+    <div>
+      <h3>The Three States</h3>
+      <p>At any given time, a Promise is in exactly one of these states:</p>
+      <ul style="line-height: 1.6;">
+        <li>
+          <strong style="color: #888;">Pending:</strong> The initial state. The operation has not completed yet.
+        </li>
+        <li>
+          <strong style="color: #2e7d32;">Fulfilled:</strong> The operation completed successfully, yielding a value.
+        </li>
+        <li>
+          <strong style="color: #c62828;">Rejected:</strong> The operation failed, yielding a reason (usually an <code>Error</code> object).
+        </li>
+      </ul>
+      <p>
+        Once a promise transitions to Fulfilled or Rejected, it is considered <strong>settled</strong>. A settled promise is locked—its state and value can never change again, guaranteeing that your callbacks execute exactly once.
+      </p>
+    </div>
+    
+  </div>
+</div>
+
+<div class="slide" title="Creating and Consuming Promises">
+  <div>
+    <h2 class="span">Creating and Consuming Promises</h2>
+    <div>
+      <p>
+        To create a Promise from scratch, use the <code>new Promise()</code> constructor. It takes an <strong>executor function</strong> with two arguments: <code>resolve</code> and <code>reject</code>.
+      </p>
+      <p>
+        You call <code>resolve(value)</code> when your async task succeeds, and <code>reject(reason)</code> if it fails. You can then attach <code>.then()</code> for success and <code>.catch()</code> for errors.
+      </p>
+      <div class="live code tabs">
+        <textarea title="JS">
+          button.addEventListener('click', () => {
+            output.textContent = 'Flipping a coin...\n';
+            
+            // 1. Create the Promise
+            const coinPromise = new Promise((resolve, reject) => {
+              setTimeout(() => {
+                const isHeads = Math.random() > 0.5;
+                
+                if (isHeads) {
+                  resolve('Heads! You win.');
+                } else {
+                  reject(new Error('Tails! You lose.'));
+                }
+              }, 1000);
+            });
+
+            // 2. Consume the Promise
+            coinPromise
+              .then((result) => {
+                output.textContent += `Fulfilled: ${result}\n`;
+              })
+              .catch((error) => {
+                output.textContent += `Rejected: ${error.message}\n`;
+              })
+              .finally(() => {
+                output.textContent += '(Promise settled)\n\n';
+              });
+          });
+        </textarea>
+        <textarea title="html">
+          <button id="button">Flip Coin</button><br>
+          <code id="output"></code>
+        </textarea>
+        <textarea title="css">
+code {
+  white-space: pre-wrap;
+  display: block;
+  margin-top: 15px;
+  color: #333;
+}
+        </textarea>
+      </div>
+    </div>
+    <div class="demo-container">
+      <iframe class="live-edit"></iframe>    
+    </div>
+  </div>
+</div>
+
+<div class="slide" title="Under the Hood">
+  <div>
+    <h2 class="span">Under the Hood: Building a Promise</h2>
+    <div>
+      <p>
+        To understand how Promises work, we can build a basic version. At its core, a Promise is an object that manages a state and a list of callbacks. When <code>resolve()</code> is called, it triggers the callbacks registered via <code>.then()</code>.
+      </p>
+      <div class="live code tabs">
+        <textarea title="JS">
+          class SimplePromise {
+            constructor(executor) {
+              this.callbacks = [];
+              this.state = 'pending';
+              this.value = undefined;
+
+              const resolve = (value) => {
+                if (this.state !== 'pending') return;
+                this.state = 'fulfilled';
+                this.value = value;
+                this.callbacks.forEach(cb => cb(value));
+              };
+
+              // Run the executor immediately
+              executor(resolve);
+            }
+
+            then(onFulfilled) {
+              if (this.state === 'fulfilled') {
+                onFulfilled(this.value);
+              } else {
+                this.callbacks.push(onFulfilled);
+              }
+            }
+          }
+
+          button.addEventListener('click', () => {
+            output.textContent = 'Simulating 1s delay...\n';
+            
+            const p = new SimplePromise((resolve) => {
+              setTimeout(() => resolve('Ta-da! Custom promise resolved.'), 1000);
+            });
+            
+            p.then((val) => {
+              output.textContent += `\nSuccess: ${val}\n`;
+            });
+          });
+        </textarea>
+        <textarea title="html">
+          <button id="button">Run Custom Promise</button><br>
+          <code id="output"></code>
+        </textarea>
+        <textarea title="css">
+code {
+  white-space: pre-wrap;
+  display: block;
+  margin-top: 15px;
+  color: #333;
+}
+        </textarea>
+      </div>
+    </div>
+    <div class="demo-container">
+      <iframe class="live-edit"></iframe>    
+    </div>
+  </div>
+</div>
+
+<div class="slide" title="The Fetch API"><div>
+  <h2 class="span">The Fetch API</h2>
+  <div>
+    <p>
+      The <code>fetch()</code> API provides a modern, Promise-based alternative to <code>XMLHttpRequest</code>. Instead of relying on event listeners, <code>fetch()</code> returns a promise that resolves with a <code>Response</code> object. This allows us to cleanly chain methods like <code>.json()</code> and handle errors in a single <code>.catch()</code> block.
+    </p>
+    <div class="live code tabs">
+      <textarea title="JS">
+        function fetchSecret() {
+          output.textContent = 'Fetching...\n';
+
+          fetch('secrets.json')
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              // response.json() also returns a Promise!
+              return response.json(); 
+            })
+            .then((data) => {
+              output.textContent += `Success! Secret: ${data.secret}\n`;
+            })
+            .catch((error) => {
+              output.textContent += `Error: ${error.message}\n`;
+            });
+        }
+        button.addEventListener('click', fetchSecret);
+      </textarea>
+      <textarea title="html">
+      <button id="button">Fetch Secret</button><br>
+      <code id="output"></code>
+      </textarea>
+      <textarea title="css">
+code {
+  white-space: pre-wrap;
+  display: block;
+  margin-top: 15px;
+  color: #333;
+}
+      </textarea>
+    </div>
+  </div>
+  <div class="demo-container">
+  <iframe class="live-edit"></iframe>    
+  </div>
+</div></div>
+
+<div class="slide" title="Introducing Async / Await">
+  <div>
+    <h2 class="span">Introducing Async / Await</h2>
+    <div>
+      <p>
+        Introduced in ES2017, <code>async</code> and <code>await</code> act as "syntactic sugar" on top of Promises. They don't replace Promises; they just make working with them much easier to read and write.
+      </p>
+      <p>
+        Marking a function as <code>async</code> ensures it always returns a Promise. Inside that function, you can use the <code>await</code> keyword to pause execution until a Promise settles, flattening out <code>.then()</code> chains into code that looks completely synchronous.
+      </p>
+      <div class="live code tabs">
+        <textarea title="JS">
+// A helper function that returns a Promise
+function waitAndSay(text, ms) {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(text), ms);
+  });
+}
+
+const btnPromise = document.getElementById('btn-promise');
+const btnAsync = document.getElementById('btn-async');
+const output = document.getElementById('output');
+
+// 1. Traditional Promise Chaining
+btnPromise.addEventListener('click', () => {
+  output.textContent = 'Promises: Starting...\n';
+  
+  waitAndSay('Step 1 complete', 600)
+    .then(result1 => {
+      output.textContent += `Promises: ${result1}\n`;
+      return waitAndSay('Step 2 complete', 600);
+    })
+    .then(result2 => {
+      output.textContent += `Promises: ${result2}\nDone!\n\n`;
+    });
+});
+
+// 2. Modern Async/Await
+btnAsync.addEventListener('click', async () => {
+  output.textContent = 'Async/Await: Starting...\n';
+  
+  const result1 = await waitAndSay('Step 1 complete', 600);
+  output.textContent += `Async/Await: ${result1}\n`;
+  
+  const result2 = await waitAndSay('Step 2 complete', 600);
+  output.textContent += `Async/Await: ${result2}\nDone!\n\n`;
+});
+        </textarea>
+        <textarea title="html">
+<button id="btn-promise">Use .then() Chain</button>
+<button id="btn-async">Use async/await</button><br>
+<code id="output"></code>
+        </textarea>
+        <textarea title="css">
+code {
+  white-space: pre-wrap;
+  display: block;
+  margin-top: 15px;
+  color: #333;
+}
+button {
+  margin-right: 10px;
+  margin-top: 5px;
+}
+        </textarea>
+      </div>
+    </div>
+    <div class="demo-container">
+      <iframe class="live-edit"></iframe>    
+    </div>
+  </div>
+</div>
+
+<div class="slide" title="Case study: await fetch"><div>
+  <h2 class="span">Case study: await fetch</h2>
+  <div>
+    <p>
+      The <code>async</code> and <code>await</code> keywords provide a cleaner, more readable syntax for working with Promises. By marking a function as <code>async</code>, you can use <code>await</code> to pause execution until a Promise resolves. This makes asynchronous code look and behave a bit more like synchronous code, allowing us to use standard <code>try/catch</code> blocks for error handling.
+    </p>
+    <div class="live code tabs">
+      <textarea title="JS">
+        async function fetchSecret() {
+          output.textContent = 'Fetching...\n';
+          
+          try {
+            const response = await fetch('secrets.json');
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            // response.json() returns a Promise, so we await it too
+            const data = await response.json(); 
+            
+            output.textContent += `Success! Secret: ${data.secret}\n`;
+          } catch (error) {
+            output.textContent += `Error: ${error.message}\n`;
+          }
+        }
+        button.addEventListener('click', fetchSecret);
+      </textarea>
+      <textarea title="html">
+      <button id="button">Fetch Secret</button><br>
+      <code id="output"></code>
+      </textarea>
+      <textarea title="css">
+code {
+  white-space: pre-wrap;
+  display: block;
+  margin-top: 15px;
+  color: #333;
+}
+      </textarea>
+    </div>
+  </div>
+  <div class="demo-container">
+    <iframe class="live-edit"></iframe>
+  </div>
+</div></div>
+
+<div class="slide" title="Unhandled Rejections">
+  <div>
+    <h2 class="span">Unhandled Promise Rejections</h2>
+    
+    <div>
+      <p>
+        What happens if a Promise rejects, but you forgot to attach a <code>.catch()</code> block (or didn't wrap your <code>await</code> in a <code>try/catch</code>)?
+      </p>
+      <p>
+        This is known as an <strong>unhandled rejection</strong>. Historically, these failed silently, making bugs incredibly hard to track down. Today, modern environments (both browsers and Node.js) treat them very seriously, printing loud warnings or even crashing the application.
+      </p>
+      <p>
+        In the browser, you can globally track these using the <code>unhandledrejection</code> window event. This acts as a safety net, allowing you to log unexpected errors to your server or monitoring service.
+      </p>
+    </div>
+    
+    <div>
+      <div class="live code tabs">
+        <textarea title="JS">
+const btnRaw = document.getElementById('btn-raw');
+const btnAsync = document.getElementById('btn-async');
+const output = document.getElementById('output');
+
+// Global listener for unhandled rejections
+window.addEventListener('unhandledrejection', (event) => {
+  output.textContent += `⚠️ Global Catch: ${event.reason.message}\n`;
+  
+  // Calling preventDefault() stops the error from 
+  // showing up in the browser's developer console.
+  event.preventDefault(); 
+});
+
+btnRaw.addEventListener('click', () => {
+  output.textContent = 'Triggering raw promise...\n';
+  
+  // We create a rejection, but NEVER attach .catch()
+  Promise.reject(new Error("Forgot my .catch()!"));
+});
+
+btnAsync.addEventListener('click', async () => {
+  output.textContent = 'Triggering async function...\n';
+  
+  // We await a rejection without a try/catch block!
+  await Promise.reject(new Error("Forgot my try/catch!"));
+});
+        </textarea>
+        <textarea title="html">
+<button id="btn-raw">Forget .catch()</button>
+<button id="btn-async">Forget try/catch</button><br>
+<code id="output"></code>
+        </textarea>
+        <textarea title="css">
+code {
+  white-space: pre-wrap;
+  display: block;
+  margin-top: 15px;
+  color: #333;
+}
+button {
+  margin-right: 10px;
+  margin-top: 5px;
+}
+        </textarea>
+      </div>
+      
+      <div class="flex demo-container">
+        <iframe class="live-edit"></iframe>    
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<div class="slide" title="Promise.all">
+  <div>
+    <h2 class="span">Concurrent Execution with Promise.all</h2>
+    <div>
+      <p>
+        When you have multiple asynchronous tasks that don't depend on each other, using <code>await</code> in a sequence can slow down your application because each task waits for the previous one to finish.
+      </p>
+      <p>
+        <code>Promise.all()</code> takes an array of promises and runs them concurrently. It returns a single Promise that resolves with an array of results only when <strong>all</strong> of the input promises have fulfilled. If even one promise rejects, the entire <code>Promise.all()</code> rejects immediately.
+      </p>
+      <div class="live code tabs">
+        <textarea title="JS">
+const btnSeq = document.getElementById('btn-seq');
+const btnAll = document.getElementById('btn-all');
+const output = document.getElementById('output');
+
+// Helper to simulate a network request
+function simulateFetch(item, ms) {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(item), ms);
+  });
+}
+
+// 1. Sequential Execution (Slow)
+btnSeq.addEventListener('click', async () => {
+  output.textContent = 'Sequential start...\n';
+  const start = performance.now();
+  
+  const user = await simulateFetch('User Data', 1000);
+  const posts = await simulateFetch('Posts Data', 1000);
+  
+  const end = performance.now();
+  output.textContent += `Loaded: ${user}, ${posts}\n`;
+  output.textContent += `Total time: ${Math.round(end - start)}ms\n\n`;
+});
+
+// 2. Concurrent Execution (Fast)
+btnAll.addEventListener('click', async () => {
+  output.textContent = 'Promise.all start...\n';
+  const start = performance.now();
+  
+  const [user, posts] = await Promise.all([
+    simulateFetch('User Data', 1000),
+    simulateFetch('Posts Data', 1000)
+  ]);
+  
+  const end = performance.now();
+  output.textContent += `Loaded: ${user}, ${posts}\n`;
+  output.textContent += `Total time: ${Math.round(end - start)}ms\n\n`;
+});
+        </textarea>
+        <textarea title="html">
+<button id="btn-seq">Run Sequentially (await 1 by 1)</button>
+<button id="btn-all">Run Concurrently (Promise.all)</button><br>
+<code id="output"></code>
+        </textarea>
+        <textarea title="css">
+code {
+  white-space: pre-wrap;
+  display: block;
+  margin-top: 15px;
+  color: #333;
+}
+button {
+  margin-right: 10px;
+  margin-top: 5px;
+}
+        </textarea>
+      </div>
+    </div>
+    <div class="demo-container">
+      <iframe class="live-edit"></iframe>    
+    </div>
+  </div>
+</div>
+
+<div class="slide" title="Promise.race vs Promise.any">
+  <div>
+    <h2 class="span">Promise.race vs Promise.any</h2>
+    <div>
+      <p>
+        Sometimes you want to react as soon as a single Promise finishes out of a group, rather than waiting for all of them.
+      </p>
+      <ul>
+        <li><strong><code>Promise.race()</code></strong> settles as soon as the <em>first</em> promise settles, regardless of whether it fulfills or rejects.</li>
+        <li><strong><code>Promise.any()</code></strong> settles as soon as the <em>first</em> promise is <strong>fulfilled</strong>. It completely ignores early rejections unless <em>all</em> promises in the array reject.</li>
+      </ul>
+      <p>
+        In this demo, we run two tasks: a fast one that fails (500ms) and a slower one that succeeds (1000ms). Notice how each method behaves!
+      </p>
+      <div class="live code tabs">
+        <textarea title="JS">
+const btnRace = document.getElementById('btn-race');
+const btnAny = document.getElementById('btn-any');
+const output = document.getElementById('output');
+
+// Helper to create a promise that either resolves or rejects after a delay
+function createTask(name, delay, shouldFail) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (shouldFail) {
+        reject(new Error(`${name} Failed!`));
+      } else {
+        resolve(`${name} Succeeded!`);
+      }
+    }, delay);
+  });
+}
+
+btnRace.addEventListener('click', async () => {
+  output.textContent = 'Promise.race: Waiting...\n';
+  
+  const fastFail = createTask('Fast Task', 500, true);
+  const slowSuccess = createTask('Slow Task', 1000, false);
+  
+  try {
+    const result = await Promise.race([fastFail, slowSuccess]);
+    output.textContent += `Winner: ${result}\n\n`;
+  } catch (error) {
+    output.textContent += `Caught: ${error.message}\n(Race stops on first rejection)\n\n`;
+  }
+});
+
+btnAny.addEventListener('click', async () => {
+  output.textContent = 'Promise.any: Waiting...\n';
+  
+  const fastFail = createTask('Fast Task', 500, true);
+  const slowSuccess = createTask('Slow Task', 1000, false);
+  
+  try {
+    const result = await Promise.any([fastFail, slowSuccess]);
+    output.textContent += `Winner: ${result}\n(Any ignores the early failure)\n\n`;
+  } catch (error) {
+    output.textContent += `Caught: ${error.message}\n\n`;
+  }
+});
+        </textarea>
+        <textarea title="html">
+<button id="btn-race">Run Promise.race</button>
+<button id="btn-any">Run Promise.any</button><br>
+<code id="output"></code>
+        </textarea>
+        <textarea title="css">
+code {
+  white-space: pre-wrap;
+  display: block;
+  margin-top: 15px;
+  color: #333;
+}
+button {
+  margin-right: 10px;
+  margin-top: 5px;
+}
+        </textarea>
+      </div>
+    </div>
+    <div class="demo-container">
+      <iframe class="live-edit"></iframe>    
+    </div>
+  </div>
+</div>
+
+<div class="slide" title="Promise.allSettled">
+  <div>
+    <h2 class="span">Promise.allSettled</h2>
+    <div>
+      <p>
+        While <code>Promise.all()</code> fails fast (it rejects immediately if <em>any</em> promise rejects), there are times when you want to wait for all tasks to finish, regardless of whether they succeeded or failed.
+      </p>
+      <p>
+        <code>Promise.allSettled()</code> waits for all input promises to either fulfill or reject. It returns a single Promise that resolves to an array of objects, each describing the outcome of a promise. Each object has a <code>status</code> of either <code>"fulfilled"</code> or <code>"rejected"</code>, along with the corresponding <code>value</code> or <code>reason</code>.
+      </p>
+      <div class="live code tabs">
+        <textarea title="JS">
+const btn = document.getElementById('btn');
+const output = document.getElementById('output');
+
+function createTask(name, delay, shouldFail) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (shouldFail) {
+        reject(`${name} failed!`);
+      } else {
+        resolve(`${name} OK!`);
+      }
+    }, delay);
+  });
+}
+
+btn.addEventListener('click', async () => {
+  output.textContent = 'Waiting for all to settle...\n\n';
+  
+  const tasks = [
+    createTask('Task 1 (Fast, Success)', 400, false),
+    createTask('Task 2 (Medium, Error)', 800, true),
+    createTask('Task 3 (Slow, Success)', 1200, false)
+  ];
+  
+  // allSettled never throws an error on its own, 
+  // so we don't strictly need a try/catch here.
+  const results = await Promise.allSettled(tasks);
+  
+  // Print the resulting array of status objects
+  output.textContent += JSON.stringify(results, null, 2) + '\n';
+});
+        </textarea>
+        <textarea title="html">
+<button id="btn">Run Promise.allSettled</button><br>
+<code id="output"></code>
+        </textarea>
+        <textarea title="css">
+code {
+  white-space: pre-wrap;
+  display: block;
+  margin-top: 15px;
+  color: #333;
+}
+button {
+  margin-right: 10px;
+  margin-top: 5px;
+}
+        </textarea>
+      </div>
+    </div>
+    <div class="demo-container">
+      <iframe class="live-edit"></iframe>    
+    </div>
+  </div>
+</div>
+
+<div class="slide" title="Promise Summary">
+  <div>
+    <h2 class="span">Summary: The Promise API</h2>
+    
+    <div>
+      <h3>Core Concepts</h3>
+      <p>
+        Promises transformed JavaScript by providing a standard way to represent the eventual result of an asynchronous operation, rescuing us from Callback Hell.
+      </p>
+      <ul>
+        <li><strong>Three States:</strong> <code>pending</code>, <code>fulfilled</code> (success), or <code>rejected</code> (error). Once settled, a Promise's state and value are permanently locked.</li>
+        <li><strong><code>.then()</code> and <code>.catch()</code>:</strong> The foundation for chaining sequential asynchronous operations and catching errors.</li>
+        <li><strong><code>async</code> / <code>await</code>:</strong> Modern syntax that lets you write asynchronous code that reads sequentially, making standard <code>try/catch</code> blocks viable again.</li>
+      </ul>
+    </div>
+    
+    <div>
+      <h3>Combinators</h3>
+      <p>Powerful tools for handling multiple promises simultaneously:</p>
+      <ul>
+        <li><strong><code>Promise.all()</code>:</strong> All must succeed. Fails fast on the first error.</li>
+        <li><strong><code>Promise.allSettled()</code>:</strong> Waits for all to finish, capturing every success and failure.</li>
+        <li><strong><code>Promise.race()</code>:</strong> The first to settle wins (whether success or failure).</li>
+        <li><strong><code>Promise.any()</code>:</strong> The first to succeed wins. Ignores failures unless they all fail.</li>
+      </ul>
+      
+      <div style="margin-top: 30px; padding: 15px; background: #f0f8ff; border-left: 5px solid #0066cc; border-radius: 4px;">
+        <strong>But wait...</strong> <em>When</em> exactly do these callbacks run? Now that we know how Promises work, it's time to look at the Event Loop, Macrotasks, and Microtasks!
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<div class="slide" title="Microtasks and Timing">
+  <div>
+    <h2 class="span">Microtasks vs Macrotasks</h2>
+    
+    <div>
+      <p>
+        Not all asynchronous callbacks are treated equally by the JavaScript Event Loop. They are divided into two main queues:
+      </p>
+      <ul>
+        <li><strong>Macrotasks:</strong> Things like <code>setTimeout</code>, <code>setInterval</code>, and UI rendering.</li>
+        <li><strong>Microtasks:</strong> Promise callbacks (<code>.then</code>, <code>.catch</code>, <code>.finally</code>) and <code>queueMicrotask()</code>.</li>
+      </ul>
+      <p>
+        <strong>The Golden Rule:</strong> After the current synchronous code finishes, the engine will completely empty the <em>Microtask queue</em> before it moves on to the next <em>Macrotask</em>. This means Promise callbacks always jump ahead of <code>setTimeout</code> in line!
+      </p>
+      <p>
+        <em>Look at the code on the right. What order do you think the letters will be printed in?</em>
+      </p>
+    </div>
+    
+    <div>
+      <div class="live code tabs">
+        <textarea title="JS">
+const btn = document.getElementById('btn');
+const output = document.getElementById('output');
+
+btn.addEventListener('click', () => {
+  output.textContent = 'Output: ';
+  
+  output.textContent += 'A ';
+  
+  setTimeout(() => {
+    output.textContent += 'B ';
+  }, 0);
+  
+  Promise.resolve().then(() => {
+    output.textContent += 'C ';
+  });
+  
+  output.textContent += 'D ';
+});
+        </textarea>
+        <textarea title="html">
+<button id="btn">Run Timing Test</button><br>
+<code id="output" style="font-size: 1.5em; font-weight: bold; color: #d32f2f;"></code>
+        </textarea>
+        <textarea title="css">
+button {
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+        </textarea>
+      </div>
+      
+      <div class="flex demo-container">
+        <iframe class="live-edit"></iframe>    
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<div class="slide" title="Events and Microtasks">
+  <div>
+    <h2 class="span">DOM Events and Microtasks</h2>
+    
+    <div>
+      <p>
+        What happens when we wrap DOM events in Promises? Does the microtask queue defer our code so much that the natural event order (like <code>mouseover</code> followed by <code>mouseenter</code>) gets messed up?
+      </p>
+      <p>
+        Let's test this by attaching our Promise-based listeners <em>first</em>, followed by standard callbacks on the same events. 
+      </p>
+      <p>
+        <em>Hover the box on the right. Will the <code>mouseenter</code> standard listener fire before or after the <code>mouseover</code> Promise listener?</em>
+      </p>
+      
+      <details>
+        <summary style="font-weight: bold; cursor: pointer;">Show the Result</summary>
+        <p style="margin-top: 10px;">
+          When the browser dispatches native user events, the call stack empties immediately after all listeners for that specific event finish. This triggers the microtask queue <em>before</em> the browser moves on to dispatch the next event in the sequence. 
+        </p>
+        <p>
+          As a result, all <code>mouseover</code> handlers (both standard and Promise microtasks) complete fully before <em>any</em> <code>mouseenter</code> handlers begin. The logical order of events remains perfectly unaffected!
+        </p>
+      </details>
+    </div>
+    
+    <div>
+      <div class="live code tabs">
+        <textarea title="JS">
+const box = document.getElementById('box');
+const output = document.getElementById('output');
+const clearBtn = document.getElementById('clearBtn');
+
+// Helper: returns a Promise for a one-time event
+function once(el, eventName) {
+  return new Promise(resolve => {
+    el.addEventListener(eventName, resolve, { once: true });
+  });
+}
+
+function attachListeners() {
+  // 1. Promise-based listeners
+  once(box, 'mouseover').then(() => {
+    output.textContent += 'Promise: mouseover\n';
+  });
+  
+  once(box, 'mouseenter').then(() => {
+    output.textContent += 'Promise: mouseenter\n';
+  });
+
+  // 2. Standard listeners
+  box.addEventListener('mouseover', () => {
+    output.textContent += 'Standard: mouseover\n';
+  }, { once: true });
+  
+  box.addEventListener('mouseenter', () => {
+    output.textContent += 'Standard: mouseenter\n';
+  }, { once: true });
+}
+
+clearBtn.addEventListener('click', () => {
+  output.textContent = '';
+  attachListeners(); // Re-attach for another test
+});
+
+// Initial setup
+attachListeners();
+        </textarea>
+        <textarea title="html">
+<button id="clearBtn">Clear Log & Reset</button>
+<div id="box">Hover Me!</div>
+<code id="output"></code>
+        </textarea>
+        <textarea title="css">
+#box {
+  width: 150px;
+  height: 100px;
+  background: #2196F3;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin: 15px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#box:hover {
+  background: #1976D2;
+}
+code {
+  white-space: pre-wrap;
+  display: block;
+  color: #333;
+  font-size: 1.1em;
+}
+details {
+  background: #f4f4f4;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 20px;
+  border-left: 4px solid #2196F3;
+}
+        </textarea>
+      </div>
+      
+      <div class="flex demo-container">
+        <iframe class="live-edit"></iframe>    
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<div class="slide" title="Microtask Checkpoints">
+  <div>
+    <h2 class="span">Microtask Checkpoints & Rendering</h2>
+    
+    <div>
+      <p>
+        What happens when a Promise is resolved by the browser itself—like a <code>fetch()</code> completing or a Web Animation's <code>.finished</code> promise resolving? You didn't execute that code; the browser did.
+      </p>
+      <p>
+        The HTML specification defines explicit <strong>Microtask Checkpoints</strong>. The browser pauses to completely empty the microtask queue at specific, guaranteed moments. The most crucial checkpoints occur:
+      </p>
+      <ul>
+        <li>Immediately after any macrotask finishes (e.g., an event handler or a <code>fetch</code> network task).</li>
+        <li><strong>During the "Update the Rendering" phase:</strong> specifically after <code>requestAnimationFrame</code> callbacks execute, but <em>before</em> the pixels are painted to the screen.</li>
+      </ul>
+      <p>
+        This design guarantees that if an animation finishes or data arrives and your Promise callback updates the DOM, the browser will wait for those changes and paint them in the very same frame, preventing flickering!
+      </p>
+    </div>
+    
+    <div>
+      <div class="live code tabs">
+        <textarea title="JS">
+const btn = document.getElementById('btn');
+const output = document.getElementById('output');
+const box = document.getElementById('box');
+
+btn.addEventListener('click', () => {
+  output.textContent = 'Scheduling...\n\n';
+  
+  // requestAnimationFrame runs right before the browser paints
+  requestAnimationFrame(() => {
+    output.textContent += '1. requestAnimationFrame runs\n';
+    
+    // We resolve a promise during the rendering phase.
+    // The browser hits a Microtask Checkpoint right after rAF,
+    // meaning this runs BEFORE the paint happens!
+    Promise.resolve().then(() => {
+      output.textContent += '2. Promise Microtask (Runs BEFORE paint!)\n';
+      box.style.background = '#4CAF50'; // Visual update happens seamlessly
+    });
+    
+    // A macrotask queued here must wait for the next event loop iteration
+    setTimeout(() => {
+      output.textContent += '3. setTimeout (Runs AFTER paint!)\n';
+    }, 0);
+  });
+});
+        </textarea>
+        <textarea title="html">
+<button id="btn">Test Render Checkpoint</button>
+<div id="box"></div>
+<code id="output"></code>
+        </textarea>
+        <textarea title="css">
+#box {
+  width: 50px;
+  height: 50px;
+  background: #f44336;
+  margin: 15px 0;
+  transition: background 0.2s;
+}
+code {
+  white-space: pre-wrap;
+  display: block;
+  color: #333;
+  font-size: 1.1em;
+}
+button {
+  margin-top: 5px;
+}
+        </textarea>
+      </div>
+      
+      <div class="flex demo-container">
+        <iframe class="live-edit"></iframe>    
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<div class="slide" title="Summary: Promises and Timing">
+  <div>
+    <h2 class="span">Summary: Promises and Timing</h2>
+    
+    <div>
+      <h3>The Event Loop Hierarchy</h3>
+      <p>
+        Promises don't just run "later"—they run with a very specific priority dictated by the <strong>Microtask Queue</strong>.
+      </p>
+      <ul>
+        <li><strong>Microtasks have priority:</strong> Promise callbacks (<code>.then</code>, <code>.catch</code>) are microtasks. They always run before the next macrotask (like <code>setTimeout</code>).</li>
+        <li><strong>The Golden Rule:</strong> The JavaScript engine will completely empty the microtask queue before it allows any other asynchronous macrotask to execute.</li>
+        <li><strong>Synchronous first:</strong> A Promise callback will never interrupt currently running synchronous code.</li>
+      </ul>
+    </div>
+    
+    <div>
+      <h3>Browser Integration</h3>
+      <p>
+        The browser uses explicit <strong>Microtask Checkpoints</strong> to ensure Promises play nicely with the DOM and rendering pipeline:
+      </p>
+      <ul>
+        <li><strong>Event Dispatching:</strong> When multiple native events fire (like <code>mouseover</code> then <code>mouseenter</code>), the browser hits a checkpoint between them. All Promise callbacks from the first event finish before the second event begins.</li>
+        <li><strong>Rendering and Animation:</strong> A checkpoint occurs right after <code>requestAnimationFrame</code> callbacks but <em>before</em> the pixels hit the screen. This allows Promises to finalize DOM updates in the same frame, preventing visual flickering.</li>
+      </ul>
+      
+      <div style="margin-top: 30px; padding: 15px; background: #f0f8ff; border-left: 5px solid #0066cc; border-radius: 4px;">
+        <strong>Key Takeaway:</strong> Promises give you deterministic, predictable control over asynchronous timing, seamlessly weaving your logic between user events and screen paints!
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<div class="slide" title="Thank You">
+  <div>
+    <h2>Thank You!</h2>
+    
+    <div style="text-align: center; margin-top: 60px; max-width: 800px; margin-left: auto; margin-right: auto;">
+      <h3 style="font-size: 2em; color: #2196F3; margin-bottom: 20px;">
+        You are now ready to master asynchronous JavaScript!
+      </h3>
+      
+      <p style="font-size: 1.3em; line-height: 1.6; color: #555;">
+        We've journeyed from the dark days of Callback Hell, through the standard Promise API and modern <code>async/await</code> syntax, all the way down to the browser's Event Loop and Microtask Checkpoints.
+      </p>
+      
+      <div style="margin-top: 50px; padding: 30px; background: #f9f9f9; border-top: 4px solid #4CAF50; border-radius: 0 0 8px 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <h4 style="font-size: 1.5em; margin-top: 0; color: #333;">Questions?</h4>
+        <p style="font-size: 1.1em; color: #666;">
+          Take some time to experiment with the live-editable code examples in this presentation to test your new understanding of how Promises truly work under the hood.
+        </p>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<!-- Blank slide template.
+<div class="slide" title="Blank"><div>
+  <h2>Blank</h2>
+  <div>
+    <p>Blank.</p>
+    <div class="live code tabs">
+      <textarea title="CSS"></textarea>
+      <textarea title="HTML"></textarea>
+    </div>
+  </div>
+  <div class="live-edit demo-container">
+    <style>
+    </style>
+  </div>
+</div></div>
+-->
+
+</div>
+</div>
+</body>
+</html>
