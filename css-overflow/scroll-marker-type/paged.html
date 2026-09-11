@@ -12,6 +12,7 @@
 
       /* Slides using tab scroll markers */
       .slides {
+        counter-reset: --page;
         scroll-marker-group: after tabs;
         overflow-x: auto;
         columns: 1;
@@ -40,7 +41,8 @@
         }
 
         &::column::scroll-marker {
-          content: "";
+          counter-increment: --page;
+          content: "" / "Page " counter(--page);
           border-radius: 50%;
           border: 1px solid #444;
           display: inline-block;
