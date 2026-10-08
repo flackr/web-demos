@@ -360,6 +360,15 @@ body {
     scroll-behavior: smooth;
 }
 
+@keyframes fadein {
+    from { opacity: 0; pointer-events: none; }
+}
+.side-menu::overscroll-backdrop {
+    display: block;
+    animation: fadein linear;
+    animation-timeline: scroll(inline nearest);
+}
+
 /* --- Menu Internal Styling --- */
 .menu-header {
     padding: 20px 16px;
