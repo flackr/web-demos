@@ -361,7 +361,7 @@ body {
 }
 
 @keyframes fadein {
-    from { opacity: 0; pointer-events: none; }
+    from { opacity: 0; pointer-events: none; interactivity: inert; }
 }
 .side-menu::overscroll-backdrop {
     display: block;
