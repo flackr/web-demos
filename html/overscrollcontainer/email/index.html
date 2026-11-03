@@ -10,15 +10,15 @@
 </head>
 <body>
     <template id="actions">
-        <div class="wrapper left" data-command="delete" overscrollarea><button class="delete" command="toggle-overscroll">Delete</button></div>
-        <div class="wrapper right" data-command="toggle" overscrollarea><button class="toggle-read" command="toggle-overscroll">Toggle unread</button></div>
+        <div class="wrapper left" data-command="delete" overscrollarea><button class="delete" command="show-overscroll">Delete</button></div>
+        <div class="wrapper right" data-command="toggle" overscrollarea><button class="toggle-read" command="show-overscroll">Toggle unread</button></div>
     </template>
     <div class="app-container" overscrollcontainer="overlay">
         <!-- The slide-in menu panel -->
         <nav class="side-menu" id="sideMenu" overscrollarea>
             <div class="menu-header">
                 <h2>MailApp</h2>
-                <button class="icon-btn close-btn" id="closeMenuBtn" aria-label="Close menu" command="toggle-overscroll" commandfor="sideMenu">✕</button>
+                <button class="icon-btn close-btn" id="closeMenuBtn" aria-label="Close menu" command="hide-overscroll" commandfor="sideMenu">✕</button>
             </div>
             
             <ul class="menu-list">
@@ -38,12 +38,12 @@
             </ul>
         </nav>
         <header class="app-header">
-            <button class="icon-btn menu-btn" aria-label="Menu" command="toggle-overscroll" commandfor="sideMenu">☰</button>
+            <button class="icon-btn menu-btn" aria-label="Menu" command="show-overscroll" commandfor="sideMenu">☰</button>
             <div class="search-bar">
                 <span class="search-icon">🔍</span>
                 <input type="text" placeholder="Search in emails">
             </div>
-            <button id="refresh-btn" class="refresh-btn" type="button" aria-label="Refresh data" command="toggle-overscroll" commandfor="pull-to-refresh">
+            <button id="refresh-btn" class="refresh-btn" type="button" aria-label="Refresh data" command="show-overscroll" commandfor="pull-to-refresh">
                 <svg class="refresh-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
                     <polyline points="21 3 21 8 16 8"></polyline>
